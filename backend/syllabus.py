@@ -9,7 +9,7 @@ dates = ["week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "ju
 deliverablesub = ["quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission"]
 
 
-reader = PdfReader(filename)
+reader = PdfReader("./backend/" + filename)
 number_of_pages = len(reader.pages)
 for page in reader.pages:
     extracted = page.extract_text()
