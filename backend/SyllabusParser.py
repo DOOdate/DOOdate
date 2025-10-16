@@ -46,7 +46,7 @@ class SyllabusParser:
                                 line = line.replace(tmp, "")
                                 info[1] = tmp.strip()
                                 break
-                info[0] = line.strip().strip(self._PUNCTUATION)
+                info[0] = line.strip().strip(self._PUNCTUATION).title()
                 for deliverable in self._DELIVERABLES:
                     i = line.find(deliverable)
                     if i != -1:
@@ -79,5 +79,5 @@ class SyllabusParser:
 
 if __name__ == "__main__":
     parser = SyllabusParser()
-    l = parser.parse("1.pdf")
+    l = parser.parse("3.pdf")
     print(l)
