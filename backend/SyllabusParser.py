@@ -2,7 +2,8 @@
 class SyllabusParser:
     _DATES = ("week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
              "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
-    _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission")
+    _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission", "report")
+    _PUNCTUATION = ".,:;"
 
     def __init__(self):
         self._reader = None
@@ -37,11 +38,13 @@ class SyllabusParser:
                             i = self._guess_end_of_word(line, index + len(el))
                             while i < len(line) and not line[i].isalpha():
                                 i += 1
-                            if any(ch.isdigit() for ch in line[index:i]): contains_date = True
-                            else: break
-                            info[1] = line[index:i].strip()
-                            line = line.replace(line[index:i], "")
-                info[0] = line.strip()
+                            if any(ch.isdigit() for ch in line[index:i]):
+                                contains_date = True
+                                tmp = line[index:i].strip(self._PUNCTUATION)
+                                line = line.replace(tmp, "")
+                                info[1] = tmp.strip()
+                                break
+                info[0] = line.strip().strip(self._PUNCTUATION)
                 for deliverable in self._DELIVERABLES:
                     i = line.find(deliverable)
                     if i != -1:
