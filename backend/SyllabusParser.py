@@ -4,6 +4,7 @@ class SyllabusParser:
              "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
     _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission", "report")
     _PUNCTUATION = ".,:;"
+    _MAX_TITLE_LENGTH = 24
 
     def __init__(self):
         self._reader = None
@@ -50,11 +51,14 @@ class SyllabusParser:
                     if i != -1:
                         pre = line[i-1] if i-1 >= 0 else ""
                         post = line[len(deliverable) + i] if len(deliverable) + i < len(line) else ""
+                        # Do not count as a deliverable if it is in plural form
+                        if post == "s" or (len(deliverable) + i+1 < len(line) and (post == "e" and line[len(deliverable) + i+1] == "s")):
+                            continue
                         if (pre == "" or not pre.isalpha()) and (post == "" or not post.isalpha()):
                             break
                 else:
                     continue
-                if contains_date:
+                if contains_date and len(info[0]) < self._MAX_TITLE_LENGTH:
                     if len(due_dates) > 0:
                         if due_dates[-1] != info: due_dates.append(info)
                     else:
