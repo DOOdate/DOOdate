@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bc5eaadd-3333-49e4-84ef-bc806d4c679d" name="Changes" comment="" />
+    <list default="true" id="bc5eaadd-3333-49e4-84ef-bc806d4c679d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/SyllabusParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/SyllabusParser.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -88,7 +90,7 @@
       <workItem from="1759786231218" duration="3879000" />
       <workItem from="1760624427071" duration="3025000" />
       <workItem from="1760627574383" duration="61000" />
-      <workItem from="1760627638317" duration="1753000" />
+      <workItem from="1760627638317" duration="2077000" />
     </task>
     <servers />
   </component>
@@ -97,6 +99,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DOOdate$syllabus.coverage" NAME="syllabus Coverage Results" MODIFIED="1759788533848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
-    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1760629351368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1760629641724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>

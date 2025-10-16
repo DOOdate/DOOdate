@@ -23,7 +23,8 @@ class SyllabusParser:
                 weight_index = line.find("%")
                 if weight_index != -1:
                     i = weight_index
-                    while i-1 >= 0 and line[i-1].isdigit() or line[i-1].isspace():
+                    if i-1 >= 0 and line[i-1].isspace(): i-=1
+                    while i-1 >= 0 and line[i-1].isdigit() or line[i-1] in ('.', ','):
                         i -= 1
                     info[2] = line[i:weight_index].strip() + "%"
                     line = line.replace(line[i:weight_index]+"%", "")
@@ -58,7 +59,7 @@ class SyllabusParser:
                             break
                 else:
                     continue
-                if contains_date and len(info[0]):
+                if contains_date:
                     if len(due_dates) > 0:
                         if due_dates[-1] != info: due_dates.append(info)
                     else:
@@ -78,5 +79,5 @@ class SyllabusParser:
 
 if __name__ == "__main__":
     parser = SyllabusParser()
-    l = parser.parse("2.pdf")
+    l = parser.parse("1.pdf")
     print(l)
