@@ -90,7 +90,7 @@
       <workItem from="1759786231218" duration="3879000" />
       <workItem from="1760624427071" duration="3025000" />
       <workItem from="1760627574383" duration="61000" />
-      <workItem from="1760627638317" duration="2077000" />
+      <workItem from="1760627638317" duration="3253000" />
     </task>
     <servers />
   </component>
@@ -99,6 +99,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DOOdate$syllabus.coverage" NAME="syllabus Coverage Results" MODIFIED="1759788533848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
-    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1760629641724" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1760630045187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>
