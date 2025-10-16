@@ -58,7 +58,7 @@ class SyllabusParser:
                             break
                 else:
                     continue
-                if contains_date and len(info[0]) < self._MAX_TITLE_LENGTH:
+                if contains_date and len(info[0]):
                     if len(due_dates) > 0:
                         if due_dates[-1] != info: due_dates.append(info)
                     else:
@@ -78,5 +78,5 @@ class SyllabusParser:
 
 if __name__ == "__main__":
     parser = SyllabusParser()
-    l = parser.parse("3.pdf")
+    l = parser.parse("2.pdf")
     print(l)
