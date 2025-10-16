@@ -24,13 +24,15 @@ class SyllabusParser:
                     while i-1 >= 0 and line[i-1].isdigit() or line[i-1].isspace():
                         i -= 1
                     info[2] = line[i:weight_index].strip() + "%"
-                line = line.replace(info[2], "")
+                    line = line.replace(line[i:weight_index]+"%", "")
                 for el in self._DATES:
                     index = line.find(el)
                     if index != -1:
                         if el == "tbd" or el == "tba":
                             info[1] = "TBD"
                             line = line.replace(el, "")
+                            contains_date = True
+                            break
                         else:
                             i = self._guess_end_of_word(line, index + len(el))
                             while i < len(line) and not line[i].isalpha():
@@ -44,7 +46,7 @@ class SyllabusParser:
                     i = line.find(deliverable)
                     if i != -1:
                         pre = line[i-1] if i-1 >= 0 else ""
-                        post = line[len(deliverable) + i+1] if len(deliverable) + i+1 < len(line) else ""
+                        post = line[len(deliverable) + i] if len(deliverable) + i < len(line) else ""
                         if (pre == "" or not pre.isalpha()) and (post == "" or not post.isalpha()):
                             break
                 else:
@@ -65,6 +67,7 @@ class SyllabusParser:
             t = line.find(ch, start_index)
             offsets.append(len(line) if t == -1 else t)
         return min(offsets)
+
 
 if __name__ == "__main__":
     parser = SyllabusParser()
