@@ -1,3 +1,4 @@
+# first, cd frontend
 # Install with `npm install`
 # Build with `npx vite`
 
