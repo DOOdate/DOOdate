@@ -21,7 +21,7 @@ function Login(){
             color: 'text.primary',
         }}
         >
-            <Typography variant="h1">DooDate</Typography>
+            <Typography variant="h1" sx = {{marginTop: "5vh"}}>DooDate</Typography>
 
 
             <Typography variant="h5" sx = {{marginTop: "10vh"}}>Sign in to your account</Typography>
@@ -34,8 +34,7 @@ function Login(){
                 sx = {{
                     width: "30vw",
                     marginTop: "4vh"
-                }
-                }
+                }}
             />
 
             <TextField
@@ -45,8 +44,7 @@ function Login(){
                 sx = {{
                     width: "30vw",
                     marginTop: "2vh"
-                }
-                }
+                }}
             />      
 
             <Typography variant = "body2" sx={{marginTop: "1vh"}}>Don't have an account? <Link href="/signup"> Sign up </Link></Typography>
