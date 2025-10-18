@@ -7,7 +7,22 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 const theme = createTheme({
   colorSchemes: {
-    dark: true,
+    dark: {
+      palette: {
+        primary: {
+          main: '#FFFFFF',
+          light: '#DADADA'
+        },
+      },
+    },
+    light: {
+      palette: {
+        primary: {
+          main: '#000000',
+          light: '#EEEEEE'
+        },
+      },
+    },
   },
 });
 
