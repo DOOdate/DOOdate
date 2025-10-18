@@ -65,7 +65,7 @@ function Login(){
             sx = {{
                 width: "20vw",
                 marginTop: "4vh",
-                backgroundColor: "grey"
+                backgroundColor: "primary.light"
             }}>
             Continue with Microsoft
             </Button>
