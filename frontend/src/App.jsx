@@ -4,6 +4,7 @@ import React from 'react'
 import Login from './login.jsx'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { Navbar } from "./components/Navbar.jsx";
 
 const theme = createTheme({
   colorSchemes: {
@@ -14,6 +15,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <Navbar />
       <CssBaseline />
       <BrowserRouter>
         <Routes>
