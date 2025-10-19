@@ -13,8 +13,8 @@ function Login(){
         sx={{
             display: 'flex',
             flexDirection: "column",
-            width: '100%',
-            height: '100%',
+            width: '100vw',
+            height: '100vh',
             alignItems: 'center',
             justifyContent: 'center',
             bgcolor: 'background.default',
@@ -25,14 +25,14 @@ function Login(){
 
 
             <Typography variant="h5" sx = {{marginTop: "10vh"}}>Sign in to your account</Typography>
-            <Typography variant="body1" sx = {{marginTop: "1vh"}}>Enter your uOttawa email address to sign in to your DOOdate account</Typography>
+            <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>Enter your uOttawa email address to sign in to your DOOdate account</Typography>
 
             <TextField
                 label = "Email Address"
                 type = "email"
                 placeholder="email@uOttawa.ca"
                 sx = {{
-                    width: "30vw",
+                    width: { xs: "85vw", md: "30vw",},
                     marginTop: "4vh"
                 }}
             />
@@ -42,18 +42,19 @@ function Login(){
                 type = "password"
 
                 sx = {{
-                    width: "30vw",
+                    width: { xs: "85vw", md: "30vw",},
                     marginTop: "2vh"
                 }}
             />      
 
-            <Typography variant = "body2" sx={{marginTop: "1vh"}}>Don't have an account? <Link href="/signup"> Sign up </Link></Typography>
+            <Typography align="center" variant = "body2" sx={{marginTop: "1vh"}}>Don't have an account? <Link href="/signup"> Sign up </Link></Typography>
 
             <Button
             variant="contained"
             sx = {{
-                width: "20vw",
-                marginTop: "4vh"
+                width: { xs: "85vw", md: "30vw",},
+                marginTop: "4vh",
+                backgroundColor: "primary.main"
             }}>
             Login
             </Button>
@@ -63,14 +64,14 @@ function Login(){
             <Button
             variant="contained"
             sx = {{
-                width: "20vw",
+                width: { xs: "85vw", md: "30vw",},
                 marginTop: "4vh",
                 backgroundColor: "primary.light"
             }}>
             Continue with Microsoft
             </Button>
 
-            <Typography variant = "body2"  sx={{marginTop: "2vh"}}>By clicking continue, you agree to our <Link href="/signup"> Terms of Service </Link> and <Link href="/signup"> Privacy Policy </Link></Typography>
+            <Typography align="center" variant = "body2"  sx={{marginTop: "2vh", mx: "2vw"}}>By clicking continue, you agree to our <Link href="/signup"> Terms of Service </Link> and <Link href="/signup"> Privacy Policy </Link></Typography>
 
         </Box>
     )
