@@ -1,13 +1,14 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import React from 'react'
-import Login from './login.jsx'
+import React from 'react';
+import Login from './login.jsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BottomNavigation, BottomNavigationAction } from "@mui/material"
-import CalendarIcon from "./assets/calendar-icon.svg"
-import AddIcon from "./assets/plus-icon.svg"
-import SettingsIcon from "./assets/settings-icon.svg"
+import { BottomNavigation, BottomNavigationAction } from "@mui/material";
+import CalendarIcon from "./assets/calendar-icon.svg";
+import AddIcon from "./assets/plus-icon.svg";
+import SettingsIcon from "./assets/settings-icon.svg";
+import './styles.css';
 
 const theme = createTheme({
   colorSchemes: {
@@ -49,9 +50,9 @@ function App() {
             navigate(pages[newValue]);
           }}
         >
-          <BottomNavigationAction label="Calendar" icon={<img src={CalendarIcon} />} />
-          <BottomNavigationAction label="Add Class" icon={<img src={AddIcon} />} />
-          <BottomNavigationAction label="Settings" icon={<img src={SettingsIcon} />} />
+          <BottomNavigationAction label="Calendar" icon={<img src={CalendarIcon} class="navbar-icon" />} />
+          <BottomNavigationAction label="Add Class" icon={<img src={AddIcon} class="navbar-icon" />} />
+          <BottomNavigationAction label="Settings" icon={<img src={SettingsIcon} class="navbar-icon" />} />
         </BottomNavigation>
     </ThemeProvider>
   )
