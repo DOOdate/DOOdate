@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import React from 'react';
 import Login from './login.jsx';
+import Home from "./home.jsx";
+import AddSyllabus from "./addsyllabus.jsx";
+import Settings from "./settings.jsx";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BottomNavigation, BottomNavigationAction } from "@mui/material";
-import CalendarIcon from "./assets/calendar-icon.svg";
-import AddIcon from "./assets/plus-icon.svg";
-import SettingsIcon from "./assets/settings-icon.svg";
-import './styles.css';
+import Navbar from "./components/Navbar.jsx";
 
 const theme = createTheme({
   colorSchemes: {
@@ -40,20 +39,13 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/addsyllabus" element={<AddSyllabus />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
+        <Navbar />
       </BrowserRouter>
-      <BottomNavigation
-          showLabels
-          value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-            navigate(pages[newValue]);
-          }}
-        >
-          <BottomNavigationAction label="Calendar" icon={<img src={CalendarIcon} class="navbar-icon" />} />
-          <BottomNavigationAction label="Add Class" icon={<img src={AddIcon} class="navbar-icon" />} />
-          <BottomNavigationAction label="Settings" icon={<img src={SettingsIcon} class="navbar-icon" />} />
-        </BottomNavigation>
+      
     </ThemeProvider>
   )
 }
