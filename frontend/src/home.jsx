@@ -9,7 +9,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import EventCard from './components/EventCard.jsx'
-import { useTheme } from '@mui/material/styles';
 
 function Home(){
     const [classFilter, setClassFilter] = React.useState('All Classes');
@@ -19,18 +18,18 @@ function Home(){
         { title: 'Project Proposal', className: 'History', date: 'September 22nd 5:00pm', weight: '10%', colour: '#77dd77' },
         { title: 'Lab Report', className: 'Chemistry', date: 'September 25th 11:59pm', weight: '6%', colour: '#7777dd' },
     ];
-    const theme = useTheme();
     return (
         <Box
         sx={{
             display: 'flex',
             width: '100%',
-            height: '100%',
+            minHeight: '100vh',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
             bgcolor: 'background.default',
             color: 'text.primary',
+            overflow: 'hidden'
         }}
         >
             <Box sx={{ marginTop: 2, justifyContent: 'center'}}>
@@ -54,8 +53,13 @@ function Home(){
                 </LocalizationProvider>
             </Box>
             <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>Upcoming</Typography>
-            <Box sx={{ width: '100%',
-                 bgcolor: theme.palette.primary.light                 }}>
+            <Box sx={{ flex: 1,
+                overflowY: 'auto',
+                width: '100%',
+                maxHeight: '40vh',
+                pb: '72px',
+                px: 2,
+                bgcolor: 'primary.secondary' }}>
                 {assignments.map((assignment) => (
                     <EventCard key={assignment.title} {...assignment} />
                 ))}
