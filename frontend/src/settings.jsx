@@ -74,7 +74,6 @@ function Settings(){
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
   const hasrun = React.useRef(false)
   React.useEffect(() => {
-    console.log(hasrun.current)
     if(!hasrun.current && mode !== undefined){
       hasrun.current = true
       if (mode === 'system') {
@@ -85,8 +84,6 @@ function Settings(){
         }
         setMode(tmp)
         } else {
-          console.log('test')
-          console.log(mode)
           if(mode === "dark"){
             setChecked(true);
           } else{
@@ -98,15 +95,11 @@ function Settings(){
   }, [mode]);
   
   const handleChange = () =>{
-    console.log('old')
-    console.log(checked)
     let tempbool = !checked
     setChecked(tempbool)
     if(tempbool){
-      console.log('dark')
       setMode("dark")
     } else{
-      console.log('light')
       setMode("light")
     }
   };
