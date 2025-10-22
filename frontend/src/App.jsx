@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import React from 'react'
 import Login from './login.jsx'
-import Home from './home.jsx'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -34,7 +33,7 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
