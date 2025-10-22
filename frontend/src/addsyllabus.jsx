@@ -14,9 +14,23 @@ function AddSyllabus(){
             justifyContent: 'center',
             bgcolor: 'background.default',
             color: 'text.primary',
+            minHeight: '100vh'
         }}
         >
-            <Typography variant="h1">DooDate</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                <Box sx={{ 
+                    borderRadius: 15, 
+                    bgcolor: 'primary.secondary', 
+                    width: '7vh', 
+                    height: '7vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <Typography variant="h2">+</Typography>
+                </Box>
+                <Typography variant="h6">Tap to upload syllabus</Typography>
+            </Box>
         </Box>
     )
 }

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import React from 'react'
 import Login from './login.jsx'
+import AddSyllabus from './addsyllabus.jsx'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -11,7 +12,8 @@ const theme = createTheme({
       palette: {
         primary: {
           main: '#FFFFFF',
-          light: '#DADADA'
+          light: '#DADADA',
+          secondary: '#262626'
         },
       },
     },
@@ -32,7 +34,7 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<AddSyllabus />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
