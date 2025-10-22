@@ -4,6 +4,7 @@ import React from 'react'
 import Login from './login.jsx'
 import Settings from './settings.jsx'
 import { ThemeProvider, createTheme} from '@mui/material/styles';
+import { styled, useColorScheme  } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline';
 
 function App() {
@@ -27,12 +28,14 @@ function App() {
       },
     },
   });
+  const { mode, setMode } = useColorScheme();
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Settings />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
