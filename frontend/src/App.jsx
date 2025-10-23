@@ -46,7 +46,7 @@ function App() {
           <Route path="/addsyllabus" element={<AddSyllabus />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
-        <Navbar />
+        {window.location.pathname !== '/' && <Navbar />}
       </BrowserRouter>
       
     </ThemeProvider>
