@@ -6,32 +6,33 @@ import Home from "./home.jsx";
 import AddSyllabus from "./addsyllabus.jsx";
 import Settings from "./settings.jsx";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { styled, useColorScheme  } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from "./components/Navbar.jsx";
 
-const theme = createTheme({
-  colorSchemes: {
-    dark: {
-      palette: {
-        primary: {
-          main: '#FFFFFF',
-          light: '#DADADA',
-          secondary: '#262626'
-        },
-      },
-    },
-    light: {
-      palette: {
-        primary: {
-          main: '#000000',
-          light: '#EEEEEE'
-        },
-      },
-    },
-  },
-});
-
 function App() {
+  const theme = createTheme({
+    colorSchemes: {
+      dark: {
+        palette: {
+          primary: {
+            main: '#FFFFFF',
+            light: '#DADADA',
+            secondary: '#262626'
+          },
+        },
+      },
+      light: {
+        palette: {
+          primary: {
+            main: '#000000',
+            light: '#EEEEEE'
+          },
+        },
+      },
+    },
+  });
+  const { mode, setMode } = useColorScheme();
   const [value, setValue] = useState(0);
   const pages = ['/home', '/addsyllabus', '/settings']
   return (
