@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import Login from './login.jsx';
 import Home from "./home.jsx";
@@ -36,6 +36,10 @@ function App() {
   const { mode, setMode } = useColorScheme();
   const [value, setValue] = useState(0);
   const pages = ['/home', '/addsyllabus', '/settings']
+  function NavbarConditional(){
+    const location = useLocation();
+    return location.pathname !== '/' ? <Navbar /> : null;
+  }
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -46,7 +50,7 @@ function App() {
           <Route path="/addsyllabus" element={<AddSyllabus />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
-        {window.location.pathname !== '/' && <Navbar />}
+        <NavbarConditional />
       </BrowserRouter>
       
     </ThemeProvider>
