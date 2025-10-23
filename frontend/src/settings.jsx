@@ -79,7 +79,7 @@ function Settings(){
       if (mode === 'system') {
         setChecked(prefersDark);
         let tmp = "light"
-        if(checked){
+        if(prefersDark){
           tmp = "dark"
         }
         setMode(tmp)
