@@ -5,9 +5,11 @@ import Box from '@mui/material/Box';
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
+import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 
 function Login(){
+    const navigate = useNavigate();
     return (
         <Box
         sx={{
@@ -55,7 +57,9 @@ function Login(){
                 width: { xs: "85vw", md: "30vw",},
                 marginTop: "4vh",
                 backgroundColor: "primary.main"
-            }}>
+            }}
+            onClick={() => navigate('/home')}
+            >
             Login
             </Button>
 
