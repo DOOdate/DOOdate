@@ -4,24 +4,32 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 
+const DEFAULT_MSG = "Tap to upload syllabus";
+
+
 function AddSyllabus() {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const inputRef = useRef(null);
-  const [msg, setMsg] = useState("Tap to upload syllabus");
+  const [msg, setMsg] = useState(DEFAULT_MSG);
+  const inputRef = useRef(null); 
+
 
   const onFileChange = async (event) => {
-    const file = event.target.files?.[0] || null;
+    const inputRef = event.currentTarget;
+    const file = inputRef.files?.[0] ?? null;
     
     
-    if (file == null) {
-     setMsg("Tap to upload syllabus");   
-     return;  
+    if (!file) {
+      setMsg(DEFAULT_MSG);
+      return;
     }
     
-    else{
-      setSelectedFile(file);
-      setMsg(`Current file: ${file.name}`);
-      onFileUpload(selectedFile);
+    setMsg(`Current file: ${file.name}`);
+
+    try{
+      await onFileUpload(file);
+    }
+    //Add catch here when backend implemented to catch if file upload doesnt work
+    finally{
+      if (inputRef.current) inputRef.current.value = "";
     }
   };
 
@@ -29,19 +37,10 @@ function AddSyllabus() {
   
     const formData = new FormData();
     formData.append("myFile", file, file.name);
-   
+    await axios.post("/api/uploadfile", formData); 
+    if (inputRef.current) inputRef.current.value = "";
 
-    try {
-      await axios.post("/api/uploadfile", formData); 
-      console.log("Uploaded:", file.name);
-
-    } catch (err) {
-      console.error("Upload failed:", err);
-    } finally {
-         if (inputRef.current) inputRef.current.value = "";
-    }
   };
-
 
   return (
     <Box
