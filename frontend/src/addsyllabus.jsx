@@ -11,15 +11,18 @@ function AddSyllabus() {
 
   const onFileChange = async (event) => {
     const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
     
-    if (!file) {
-     setMsg("Tap to upload syllabus");      
+    
+    if (file == null) {
+     setMsg("Tap to upload syllabus");   
      return;  
     }
     
-    setMsg(`Current file: ${file.name}`);
-    onFileUpload(selectedFile);
+    else{
+      setSelectedFile(file);
+      setMsg(`Current file: ${file.name}`);
+      onFileUpload(selectedFile);
+    }
   };
 
   const onFileUpload = async (file) => {
@@ -39,9 +42,6 @@ function AddSyllabus() {
     }
   };
 
- const fileText = selectedFile
-    ? `${selectedFile.name} (${selectedFile.type || "unknown type"})`
-    : "Tap to upload syllabus";
 
   return (
     <Box
