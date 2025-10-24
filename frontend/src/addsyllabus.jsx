@@ -4,32 +4,24 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 
-const DEFAULT_MSG = "Tap to upload syllabus";
-
-
 function AddSyllabus() {
-  const [msg, setMsg] = useState(DEFAULT_MSG);
-  const inputRef = useRef(null); 
-
+  const [selectedFile, setSelectedFile] = useState(null);
+  const inputRef = useRef(null);
+  const [msg, setMsg] = useState("Tap to upload syllabus");
 
   const onFileChange = async (event) => {
-    const inputRef = event.currentTarget;
-    const file = inputRef.files?.[0] ?? null;
+    const file = event.target.files?.[0] || null;
     
     
-    if (!file) {
-      setMsg(DEFAULT_MSG);
-      return;
+    if (file == null) {
+     setMsg("Tap to upload syllabus");   
+     return;  
     }
     
-    setMsg(`Current file: ${file.name}`);
-
-    try{
-      await onFileUpload(file);
-    }
-    //Add catch here when backend implemented to catch if file upload doesnt work
-    finally{
-      if (inputRef.current) inputRef.current.value = "";
+    else{
+      setSelectedFile(file);
+      setMsg(`Current file: ${file.name}`);
+      onFileUpload(selectedFile);
     }
   };
 
@@ -37,10 +29,19 @@ function AddSyllabus() {
   
     const formData = new FormData();
     formData.append("myFile", file, file.name);
-    await axios.post("/api/uploadfile", formData); 
-    if (inputRef.current) inputRef.current.value = "";
+   
 
+    try {
+      await axios.post("/api/uploadfile", formData); 
+      console.log("Uploaded:", file.name);
+
+    } catch (err) {
+      console.error("Upload failed:", err);
+    } finally {
+         if (inputRef.current) inputRef.current.value = "";
+    }
   };
+
 
   return (
     <Box
@@ -57,14 +58,11 @@ function AddSyllabus() {
     >
       <Box
         sx={{
-            display: 'flex',
-            width: '100%',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bgcolor: 'background.default',
-            color: 'text.primary',
-            minHeight: '100vh'
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 2,
         }}
       >
         <IconButton
@@ -84,21 +82,33 @@ function AddSyllabus() {
             "&:hover": { opacity: 0.9 },
           }}
         >
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-                <Box sx={{ 
-                    borderRadius: 15, 
-                    bgcolor: 'primary.secondary', 
-                    width: '7vh', 
-                    height: '7vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    <Typography variant="h2">+</Typography>
-                </Box>
-                <Typography variant="h6">Tap to upload syllabus</Typography>
-            </Box>
-        </Box>
-    )
+          <input
+            ref={inputRef}
+            type="file"
+            hidden
+            onChange={onFileChange}
+            accept="application/pdf,image/*"
+          />
+          <Typography variant="h2" sx={{ lineHeight: 1 }}>+</Typography>
+        </IconButton>
+
+       <Typography
+          variant="h6"
+          aria-live="polite"
+          sx={{
+            maxWidth: "80vw",
+            textAlign: "center",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {msg}
+        </Typography>
+        
+      </Box>
+    </Box>
+  );
 }
-export default AddSyllabus
+
+export default AddSyllabus;
