@@ -71,7 +71,7 @@ function AddSyllabus() {
           title="Upload syllabus"
           sx={{
             borderRadius: "50%",
-            bgcolor: "secondary.main",  
+            bgcolor: "primary.secondary",  
             width: "7vh",
             height: "7vh",
             display: "flex",
