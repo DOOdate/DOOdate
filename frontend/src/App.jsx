@@ -16,18 +16,22 @@ function App() {
       dark: {
         palette: {
           primary: {
-            main: '#000000',
+            main: '#FFFFFF',
             light: '#DADADA',
-            secondary: '#1A1A1A'
+            secondary: '#1A1A1A',
+            base: '#000000'
+
           },
         },
       },
       light: {
         palette: {
           primary: {
-            main: '#FFFFFF',
+            main: '#000000',
             light: '#EEEEEE',
-            secondary: '#F1F1F1'
+            secondary: '#F1F1F1',
+            base: '#FFFFFF'
+
           },
         },
       },

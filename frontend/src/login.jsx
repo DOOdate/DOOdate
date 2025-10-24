@@ -56,7 +56,8 @@ function Login(){
             sx = {{
                 width: { xs: "85vw", md: "30vw",},
                 marginTop: "4vh",
-                backgroundColor: "primary.main"
+                backgroundColor: "primary.main",
+                color: "primary.base"
             }}
             onClick={() => navigate('/home')}
             >
@@ -70,7 +71,8 @@ function Login(){
             sx = {{
                 width: { xs: "85vw", md: "30vw",},
                 marginTop: "4vh",
-                backgroundColor: "primary.light"
+                backgroundColor: "primary.light",
+                color: "#000000"
             }}>
             Continue with Microsoft
             </Button>
