@@ -57,11 +57,14 @@ function AddSyllabus() {
     >
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 2,
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: 'background.default',
+            color: 'text.primary',
+            minHeight: '100vh'
         }}
       >
         <IconButton
@@ -81,33 +84,21 @@ function AddSyllabus() {
             "&:hover": { opacity: 0.9 },
           }}
         >
-          <input
-            ref={inputRef}
-            type="file"
-            hidden
-            onChange={onFileChange}
-            accept="application/pdf,image/*"
-          />
-          <Typography variant="h2" sx={{ lineHeight: 1 }}>+</Typography>
-        </IconButton>
-
-       <Typography
-          variant="h6"
-          aria-live="polite"
-          sx={{
-            maxWidth: "80vw",
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {msg}
-        </Typography>
-        
-      </Box>
-    </Box>
-  );
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
+                <Box sx={{ 
+                    borderRadius: 15, 
+                    bgcolor: 'primary.secondary', 
+                    width: '7vh', 
+                    height: '7vh',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <Typography variant="h2">+</Typography>
+                </Box>
+                <Typography variant="h6">Tap to upload syllabus</Typography>
+            </Box>
+        </Box>
+    )
 }
-
-export default AddSyllabus;
+export default AddSyllabus
