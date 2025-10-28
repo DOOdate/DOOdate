@@ -7,8 +7,10 @@ import Button from "@mui/material/Button";
 import Link from "@mui/material/Link";
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
+import { useTranslation } from 'react-i18next';
 
 function Login(){
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     return (
         <Box
@@ -26,7 +28,7 @@ function Login(){
             <Typography variant="h1" sx = {{marginTop: "5vh"}}>DooDate</Typography>
 
 
-            <Typography variant="h5" sx = {{marginTop: "10vh"}}>Sign in to your account</Typography>
+            <Typography variant="h5" sx = {{marginTop: "10vh"}}>{t('Signin')}</Typography>
             <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>Enter your uOttawa email address to sign in to your DOOdate account</Typography>
 
             <TextField
