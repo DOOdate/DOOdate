@@ -29,10 +29,10 @@ function Login(){
 
 
             <Typography variant="h5" sx = {{marginTop: "10vh"}}>{t('Signin')}</Typography>
-            <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>Enter your uOttawa email address to sign in to your DOOdate account</Typography>
+            <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>{t('Enter email')}</Typography>
 
             <TextField
-                label = "Email Address"
+                label = {t('Email')}
                 type = "email"
                 placeholder="email@uOttawa.ca"
                 sx = {{
@@ -42,7 +42,7 @@ function Login(){
             />
 
             <TextField
-                label = "Password"
+                label = {t('Password')}
                 type = "password"
 
                 sx = {{
@@ -51,7 +51,7 @@ function Login(){
                 }}
             />      
 
-            <Typography align="center" variant = "body2" sx={{marginTop: "1vh"}}>Don't have an account? <Link href="/signup"> Sign up </Link></Typography>
+            <Typography align="center" variant = "body2" sx={{marginTop: "1vh"}}>{t('NoAccount')} <Link href="/signup"> {t('SignUp')} </Link></Typography>
 
             <Button
             variant="contained"
@@ -63,10 +63,10 @@ function Login(){
             }}
             onClick={() => navigate('/home')}
             >
-            Login
+            {t('LOGIN')}
             </Button>
 
-            <Divider sx={{width: "30vw", marginTop: "4vh"}}>or</Divider>
+            <Divider sx={{width: "30vw", marginTop: "4vh"}}>{t('OR')}</Divider>
 
             <Button
             variant="contained"
@@ -76,10 +76,10 @@ function Login(){
                 backgroundColor: "primary.light",
                 color: "#000000"
             }}>
-            Continue with Microsoft
+            {t('Continue Microsoft')}
             </Button>
 
-            <Typography align="center" variant = "body2"  sx={{marginTop: "2vh", mx: "2vw"}}>By clicking continue, you agree to our <Link href="/signup"> Terms of Service </Link> and <Link href="/signup"> Privacy Policy </Link></Typography>
+            <Typography align="center" variant = "body2"  sx={{marginTop: "2vh", mx: "2vw"}}>{t('Contract')}<Link href="/signup"> {t('TOS')} </Link> {t('and')} <Link href="/signup"> {t('PP')} </Link></Typography>
 
         </Box>
     )
