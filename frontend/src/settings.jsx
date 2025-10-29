@@ -12,6 +12,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import i18next from 'i18next'
+import { useTranslation } from 'react-i18next';
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -74,6 +75,7 @@ const IOSSwitch = styled((props) => (
 }));
 
 function Settings(){
+  const { t } = useTranslation();
   const { mode, setMode } = useColorScheme();
   let [checked, setChecked] = React.useState(false)
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
@@ -129,12 +131,12 @@ function Settings(){
             color: 'text.primary',
         }}
         >
-            <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">View Settings</Typography>
+            <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
             <FormGroup sx={{mr: 'auto', mt: '2vh'}}>
-                <FormControlLabel sx={{'& .MuiFormControlLabel-label': {marginRight: '60vw'},}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label="Dark Mode" labelPlacement='start'/>
+                <FormControlLabel sx={{'& .MuiFormControlLabel-label': {marginRight: '60vw'},}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
             </FormGroup>
             <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
-              <InputLabel id="langagelabel">Language</InputLabel>
+              <InputLabel id="langagelabel">{t('Language')}</InputLabel>
               <Select
                 labelId="langagelabel"
                 id="languageselect"

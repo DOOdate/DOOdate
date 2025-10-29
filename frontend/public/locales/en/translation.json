@@ -4,8 +4,10 @@
   "Calendar": "Calendar",
   "Continue Microsoft": "CONTINUE WITH MICROSOFT",
   "Contract": "By clicking continue, you agree to our",
+  "Dark Mode": "Dark Mode",
   "Email": "Email Address",
   "Enter email": "Enter your uOttawa email address to sign in to your DOOdate account",
+  "Language": "Language",
   "LOGIN": "LOGIN",
   "NoAccount": "Don't have an account?",
   "OR": "OR",
@@ -14,5 +16,6 @@
   "Settings": "Settings",
   "Signin": "Sign in to your account",
   "SignUp": "Sign Up",
-  "TOS": "Terms of service"
+  "TOS": "Terms of service",
+  "View Settings": "View Settings"
 }
