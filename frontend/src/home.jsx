@@ -16,7 +16,7 @@ import i18next from "i18next";
 
 function Home(){
     const { t } = useTranslation();
-    const [classFilter, setClassFilter] = React.useState(t('All Classes'));
+    const [classFilter, setClassFilter] = React.useState('All Classes');
     let classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5']; // not translated bc they will come from db, which will have the values in the user's language from the syllabus
     let assignments = [
         { title: 'Assignment 1', className: 'PHY1331', date: 'September 19th 11:59pm', weight: '4%', colour: '#dd7777' }, // not translated bc they will come from db
@@ -42,7 +42,7 @@ function Home(){
                     value={classFilter}
                     onChange={(e) => setClassFilter(e.target.value)}
                 >
-                    <MenuItem value='All Classes'>All Classes</MenuItem>
+                    <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
                     {classes.map((className) => (
                         <MenuItem value={className}>{className}</MenuItem>
                     ))}
