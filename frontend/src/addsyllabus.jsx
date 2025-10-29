@@ -2,8 +2,10 @@ import React from "react";
 import Typography from '@mui/material/Typography'
 import { bgcolor } from "@mui/system";
 import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
 
 function AddSyllabus(){
+    const { t } = useTranslation();
     return (
         <Box
         sx={{
