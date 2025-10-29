@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
 
 i18n
   // i18next-http-backend
@@ -9,9 +10,14 @@ i18n
   .use(Backend)
   // pass the i18n instance to react-i18next.
   .use(initReactI18next)
+  .use(LanguageDetector)
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    detection: {
+      order: ['localStorage', 'navigator'], // prioritize localstorage, then default browser lang
+    },
+    supportedLngs: ['en', 'fr'],
     debug: true,
     fallbackLng: 'en',
   });

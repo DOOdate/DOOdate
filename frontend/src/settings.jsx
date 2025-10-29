@@ -4,9 +4,14 @@ import { bgcolor } from "@mui/system";
 import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch'
 import FormGroup from "@mui/material/FormGroup";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from '@mui/material/InputLabel';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled, useColorScheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import i18next from 'i18next'
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -104,6 +109,13 @@ function Settings(){
     }
   };
 
+  const [lang, setLang] = React.useState(i18next.language);
+
+  const handlelangChange = (event) => {
+    setLang(event.target.value);
+    i18next.changeLanguage(event.target.value)
+  };
+
     return (
         <Box
         sx={{
@@ -121,6 +133,18 @@ function Settings(){
             <FormGroup sx={{mr: 'auto', mt: '2vh'}}>
                 <FormControlLabel sx={{'& .MuiFormControlLabel-label': {marginRight: '60vw'},}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label="Dark Mode" labelPlacement='start'/>
             </FormGroup>
+            <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
+              <InputLabel id="langagelabel">Language</InputLabel>
+              <Select
+                labelId="langagelabel"
+                id="languageselect"
+                value={lang}
+                onChange={handlelangChange}
+              >
+                <MenuItem value={'en'}>English</MenuItem>
+                <MenuItem value={'fr'}>Français</MenuItem>
+              </Select>
+            </FormControl>
         </Box>
     )
 }
