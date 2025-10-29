@@ -8,8 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { useColorScheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTranslation } from 'react-i18next';
 
 function Navbar() {
+    const { t } = useTranslation();
     const [value, setValue] = useState(0);
     const pages = ['../home', '../addsyllabus', '../settings'];
     const navigate = useNavigate();
@@ -26,9 +28,9 @@ function Navbar() {
           }}
         >
           {/* awful styling */}
-          <BottomNavigationAction label="Calendar" icon={<img src={CalendarIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
-          <BottomNavigationAction label="Add Class" icon={<img src={AddIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}}/>} />
-          <BottomNavigationAction label="Settings" icon={<img src={SettingsIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
+          <BottomNavigationAction label={t('Calendar')} icon={<img src={CalendarIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
+          <BottomNavigationAction label={t('Add Class')} icon={<img src={AddIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}}/>} />
+          <BottomNavigationAction label={t('Settings')} icon={<img src={SettingsIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
         </BottomNavigation>
     )   
 }

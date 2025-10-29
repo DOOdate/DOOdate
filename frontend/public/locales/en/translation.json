@@ -1,5 +1,7 @@
 {
+  "Add Class": "Add Class",
   "and": "and",
+  "Calendar": "Calendar",
   "Continue Microsoft": "CONTINUE WITH MICROSOFT",
   "Contract": "By clicking continue, you agree to our",
   "Email": "Email Address",
@@ -9,6 +11,7 @@
   "OR": "OR",
   "Password": "Password",
   "PP": "Privacy policy",
+  "Settings": "Settings",
   "Signin": "Sign in to your account",
   "SignUp": "Sign Up",
   "TOS": "Terms of service"
