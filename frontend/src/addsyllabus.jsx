@@ -29,7 +29,7 @@ function AddSyllabus(){
                 }}>
                     <Typography variant="h2">+</Typography>
                 </Box>
-                <Typography variant="h6">Tap to upload syllabus</Typography>
+                <Typography variant="h6">{t('Upload')}</Typography>
             </Box>
         </Box>
     )
