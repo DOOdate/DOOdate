@@ -132,8 +132,8 @@ function Settings(){
         }}
         >
             <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
-            <FormGroup sx={{mr: 'auto', mt: '2vh'}}>
-                <FormControlLabel sx={{'& .MuiFormControlLabel-label': {marginRight: '60vw'},}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
+            <FormGroup>
+                <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
             </FormGroup>
             <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
               <InputLabel id="langagelabel">{t('Language')}</InputLabel>
