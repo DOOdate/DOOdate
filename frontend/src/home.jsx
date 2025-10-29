@@ -9,14 +9,19 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import EventCard from './components/EventCard.jsx'
+import { useTranslation } from 'react-i18next';
+import dayjs from "dayjs";
+import 'dayjs/locale/fr'
+import i18next from "i18next";
 
 function Home(){
-    const [classFilter, setClassFilter] = React.useState('All Classes');
-    let classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
+    const { t } = useTranslation();
+    const [classFilter, setClassFilter] = React.useState(t('All Classes'));
+    let classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5']; // not translated bc they will come from db, which will have the values in the user's language from the syllabus
     let assignments = [
-        { title: 'Assignment 1', className: 'Physics', date: 'September 19th 11:59pm', weight: '4%', colour: '#dd7777' },
-        { title: 'Project Proposal', className: 'History', date: 'September 22nd 5:00pm', weight: '10%', colour: '#77dd77' },
-        { title: 'Lab Report', className: 'Chemistry', date: 'September 25th 11:59pm', weight: '6%', colour: '#7777dd' },
+        { title: 'Assignment 1', className: 'PHY1331', date: 'September 19th 11:59pm', weight: '4%', colour: '#dd7777' }, // not translated bc they will come from db
+        { title: 'Project Proposal', className: 'HIS1101', date: 'September 22nd 5:00pm', weight: '10%', colour: '#77dd77' }, // not translated bc they will come from db
+        { title: 'Lab Report', className: 'CHM1311', date: 'September 25th 11:59pm', weight: '6%', colour: '#7777dd' }, // not translated bc they will come from db
     ];
     return (
         <Box
@@ -48,11 +53,11 @@ function Home(){
                 borderRadius: 1,
                 transition: 'background-color 200ms',
             })}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
                     <DateCalendar readOnly showDaysOutsideCurrentMonth/>
                 </LocalizationProvider>
             </Box>
-            <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>Upcoming</Typography>
+            <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
             <Box sx={{ flex: 1,
                 overflowY: 'auto',
                 width: '100%',
