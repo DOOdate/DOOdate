@@ -105,5 +105,5 @@ class SyllabusParser:
 # Testing purposes
 if __name__ == "__main__":
     parser = SyllabusParser()
-    l = parser.parse("3.pdf")
+    l = parser.parse("../../static/pdf_samples/3.pdf")
     print(l)
