@@ -21,7 +21,7 @@ function EventCard({ title, className, date, weight, colour }) {
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mt: 0.75 }}>
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left', lineHeight: 1.1 }}>{className}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', lineHeight: 1.1 }}>Weight: {weight}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', lineHeight: 1.1 }}>{t('Weight')} {weight}</Typography>
             </Box>
         </Box>
     )
