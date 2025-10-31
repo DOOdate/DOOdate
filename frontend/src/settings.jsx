@@ -136,9 +136,9 @@ function Settings(){
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
             </FormGroup>
             <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
-              <InputLabel id="langagelabel">{t('Language')}</InputLabel>
+              <InputLabel id="languagelabel">{t('Language')}</InputLabel>
               <Select
-                labelId="langagelabel"
+                labelId="languagelabel"
                 id="languageselect"
                 value={lang}
                 onChange={handlelangChange}
