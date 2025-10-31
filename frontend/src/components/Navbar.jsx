@@ -10,8 +10,8 @@ import { useColorScheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 function Navbar() {
-    const [value, setValue] = useState(0);
-    const pages = ['../home', '../addsyllabus', '../settings'];
+  const [value, setValue] = useState(0);
+  const pages = ['/home', '/addclass', '/settings'];
     const navigate = useNavigate();
     const { mode, setMode } = useColorScheme();
     let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
