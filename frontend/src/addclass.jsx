@@ -1,22 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import Typography from '@mui/material/Typography'
-import { bgcolor } from "@mui/system";
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import { useUI } from './uiContext.jsx';
 
 function AddClass(){
+    const [name, setName] = useState('');
+    const [code, setCode] = useState('');
+    const { showFlash } = useUI();
+
+    const submit = (e) => {
+        e.preventDefault();
+        if (!name.trim()) return showFlash('Please enter a class name', 'warning');
+        // Minimal local behaviour: announce success and clear fields.
+        showFlash(`Class "${name}" added`, 'success');
+        setName('');
+        setCode('');
+    }
+
     return (
         <Box
+        component="form"
+        onSubmit={submit}
         sx={{
             display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
             width: '100%',
-            height: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
+            maxWidth: 480,
+            margin: '0 auto',
+            mt: 6,
             bgcolor: 'background.default',
             color: 'text.primary',
+            p: 2,
         }}
         >
-            <Typography variant="h1">DooDate</Typography>
+            <Typography variant="h4">Add Class</Typography>
+            <TextField label="Class name" value={name} onChange={(e)=>setName(e.target.value)} fullWidth />
+            <TextField label="Class code (optional)" value={code} onChange={(e)=>setCode(e.target.value)} fullWidth />
+            <Button type="submit" variant="contained">Add class</Button>
         </Box>
     )
 }
