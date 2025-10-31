@@ -3,42 +3,64 @@ import axios from "axios";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import LinearProgress from '@mui/material/LinearProgress';
+import Button from '@mui/material/Button';
+import { useUI } from './uiContext.jsx';
 
 function AddSyllabus() {
   const [selectedFile, setSelectedFile] = useState(null);
   const inputRef = useRef(null);
   const [msg, setMsg] = useState("Tap to upload syllabus");
+  const [progress, setProgress] = useState(0);
+  const { setLoading, showFlash } = useUI();
 
   const onFileChange = async (event) => {
     const file = event.target.files?.[0] || null;
-    
-    
+
     if (file == null) {
-     setMsg("Tap to upload syllabus");   
-     return;  
+      setMsg("Tap to upload syllabus");
+      return;
     }
-    
-    else{
-      setSelectedFile(file);
-      setMsg(`Current file: ${file.name}`);
-      onFileUpload(selectedFile);
-    }
+
+    // set immediately and start upload with the fresh file reference
+    setSelectedFile(file);
+    setMsg(`Preparing upload: ${file.name}`);
+    onFileUpload(file);
   };
 
   const onFileUpload = async (file) => {
-  
+    if (!file) return;
     const formData = new FormData();
     formData.append("myFile", file, file.name);
-   
 
     try {
-      await axios.post("/api/uploadfile", formData); 
+      setLoading(true);
+      setProgress(0);
+      setMsg(`Uploading: ${file.name}`);
+
+      await axios.post("/api/uploadfile", formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+          setProgress(pct);
+          setMsg(`Uploading ${file.name} — ${pct}%`);
+        }
+      });
+
       console.log("Uploaded:", file.name);
+      showFlash(`Uploaded ${file.name}`, 'success');
+      setMsg(`Uploaded: ${file.name}`);
 
     } catch (err) {
       console.error("Upload failed:", err);
+      showFlash('Upload failed. Try again.', 'error');
+      setMsg('Upload failed — tap to retry');
     } finally {
-         if (inputRef.current) inputRef.current.value = "";
+      setLoading(false);
+      setProgress(0);
+      if (inputRef.current) inputRef.current.value = "";
+      // keep selectedFile cleared so UX is clean
+      setSelectedFile(null);
     }
   };
 
@@ -105,6 +127,11 @@ function AddSyllabus() {
         >
           {msg}
         </Typography>
+        {progress > 0 && (
+          <Box sx={{ width: '80vw', maxWidth: 480 }}>
+            <LinearProgress variant="determinate" value={progress} />
+          </Box>
+        )}
         
       </Box>
     </Box>

@@ -8,6 +8,9 @@ import { useNavigate } from 'react-router-dom';
 import './Navbar.css';
 import { useColorScheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { useUI } from '../uiContext.jsx';
 
 function Navbar() {
     const [value, setValue] = useState(0);
@@ -15,7 +18,9 @@ function Navbar() {
     const navigate = useNavigate();
     const { mode, setMode } = useColorScheme();
     let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
+  const { flash, setFlash } = useUI();
     return (
+        <>
         <BottomNavigation
           showLabels
           className="navbar"
@@ -30,6 +35,17 @@ function Navbar() {
           <BottomNavigationAction label="Add Class" icon={<img src={AddIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}}/>} />
           <BottomNavigationAction label="Settings" icon={<img src={SettingsIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
         </BottomNavigation>
+        <Snackbar
+          open={!!flash?.open}
+          autoHideDuration={4000}
+          onClose={() => setFlash(f => ({ ...f, open: false }))}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={() => setFlash(f => ({ ...f, open: false }))} severity={flash?.severity || 'info'} sx={{ width: '100%' }}>
+            {flash?.message}
+          </Alert>
+        </Snackbar>
+        </>
     )   
 }
 
