@@ -12,6 +12,7 @@ import EventCard from './components/EventCard.jsx'
 import { useTranslation } from 'react-i18next';
 import dayjs from "dayjs";
 import 'dayjs/locale/fr'
+import updateLocale from 'dayjs/plugin/updateLocale'
 import i18next from "i18next";
 
 function Home(){
@@ -23,6 +24,10 @@ function Home(){
         { title: 'Project Proposal', className: 'HIS1101', date: 'September 22nd 5:00pm', weight: '10%', colour: '#77dd77' }, // not translated bc they will come from db
         { title: 'Lab Report', className: 'CHM1311', date: 'September 25th 11:59pm', weight: '6%', colour: '#7777dd' }, // not translated bc they will come from db
     ];
+    dayjs.extend(updateLocale)
+    dayjs.updateLocale('fr' ,{
+        months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', "Août", 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+    })
     return (
         <Box
         sx={{

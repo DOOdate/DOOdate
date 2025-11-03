@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 
 function EventCard({ title, className, date, weight, colour }) {
+    const { t } = useTranslation();
     const accent = colour || '#000000';
     return (
         <Box sx={{ 
