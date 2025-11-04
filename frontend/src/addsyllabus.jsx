@@ -121,10 +121,7 @@ function AddSyllabus() {
           aria-live="polite"
           sx={{
             maxWidth: "80vw",
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            textAlign: "center"
           }}
         >
           {msg}
