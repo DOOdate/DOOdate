@@ -150,8 +150,8 @@ function Settings(){
             color: 'text.primary',
         }}
         >
-            <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
-            <FormGroup>
+            <Typography sx={{ml: '5vw', my: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
+            <FormGroup sx={{mb: '2vh'}}>
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={Fontchecked} onChange={FonthandleChange}  />} label={t('Dyslexic Font')} labelPlacement='start'/>
             </FormGroup>
