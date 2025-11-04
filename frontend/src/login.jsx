@@ -25,10 +25,10 @@ function Login(){
             color: 'text.primary',
         }}
         >
-            <Typography variant="h1" sx = {{marginTop: "5vh"}}>DooDate</Typography>
+            <Typography variant="h2" sx = {{marginTop: "5vh"}}>DooDate</Typography>
 
 
-            <Typography variant="h5" sx = {{marginTop: "10vh"}}>{t('Signin')}</Typography>
+            <Typography align="center" variant="h5" sx = {{marginTop: "10vh"}}>{t('Signin')}</Typography>
             <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>{t('Enter email')}</Typography>
 
             <TextField
