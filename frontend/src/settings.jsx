@@ -4,9 +4,15 @@ import { bgcolor } from "@mui/system";
 import Box from '@mui/material/Box';
 import Switch from '@mui/material/Switch'
 import FormGroup from "@mui/material/FormGroup";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from '@mui/material/InputLabel';
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { styled, useColorScheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import i18next from 'i18next'
+import { useTranslation } from 'react-i18next';
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -69,6 +75,7 @@ const IOSSwitch = styled((props) => (
 }));
 
 function Settings(){
+  const { t } = useTranslation();
   const { mode, setMode } = useColorScheme();
   let [checked, setChecked] = React.useState(false)
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
@@ -104,6 +111,13 @@ function Settings(){
     }
   };
 
+  const [lang, setLang] = React.useState(i18next.language);
+
+  const handlelangChange = (event) => {
+    setLang(event.target.value);
+    i18next.changeLanguage(event.target.value)
+  };
+
     return (
         <Box
         sx={{
@@ -117,10 +131,22 @@ function Settings(){
             color: 'text.primary',
         }}
         >
-            <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">View Settings</Typography>
-            <FormGroup sx={{mr: 'auto', mt: '2vh'}}>
-                <FormControlLabel sx={{'& .MuiFormControlLabel-label': {marginRight: '60vw'},}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label="Dark Mode" labelPlacement='start'/>
+            <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
+            <FormGroup>
+                <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
             </FormGroup>
+            <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
+              <InputLabel id="languagelabel">{t('Language')}</InputLabel>
+              <Select
+                labelId="languagelabel"
+                id="languageselect"
+                value={lang}
+                onChange={handlelangChange}
+              >
+                <MenuItem value={'en'}>English</MenuItem>
+                <MenuItem value={'fr'}>Français</MenuItem>
+              </Select>
+            </FormControl>
         </Box>
     )
 }
