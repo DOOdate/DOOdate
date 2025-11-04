@@ -7,7 +7,7 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from '@mui/material/InputLabel';
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { styled, useColorScheme  } from "@mui/material/styles";
+import { styled, useColorScheme, useTheme  } from "@mui/material/styles";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -117,6 +117,25 @@ function Settings(){
     setLang(event.target.value);
     i18next.changeLanguage(event.target.value)
   };
+  let [Fontchecked, setFontChecked] = React.useState(false)
+  React.useEffect(() => {
+    if(localStorage.getItem('font') == "OpenDyslexic"){
+      setFontChecked(true)
+    }
+  })
+  
+  
+  const FonthandleChange = () => {
+    let tempbool = !Fontchecked
+    setFontChecked(tempbool)
+    if(tempbool){
+      localStorage.setItem('font', 'OpenDyslexic')
+      window.forceThemeRefresh();
+    } else{
+      localStorage.setItem('font', 'Roboto')
+      window.forceThemeRefresh();
+    }
+  }
 
     return (
         <Box
@@ -134,6 +153,7 @@ function Settings(){
             <Typography sx={{ml: '5vw', mt: '2vh'}}align="left" variant="h4">{t('View Settings')}</Typography>
             <FormGroup>
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
+                <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={Fontchecked} onChange={FonthandleChange}  />} label={t('Dyslexic Font')} labelPlacement='start'/>
             </FormGroup>
             <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
               <InputLabel id="languagelabel">{t('Language')}</InputLabel>
