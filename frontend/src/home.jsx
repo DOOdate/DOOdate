@@ -8,16 +8,85 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
-import EventCard from './components/EventCard.jsx'
+import EventCard from './components/EventCard.jsx';
+import dayjs from "dayjs";
+import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 
 function Home(){
     const [classFilter, setClassFilter] = React.useState('All Classes');
     let classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
     let assignments = [
-        { title: 'Assignment 1', className: 'Physics', date: 'September 19th 11:59pm', weight: '4%', colour: '#dd7777' },
-        { title: 'Project Proposal', className: 'History', date: 'September 22nd 5:00pm', weight: '10%', colour: '#77dd77' },
-        { title: 'Lab Report', className: 'Chemistry', date: 'September 25th 11:59pm', weight: '6%', colour: '#7777dd' },
+        { title: 'Assignment 1', className: 'Physics', date: '2025-09-19T23:59:00', weight: '4%', colour: '#dd7777' },
+        { title: 'Project Proposal', className: 'History', date: '2025-09-22T17:00:00', weight: '10%', colour: '#77dd77' },
+        { title: 'Lab Report', className: 'Chemistry', date: '2025-09-25T23:59:00', weight: '6%', colour: '#7777dd' },
+        { title: 'Presentation', className: 'Calculus', date: '2025-09-25T23:59:00', weight: '10%', colour: '#77dd77' },
     ];
+
+    const assignmentsPerDay = new Map();
+
+    for (const ai of assignments) {
+        const date = dayjs(ai.date);
+        if (!date.isValid()){
+            continue;
+        }
+        const key = date.format("YYYY-MM-DD");
+
+        if (!assignmentsPerDay.has(key)){
+            assignmentsPerDay.set(key, []);
+            }
+        assignmentsPerDay.get(key).push(ai);
+        };
+
+    const AssignmentDay = (props) => {
+        const { day, outsideCurrentMonth } = props;
+        const key = day.format("YYYY-MM-DD");
+
+        let todaysAssignments = assignmentsPerDay.get(key);
+        if (!todaysAssignments) {
+            todaysAssignments = [];
+        }
+
+        const dots = [];
+        const limitedAssignments = todaysAssignments.slice(0, 3);
+
+        for (let i = 0; i < limitedAssignments.length; i++) {
+            const assignment = limitedAssignments[i];
+            dots.push(
+            <Box
+                sx =
+                {{
+                    width: "0.43rem",
+                    height: "0.43rem",
+                    borderRadius: "50%",
+                    bgcolor: assignment.colour
+                }}
+                />
+            );
+        }
+        
+        if (todaysAssignments.length === 0) {
+            return (<Box sx={{ position: "relative" }}><PickersDay day={day} outsideCurrentMonth={outsideCurrentMonth} /></Box>);
+        }
+
+        return (
+            <Box sx={{ position: "relative" }}>
+              <PickersDay day={day} outsideCurrentMonth={outsideCurrentMonth} />
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  bottom: "4px",
+                  display: "flex",
+                  gap: "0.5px",
+                }}
+              > {dots}
+              </Box>
+            </Box>
+          );
+        };
+
+
     return (
         <Box
         sx={{
@@ -49,7 +118,7 @@ function Home(){
                 transition: 'background-color 200ms',
             })}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateCalendar readOnly showDaysOutsideCurrentMonth/>
+                    <DateCalendar readOnly showDaysOutsideCurrentMonth slots={{ day: AssignmentDay }}/>
                 </LocalizationProvider>
             </Box>
             <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>Upcoming</Typography>
@@ -61,7 +130,7 @@ function Home(){
                 px: 2,
                 bgcolor: 'primary.secondary' }}>
                 {assignments.map((assignment) => (
-                    <EventCard key={assignment.title} {...assignment} />
+                    <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("MMMM D, YYYY h:mm A")} />
                 ))}
             </Box>
         </Box>
