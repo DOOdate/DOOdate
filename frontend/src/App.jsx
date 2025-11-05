@@ -39,15 +39,21 @@ function App() {
     },
   });
   const { mode, setMode } = useColorScheme();
+  let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
   let darkMode = false
   console.log(mode)
   if(mode !== 'system' && mode !== undefined){
-    if(mode === 'dark'){
+    if(mode == 'dark'){
       darkMode = true
     }
   } else{
-    let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
-    darkMode = prefersDark
+    if(mode === 'system'){
+      darkMode = prefersDark
+    } else if (localStorage.getItem('mui-mode')!== null){
+      darkMode = (localStorage.getItem('mui-mode') == 'dark')
+    } else{
+      darkMode = prefersDark
+    }
   }
   let metaTheme = document.querySelector('meta[name="theme-color"]'); 
   if (!metaTheme) {
@@ -57,6 +63,7 @@ function App() {
   }
   metaTheme.setAttribute('content', darkMode ? '#000000' : '#ffffff');
   console.log(darkMode)
+  
   const [value, setValue] = useState(0);
   const pages = ['/home', '/addsyllabus', '/settings']
   function NavbarConditional(){
