@@ -41,7 +41,6 @@ function App() {
   const { mode, setMode } = useColorScheme();
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
   let darkMode = false
-  console.log(mode)
   if(mode !== 'system' && mode !== undefined){
     if(mode == 'dark'){
       darkMode = true
@@ -62,7 +61,6 @@ function App() {
     document.head.appendChild(metaTheme);
   }
   metaTheme.setAttribute('content', darkMode ? '#000000' : '#ffffff');
-  console.log(darkMode)
   
   const [value, setValue] = useState(0);
   const pages = ['/home', '/addsyllabus', '/settings']
