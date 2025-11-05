@@ -1,6 +1,7 @@
 # first, cd frontend
 # Install with `npm install`
 # Build with `npx vite`
+# FOR CLIENT MEET 2, USE `npx vite --host --port 8080`
 
 # React + Vite
 
