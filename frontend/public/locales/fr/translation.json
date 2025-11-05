@@ -1,8 +1,10 @@
 {
   "Add Class": "Ajouter une Classe",
+  "AddClassAria": "Ouvrir la page pour ajouter une Classe",
   "All Classes": "Toutes les Classes",
   "and": "et",
   "Calendar": "Calendrier",
+  "CalendarAria": "Ouvrir la page du Calendrier",
   "Continue Microsoft": "CONTINUEZ AVEC MICROSOFT",
   "Contract": "En appuyant continuer, vous acceptez nos",
   "Dark Mode": "Mode sombre",
@@ -17,6 +19,7 @@
   "PP": "politique de confidentialité",
   "Preparing Upload": "Préparation du fichier: ",
   "Settings": "Paramètres",
+  "SettingsAria": "Ouvrir la page des Paramètres",
   "Signin": "Se connecter à votre compte",
   "SignUp": "Inscrivez-vous",
   "TOS": "conditions de service",

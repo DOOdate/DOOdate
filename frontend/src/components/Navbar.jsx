@@ -33,9 +33,9 @@ function Navbar() {
           }}
         >
           {/* awful styling */}
-          <BottomNavigationAction label={t('Calendar')} icon={<img src={CalendarIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
-          <BottomNavigationAction label={t('Add Class')} icon={<img src={AddIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}}/>} />
-          <BottomNavigationAction label={t('Settings')} icon={<img src={SettingsIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
+          <BottomNavigationAction aria-label={t('CalendarAria')} label={t('Calendar')} icon={<img src={CalendarIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
+          <BottomNavigationAction aria-label={t('AddClassAria')} label={t('Add Class')} icon={<img src={AddIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}}/>} />
+          <BottomNavigationAction aria-label={t('SettingsAria')} label={t('Settings')} icon={<img src={SettingsIcon} className="navbar-icon" style={{filter: `invert(${mode === "system" ? prefersDark ? 1 : 0 : mode === "dark" ? 1 : 0})`}} />} />
         </BottomNavigation>
         <Snackbar
           open={!!flash?.open}
