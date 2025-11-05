@@ -1,10 +1,17 @@
-﻿from django.core.files.uploadedfile import UploadedFile
+﻿from setup_django import setup_django
+setup_django()
+from django.core.files.uploadedfile import UploadedFile
 import hashlib
-
+from parser.models import Syllabus, Course
 
 class PDFSearcher:
-    def __init__(self):
-
+    @staticmethod
+    def find(pdf : UploadedFile) -> Course | None:
+        file_hash = PDFHasher.hash(pdf)
+        matches = Syllabus.objects.filter(hash=file_hash)
+        if len(matches) == 0: return None
+        # Assume for now that there is no hash collision
+        return matches[0]
 
 class PDFHasher:
     @staticmethod
@@ -20,7 +27,7 @@ class PDFHasher:
 
         # Probability of hash collision is astronomically low, but can be induced by malicious users. Is this something we should worry about?
 
-        return False
+        return a == b
 
     @staticmethod
     def exists() -> bool:

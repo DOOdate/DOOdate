@@ -5,7 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc5eaadd-3333-49e4-84ef-bc806d4c679d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/SyllabusParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/SyllabusParser.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/core/services/setup_django.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/services/pdf_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/core/services/pdf_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/parser/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/parser/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +29,9 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="33i3nAar7oJuk9ZJn7Dqmp611ji" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -34,8 +40,9 @@
   "keyToString": {
     "Python.SyllabusParser.executor": "Run",
     "Python.syllabus.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "parser",
+    "git-widget-placeholder": "cl-pdf__db-service",
     "last_opened_file_path": "C:/Users/label/OneDrive - University of Ottawa/Documents/School/Assignments/GNG2101/DOOdate",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -45,6 +52,12 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\label\OneDrive - University of Ottawa\Documents\School\Assignments\GNG2101\DOOdate\backend\core\services" />
+      <recent name="C:\Users\label\OneDrive - University of Ottawa\Documents\School\Assignments\GNG2101\DOOdate\backend\core\services\database_services" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="SyllabusParser" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="DOOdate" />
@@ -91,6 +104,7 @@
       <workItem from="1760624427071" duration="3025000" />
       <workItem from="1760627574383" duration="61000" />
       <workItem from="1760627638317" duration="3253000" />
+      <workItem from="1762210170615" duration="7956000" />
     </task>
     <servers />
   </component>
