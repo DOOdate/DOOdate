@@ -48,7 +48,8 @@ function App() {
         },
       },
       typography: {
-        fontFamily: localStorage.getItem('font') ?? 'Roboto'
+        fontFamily: localStorage.getItem('font') ?? 'Roboto',
+        fontSize: parseInt(localStorage.getItem('fontsize')) ?? 14
       }
     });
   }, [counter]);

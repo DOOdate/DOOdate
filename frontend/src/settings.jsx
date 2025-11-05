@@ -136,6 +136,24 @@ function Settings(){
       window.forceThemeRefresh();
     }
   }
+  let [FontSizechecked, setFontSizeChecked] = React.useState(false)
+  React.useEffect(() => {
+    if(localStorage.getItem('fontsize') == "20"){
+      setFontSizeChecked(true)
+    }
+  })
+
+  const FontSizehandleChange = () => {
+    let tempbool = !FontSizechecked
+    setFontSizeChecked(tempbool)
+    if(tempbool){
+      localStorage.setItem('fontsize', '20')
+      window.forceThemeRefresh();
+    } else{
+      localStorage.setItem('fontsize', '14')
+      window.forceThemeRefresh();
+    }
+  }
 
     return (
         <Box
@@ -154,6 +172,7 @@ function Settings(){
             <FormGroup sx={{mb: '2vh'}}>
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={checked} onChange={handleChange}  />} label={t('Dark Mode')} labelPlacement='start'/>
                 <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={Fontchecked} onChange={FonthandleChange}  />} label={t('Dyslexic Font')} labelPlacement='start'/>
+                <FormControlLabel sx={{display: 'flex', mt: '2vh', mx: '4vw', justifyContent: 'space-between'}} control={<IOSSwitch checked={FontSizechecked} onChange={FontSizehandleChange}  />} label={t('Big Font')} labelPlacement='start'/>
             </FormGroup>
             <FormControl sx={{my: '1vh', mx: '4vw'}}variant="standard">
               <InputLabel id="languagelabel">{t('Language')}</InputLabel>
