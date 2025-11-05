@@ -13,9 +13,11 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { useUI } from '../uiContext.jsx';
 
+let globalnavvalue = 0;
+
 function Navbar() {
     const { t } = useTranslation();
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(globalnavvalue);
     const pages = ['../home', '../addsyllabus', '../settings'];
     const navigate = useNavigate();
     const { mode, setMode } = useColorScheme();
@@ -29,6 +31,7 @@ function Navbar() {
           value={value}
           onChange={(event, newValue) => {
             setValue(newValue);
+            globalnavvalue = newValue
             navigate(pages[newValue]);
           }}
         >
