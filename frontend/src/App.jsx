@@ -9,6 +9,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled, useColorScheme  } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from "./components/Navbar.jsx";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function App() {
   const theme = createTheme({
@@ -38,6 +39,24 @@ function App() {
     },
   });
   const { mode, setMode } = useColorScheme();
+  let darkMode = false
+  console.log(mode)
+  if(mode !== 'system' && mode !== undefined){
+    if(mode === 'dark'){
+      darkMode = true
+    }
+  } else{
+    let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
+    darkMode = prefersDark
+  }
+  let metaTheme = document.querySelector('meta[name="theme-color"]'); 
+  if (!metaTheme) {
+    metaTheme = document.createElement('meta');
+    metaTheme.setAttribute('name', 'theme-color');
+    document.head.appendChild(metaTheme);
+  }
+  metaTheme.setAttribute('content', darkMode ? '#000000' : '#ffffff');
+  console.log(darkMode)
   const [value, setValue] = useState(0);
   const pages = ['/home', '/addsyllabus', '/settings']
   function NavbarConditional(){
