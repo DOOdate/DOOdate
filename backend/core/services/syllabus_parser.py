@@ -6,12 +6,21 @@ _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliv
 _PUNCTUATION = ".,:;"
 _MAX_TITLE_LENGTH = 24 # Unused
 
+# Remember to increment this whenever the parser is changed
+# It indicates that a syllabus needs to be reparsed by the new parser
+VERSION = 1
 
-def parse(file: str) -> list:
-    _reader = PdfReader(file)
+class PDFInfo:
+    def __init__(self, course_code: str, prof_email: str, late_policy: list, due_dates: list):
+        self.course_code = course_code
+        self.prof_email = prof_email
+        self.late_policy = late_policy
+        self.due_dates = due_dates
+
+def parse(file: str) -> PDFInfo:
+    reader = PdfReader(file)
     due_dates = []
-
-    for page in _reader.pages:
+    for page in reader.pages:
         text = page.extract_text()
         lines = text.split("\n")
         for line in lines:
@@ -81,7 +90,7 @@ def parse(file: str) -> list:
                 else:
                     due_dates.append(info)
 
-    return due_dates
+    return PDFInfo("", "", [], due_dates)
 
 
 def _guess_end_of_word(line: str, start_index: int) -> int:
@@ -99,6 +108,8 @@ def _guess_end_of_word(line: str, start_index: int) -> int:
         offsets.append(len(line) if t == -1 else t)
     # The minimum distance to the end of word indicator is the true end of word
     return min(offsets)
+
+
 
 # Testing purposes
 if __name__ == "__main__":

@@ -1,7 +1,27 @@
 from rest_framework import serializers
-from parser.models import Test
+from parser.models import Test, Course, PolicyPeriod, Deadline
 
 class TestSerializer(serializers.ModelSerializer):
     class Meta:
         model = Test
         fields = '__all__'
+
+
+class PolicyPeriodSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolicyPeriod
+        fields = ['time', 'penalty']
+
+
+class DeadlineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Deadline
+        fields = ['title', 'due_date', 'weight']
+
+class CourseSerializer(serializers.ModelSerializer):
+    late_policy = PolicyPeriodSerializer(many=True, read_only=True)
+    deadlines = DeadlineSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Course
+        fields = ['course_code', 'prof_email', 'late_policy', 'deadlines']

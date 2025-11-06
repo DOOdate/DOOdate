@@ -1,9 +1,13 @@
+from django.http import JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from parser.models import Test
-from .serializers import TestSerializer
-from ..core.services import pdf_db, syllabus_parser
+from .serializers import *
+from core.services import pdf_db, syllabus_parser, course_template_builder
 from django.core.files.uploadedfile import UploadedFile
+from django.core.serializers import serialize
+from django.core.exceptions import BadRequest
+from rest_framework.renderers import JSONRenderer
 
 
 @api_view(['GET'])
@@ -26,13 +30,15 @@ def addTest(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
-def uploadSyllabus(request):
+def upload_syllabus(request):
     file = request.FILES.get('myFile')
     if file:
         cached = pdf_db.find(file)
-        if cached is None:
-            res = syllabus_parser.parse(file)
-            # Add res to the database
-            # Serialize res as JSON
-            return Response(res)
-        return Response(cached)
+        if cached is None or cached.parser_version != syllabus_parser.VERSION:
+            par = syllabus_parser.parse(file)
+            template = course_template_builder.build_course(par, file).class_template
+        else:
+            template = cached.class_template
+        res = CourseSerializer(template)
+        return Response(res.data)
+    raise BadRequest('Uploaded file is not valid')

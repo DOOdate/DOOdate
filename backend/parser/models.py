@@ -1,8 +1,12 @@
 from django.db import models
 
+class User(models.Model):
+    pass
+
 class Course(models.Model):
     course_code = models.CharField(max_length=7) # I think they can only be 7?
     prof_email = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses', null=True)
     # hidden: late_policy (many)
     # hidden: deadlines (many)
 
@@ -13,6 +17,7 @@ class Syllabus(models.Model):
     hash = models.CharField(max_length=32)
     file = models.FileField(upload_to='syllabi/', null=True)
     class_template = models.OneToOneField(Course, on_delete=models.SET_NULL, null=True)
+    parser_version = models.IntegerField(default=1)
 
 class PolicyPeriod(models.Model):
     time = models.FloatField(default=0.0)
