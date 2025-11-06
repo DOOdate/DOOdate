@@ -14,17 +14,48 @@ import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 
 function Home(){
     const [classFilter, setClassFilter] = React.useState('All Classes');
-    let classes = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
+    const [selectedDate, setSelectedDate] = React.useState(null);
+
     let assignments = [
-        { title: 'Assignment 1', className: 'Physics', date: '2025-09-19T23:59:00', weight: '4%', colour: '#dd7777' },
-        { title: 'Project Proposal', className: 'History', date: '2025-09-22T17:00:00', weight: '10%', colour: '#77dd77' },
-        { title: 'Lab Report', className: 'Chemistry', date: '2025-09-25T23:59:00', weight: '6%', colour: '#7777dd' },
-        { title: 'Presentation', className: 'Calculus', date: '2025-09-25T23:59:00', weight: '10%', colour: '#77dd77' },
+        { title: 'Assignment 1', className: 'Physics', date: '2025-11-19T23:59:00', weight: '4%', colour: '#dd7777' },
+        { title: 'Project Proposal', className: 'History', date: '2025-12-22T17:00:00', weight: '10%', colour: '#77dd77' },
+        { title: 'Lab Report', className: 'Chemistry', date: '2025-11-25T23:59:00', weight: '6%', colour: '#7777dd' },
+        { title: 'Presentation', className: 'Calculus', date: '2025-11-25T23:59:00', weight: '10%', colour: '#e67607' },
+        { title: 'Final Exam', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '20%', colour: '#e67607' },
+        { title: 'Exam Preperation Assignment', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '0%', colour: '#e67607' },
+        { title: 'Review Task', className: 'History', date: '2025-11-28T23:59:00', weight: '10%', colour: '#77dd77' },
+        { title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd' },
     ];
+
+
+    const classNamesSet = new Set();
+    for (const a1 of assignments) {
+        classNamesSet.add(a1.className);
+    }
+    const classNames = [...classNamesSet]
+
+    let filteredAssignments = [];
+    for (const a of assignments) {
+        if (classFilter == 'All Classes' || a.className == classFilter) {
+            filteredAssignments.push(a);
+        }
+    }
+
+    let upcomingAssignments = [];
+    for (const a of filteredAssignments) {
+        if (selectedDate == null) {
+            upcomingAssignments.push(a);
+        }
+        else{
+            if(dayjs(a.date).isSame(selectedDate, "day")){
+                upcomingAssignments.push(a);
+            }
+        }
+    } 
 
     const assignmentsPerDay = new Map();
 
-    for (const ai of assignments) {
+    for (const ai of filteredAssignments) {
         const date = dayjs(ai.date);
         if (!date.isValid()){
             continue;
@@ -38,7 +69,7 @@ function Home(){
         };
 
     const AssignmentDay = (props) => {
-        const { day, outsideCurrentMonth } = props;
+        const { day, outsideCurrentMonth, selected, ...other } = props;
         const key = day.format("YYYY-MM-DD");
 
         let todaysAssignments = assignmentsPerDay.get(key);
@@ -47,12 +78,13 @@ function Home(){
         }
 
         const dots = [];
-        const limitedAssignments = todaysAssignments.slice(0, 3);
+        const limitedAssignments = todaysAssignments.slice(0, 2);
 
         for (let i = 0; i < limitedAssignments.length; i++) {
             const assignment = limitedAssignments[i];
             dots.push(
             <Box
+            key={i}
                 sx =
                 {{
                     width: "0.43rem",
@@ -63,14 +95,35 @@ function Home(){
                 />
             );
         }
-        
-        if (todaysAssignments.length === 0) {
-            return (<Box sx={{ position: "relative" }}><PickersDay day={day} outsideCurrentMonth={outsideCurrentMonth} /></Box>);
+
+        if(todaysAssignments.length != limitedAssignments.length){
+            dots.push(
+                <Box
+                key="plus_dot"
+                    sx =
+                    {{
+                        width: "0.43rem",
+                        height: "0.43rem",
+                        borderRadius: "50%",
+                        bgcolor: 'primary.secondary',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}>
+                    +
+                    </Box>
+            )
         }
+
+        if (todaysAssignments.length === 0) {
+            return (<Box sx={{ position: "relative", }}>
+            <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth}/></Box>);
+        }
+
 
         return (
             <Box sx={{ position: "relative" }}>
-              <PickersDay day={day} outsideCurrentMonth={outsideCurrentMonth} />
+              <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth}/>
               <Box
                 sx={{
                   position: "absolute",
@@ -101,14 +154,15 @@ function Home(){
             overflow: 'hidden'
         }}
         >
-            <Box sx={{ marginTop: 2, justifyContent: 'center'}}>
+            <Box sx={{ marginTop: 2, justifyContent: 'center',}}>
                 <Select
+                sx={{width: {xs: "70vw", md: "17vw"}, height: {xs: "5.5vh", md: "5vh"}}}
                     value={classFilter}
                     onChange={(e) => setClassFilter(e.target.value)}
                 >
                     <MenuItem value='All Classes'>All Classes</MenuItem>
-                    {classes.map((className) => (
-                        <MenuItem value={className}>{className}</MenuItem>
+                    {classNames.map((className) => (
+                        <MenuItem key={className} value={className}>{className}</MenuItem>
                     ))}
                 </Select>
             </Box>
@@ -118,7 +172,18 @@ function Home(){
                 transition: 'background-color 200ms',
             })}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateCalendar readOnly showDaysOutsideCurrentMonth slots={{ day: AssignmentDay }}/>
+                    <DateCalendar
+                    onChange={(newValue) =>{
+                    if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
+                        setSelectedDate(null);
+                    }
+                    else{
+                        setSelectedDate(newValue);
+                    }
+                    }} 
+                    showDaysOutsideCurrentMonth 
+                    slots={{ day: AssignmentDay }}
+                    />
                 </LocalizationProvider>
             </Box>
             <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>Upcoming</Typography>
@@ -129,7 +194,7 @@ function Home(){
                 pb: '72px',
                 px: 2,
                 bgcolor: 'primary.secondary' }}>
-                {assignments.map((assignment) => (
+                {upcomingAssignments.map((assignment) => (
                     <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("MMMM D, YYYY h:mm A")} />
                 ))}
             </Box>
