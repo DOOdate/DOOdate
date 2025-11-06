@@ -12,7 +12,7 @@ function AddSyllabus() {
   const { t } = useTranslation();
   const [selectedFile, setSelectedFile] = useState(null);
   const inputRef = useRef(null);
-  const [msg, setMsg] = useState(t('Upload'));
+  const [msg, setMsg] = useState(t('UploadMsg'));
   const [progress, setProgress] = useState(0);
   const { setLoading, showFlash } = useUI();
 
@@ -20,7 +20,7 @@ function AddSyllabus() {
     const file = event.target.files?.[0] || null;
 
     if (file == null) {
-      setMsg(t('Upload'));
+      setMsg(t('UploadMsg'));
       return;
     }
 
@@ -121,10 +121,7 @@ function AddSyllabus() {
           aria-live="polite"
           sx={{
             maxWidth: "80vw",
-            textAlign: "center",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            textAlign: "center"
           }}
         >
           {msg}
