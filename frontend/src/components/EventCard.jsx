@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography } from '@mui/material';
-
+import { useTranslation } from 'react-i18next';
 
 function EventCard({ title, className, date, weight, colour }) {
+    const { t } = useTranslation();
     const accent = colour || '#000000';
     return (
         <Box sx={{ 
@@ -21,7 +22,7 @@ function EventCard({ title, className, date, weight, colour }) {
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', mt: 0.75 }}>
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left', lineHeight: 1.1 }}>{className}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', lineHeight: 1.1 }}>Weight: {weight}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', lineHeight: 1.1 }}>{t('Weight')} {weight}</Typography>
             </Box>
         </Box>
     )
