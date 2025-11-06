@@ -11,8 +11,14 @@ import InputLabel from '@mui/material/InputLabel';
 import EventCard from './components/EventCard.jsx';
 import dayjs from "dayjs";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
+import { useTranslation } from 'react-i18next';
+import dayjs from "dayjs";
+import 'dayjs/locale/fr'
+import updateLocale from 'dayjs/plugin/updateLocale'
+import i18next from "i18next";
 
 function Home(){
+    const { t } = useTranslation();
     const [classFilter, setClassFilter] = React.useState('All Classes');
     const [selectedDate, setSelectedDate] = React.useState(null);
 
@@ -26,6 +32,10 @@ function Home(){
         { title: 'Review Task', className: 'History', date: '2025-11-28T23:59:00', weight: '10%', colour: '#77dd77' },
         { title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd' },
     ];
+    dayjs.extend(updateLocale)
+    dayjs.updateLocale('fr' ,{
+        months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', "Août", 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+    })
 
 
     const classNamesSet = new Set();
@@ -160,7 +170,7 @@ function Home(){
                     value={classFilter}
                     onChange={(e) => setClassFilter(e.target.value)}
                 >
-                    <MenuItem value='All Classes'>All Classes</MenuItem>
+                    <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
                     {classNames.map((className) => (
                         <MenuItem key={className} value={className}>{className}</MenuItem>
                     ))}
@@ -171,7 +181,7 @@ function Home(){
                 borderRadius: 1,
                 transition: 'background-color 200ms',
             })}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
                     <DateCalendar
                     onChange={(newValue) =>{
                     if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
@@ -186,7 +196,7 @@ function Home(){
                     />
                 </LocalizationProvider>
             </Box>
-            <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>Upcoming</Typography>
+            <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
             <Box sx={{ flex: 1,
                 overflowY: 'auto',
                 width: '100%',
