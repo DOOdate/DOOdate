@@ -1,6 +1,7 @@
 from django.http import JsonResponse
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, parser_classes
 from parser.models import Test
 from .serializers import *
 from core.services import pdf_db, syllabus_parser, course_template_builder
