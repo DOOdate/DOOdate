@@ -4,6 +4,7 @@ import React from 'react';
 import Login from './login.jsx';
 import Home from "./home.jsx";
 import AddSyllabus from "./addsyllabus.jsx";
+import AddClass from "./addclass.jsx";
 import Settings from "./settings.jsx";
 import { UIProvider } from './uiContext.jsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
