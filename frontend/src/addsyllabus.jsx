@@ -6,6 +6,8 @@ import IconButton from "@mui/material/IconButton";
 import LinearProgress from '@mui/material/LinearProgress';
 import Button from '@mui/material/Button';
 import { useUI } from './uiContext.jsx';
+import AddClass from './addclass.jsx';
+import { useNavigate } from "react-router-dom";
 
 function AddSyllabus() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -13,6 +15,7 @@ function AddSyllabus() {
   const [msg, setMsg] = useState("Tap to upload syllabus");
   const [progress, setProgress] = useState(0);
   const { setLoading, showFlash } = useUI();
+  const navigate = useNavigate();
 
   const onFileChange = async (event) => {
     const file = event.target.files?.[0] || null;
@@ -38,12 +41,19 @@ function AddSyllabus() {
       setProgress(0);
       setMsg(`Uploading: ${file.name}`);
 
-      await axios.post("/api/uploadfile", formData, {
+      await axios.post("http://localhost:8000/addsyllabus", formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
           setProgress(pct);
           setMsg(`Uploading ${file.name} — ${pct}%`);
+        }
+      }).then((response) => {
+        if (response.status === 200) {
+          console.log("Server response:", response.data);
+          navigate('/addclass', { state: { serverData: response.data } });
+        } else {
+          console.log("Server error:", response.statusText);
         }
       });
 

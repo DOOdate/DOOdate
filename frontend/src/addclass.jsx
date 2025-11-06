@@ -4,11 +4,15 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useUI } from './uiContext.jsx';
+import { useLocation } from "react-router-dom";
 
 function AddClass(){
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
     const { showFlash } = useUI();
+
+    const location = useLocation();
+    const { serverData } = location.state || {};
 
     const submit = (e) => {
         e.preventDefault();
@@ -36,7 +40,7 @@ function AddClass(){
             p: 2,
         }}
         >
-            <Typography variant="h4">Add Class</Typography>
+            <Typography variant="h4">{JSON.stringify(serverData, null, 2)}</Typography>
             <TextField label="Class name" value={name} onChange={(e)=>setName(e.target.value)} fullWidth />
             <TextField label="Class code (optional)" value={code} onChange={(e)=>setCode(e.target.value)} fullWidth />
             <Button type="submit" variant="contained">Add class</Button>

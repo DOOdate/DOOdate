@@ -4,6 +4,7 @@ import React from 'react';
 import Login from './login.jsx';
 import Home from "./home.jsx";
 import AddSyllabus from "./addsyllabus.jsx";
+import AddClass from "./addclass.jsx";
 import Settings from "./settings.jsx";
 import { UIProvider } from './uiContext.jsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -55,6 +56,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/addsyllabus" element={<AddSyllabus />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path='/addclass' element={<AddClass />} />
           </Routes>
           <NavbarConditional />
         </BrowserRouter>
