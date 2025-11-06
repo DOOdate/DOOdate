@@ -10,3 +10,11 @@ What to know to work on the backend:
 * Run the Django server with 'python manage.py runserver'. Right now there is a Hello World end point at /api/test 
   * Edit this in doodate/views.py, change the url in doodate/urls.py
 * If you make updates to the models, run 'python manage.py makemigrations' then 'python manage.py migrate'.
+
+### Notes - Nikolas Kaern - 10/30/2025
+Updated:
+*There is now a way to test/add data directly from the backend using a POST command (add 'addtest/' to the end of the local host url).
+*There is now a way to view all the test data directly from the backend using a GET command (add 'addtest/' to the end of the local host url).
+*Changed the original end point for the Hello World from '/api/test' to ''
+*Where the endpoints are stored have been reconfigured to a new folder, 'api', outside of the 'doodate' folder
+*Added a 'test' model to parser/models.py for easier testing of backend setup 

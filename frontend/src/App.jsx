@@ -6,6 +6,7 @@ import Home from "./home.jsx";
 import AddSyllabus from "./addsyllabus.jsx";
 import AddClass from "./addclass.jsx";
 import Settings from "./settings.jsx";
+import { UIProvider } from './uiContext.jsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled, useColorScheme  } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline';
@@ -48,17 +49,17 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/addsyllabus" element={<AddSyllabus />} />
-          <Route path="/addclass" element={<AddClass />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
-        <NavbarConditional />
-      </BrowserRouter>
-      
+      <UIProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/addsyllabus" element={<AddSyllabus />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+          <NavbarConditional />
+        </BrowserRouter>
+      </UIProvider>
     </ThemeProvider>
   )
 }
