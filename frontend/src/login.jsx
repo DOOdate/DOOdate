@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import { useTranslation } from 'react-i18next';
+import logo from './assets/logo.svg';
 
 function Login(){
     const { t } = useTranslation();
@@ -25,10 +26,19 @@ function Login(){
             color: 'text.primary',
         }}
         >
-            <Typography variant="h1" sx = {{marginTop: "5vh"}}>DooDate</Typography>
+            <Box
+                component="img"
+                src={logo}
+                alt="DooDate Logo"
+                sx={{
+                    width: { xs: "60vw", sm: "40vw", md: "25vw" },
+                    maxWidth: "300px",
+                    marginTop: "5vh",
+                    marginBottom: "2vh"
+                }}
+            />
 
-
-            <Typography variant="h5" sx = {{marginTop: "10vh"}}>{t('Signin')}</Typography>
+            <Typography variant="h5" sx = {{marginTop: "5vh"}}>{t('Signin')}</Typography>
             <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>{t('Enter email')}</Typography>
 
             <TextField
