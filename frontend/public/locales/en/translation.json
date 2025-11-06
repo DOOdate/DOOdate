@@ -1,11 +1,15 @@
 {
   "Add Class": "Add Class",
+  "AddClassAria": "Open Add Class page",
   "All Classes": "All Classes",
   "and": "and",
+  "Big Font": "Big Font",
   "Calendar": "Calendar",
+  "CalendarAria": "Open Calendar Page",
   "Continue Microsoft": "CONTINUE WITH MICROSOFT",
   "Contract": "By clicking continue, you agree to our",
   "Dark Mode": "Dark Mode",
+  "Dyslexic Font": "Dyslexic Font",
   "Email": "Email Address",
   "Enter email": "Enter your uOttawa email address to sign in to your DOOdate account",
   "Language": "Language",
@@ -16,6 +20,7 @@
   "PP": "Privacy policy",
   "Preparing Upload": "Preparing Upload: ",
   "Settings": "Settings",
+  "SettingsAria": "Open Settings Page",
   "Signin": "Sign in to your account",
   "SignUp": "Sign Up",
   "TOS": "Terms of service",
@@ -24,6 +29,7 @@
   "Upload failed": "Upload failed - tap to retry",
   "Uploaded": "Uploaded: ",
   "Uploading": "Uploading: ",
+  "UploadMsg": "Upload syllabus",
   "View Settings": "View Settings",
   "Weight": "Weight:"
 }

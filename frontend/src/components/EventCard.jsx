@@ -7,7 +7,7 @@ function EventCard({ title, className, date, weight, colour }) {
     const { t } = useTranslation();
     const accent = colour || '#000000';
     return (
-        <Box sx={{ 
+        <Box tabIndex={0} sx={{ 
             borderRadius: 2, 
             display: 'flex', 
             flexDirection: 'column', 

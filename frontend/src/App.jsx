@@ -11,35 +11,55 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled, useColorScheme  } from "@mui/material/styles";
 import CssBaseline from '@mui/material/CssBaseline';
 import Navbar from "./components/Navbar.jsx";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import "@fontsource/opendyslexic/400.css";
+import "@fontsource/opendyslexic/700.css"
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 function App() {
-  const theme = createTheme({
-    colorSchemes: {
-      dark: {
-        palette: {
-          primary: {
-            main: '#FFFFFF',
-            light: '#DADADA',
-            secondary: '#1A1A1A',
-            base: '#000000'
 
+  const [counter, setCounter] = React.useState('0')
+
+  const theme = React.useMemo(() => {
+    return createTheme({
+      colorSchemes: {
+        dark: {
+          palette: {
+            primary: {
+              main: '#FFFFFF',
+              light: '#DADADA',
+              secondary: '#1A1A1A',
+              base: '#000000'
+
+            },
+          },
+        },
+        light: {
+          palette: {
+            primary: {
+              main: '#000000',
+              light: '#EEEEEE',
+              secondary: '#F1F1F1',
+              base: '#FFFFFF'
+
+            },
           },
         },
       },
-      light: {
-        palette: {
-          primary: {
-            main: '#000000',
-            light: '#EEEEEE',
-            secondary: '#F1F1F1',
-            base: '#FFFFFF'
+      typography: {
+        fontFamily: localStorage.getItem('font') ?? 'Roboto',
+        fontSize: parseInt(localStorage.getItem('fontsize')) ?? 14
+      }
+    });
+  }, [counter]);
 
-          },
-        },
-      },
-    },
-  });
+  React.useEffect(() => {
+    window.forceThemeRefresh = () => setCounter((c) => c + 1);
+  })
+
   const { mode, setMode } = useColorScheme();
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
   let darkMode = false
