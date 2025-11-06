@@ -12,7 +12,6 @@ import EventCard from './components/EventCard.jsx';
 import dayjs from "dayjs";
 import { PickersDay } from "@mui/x-date-pickers/PickersDay";
 import { useTranslation } from 'react-i18next';
-import dayjs from "dayjs";
 import 'dayjs/locale/fr'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import i18next from "i18next";
