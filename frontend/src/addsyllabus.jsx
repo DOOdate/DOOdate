@@ -42,7 +42,7 @@ function AddSyllabus() {
       setProgress(0);
       setMsg(t('Uploading') + file.name); 
 
-      const resp = await axios.post("/api/uploadfile", formData, {
+      const resp = await axios.post("http://localhost:8000/addsyllabus", formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
