@@ -102,12 +102,15 @@ function Settings(){
   }, [mode]);
   
   const handleChange = () =>{
+    let metaTheme = document.querySelector('meta[name="theme-color"]'); 
     let tempbool = !checked
     setChecked(tempbool)
     if(tempbool){
       setMode("dark")
+      metaTheme.setAttribute('content', '#000000');
     } else{
       setMode("light")
+      metaTheme.setAttribute('content', '#ffffff');
     }
   };
 
