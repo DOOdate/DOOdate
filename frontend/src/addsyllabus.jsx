@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +16,7 @@ function AddSyllabus() {
   const [msg, setMsg] = useState(t('Upload'));
   const [progress, setProgress] = useState(0);
   const { setLoading, showFlash } = useUI();
+  const navigate = useNavigate();
 
   const onFileChange = async (event) => {
     const file = event.target.files?.[0] || null;
@@ -40,7 +42,7 @@ function AddSyllabus() {
       setProgress(0);
       setMsg(t('Uploading') + file.name); 
 
-      await axios.post("/api/uploadfile", formData, {
+      const resp = await axios.post("/api/uploadfile", formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
@@ -52,6 +54,20 @@ function AddSyllabus() {
       console.log("Uploaded:", file.name);
       showFlash((t('Uploaded') + file.name), 'success');
       setMsg(t('Uploaded') + file.name);
+
+      // If the backend returns parsed class information, navigate to Add Class page
+      // and pass the parsed JSON via location state so AddClass can display it.
+      // Accept either response.data.class_info or response.data directly.
+      const data = resp?.data;
+      const classInfo = data?.class_info || data;
+      if (classInfo && (classInfo.course_code || classInfo.deadlines)) {
+        try {
+          navigate('/addclass', { state: { classInfo } });
+        } catch (navErr) {
+          // navigation may fail in tests; ignore
+          console.warn('Navigation to /addclass failed', navErr);
+        }
+      }
 
     } catch (err) {
       console.error("Upload failed:", err);
