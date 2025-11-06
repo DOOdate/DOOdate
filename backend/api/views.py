@@ -34,11 +34,12 @@ def upload_syllabus(request):
     file = request.FILES.get('myFile')
     if file:
         cached = pdf_db.find(file)
+        # Cached version does not exist or is outdated
         if cached is None or cached.parser_version != syllabus_parser.VERSION:
-            par = syllabus_parser.parse(file)
-            template = course_template_builder.build_course(par, file).class_template
+            parsed = syllabus_parser.parse(file)
+            template = course_template_builder.build_course(parsed, file).class_template
         else:
             template = cached.class_template
-        res = CourseSerializer(template)
+        res = CourseSerializer(template) # Represents a Course as JSON
         return Response(res.data)
     raise BadRequest('Uploaded file is not valid')

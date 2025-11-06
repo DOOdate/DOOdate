@@ -18,3 +18,9 @@ Updated:
 *Changed the original end point for the Hello World from '/api/test' to ''
 *Where the endpoints are stored have been reconfigured to a new folder, 'api', outside of the 'doodate' folder
 *Added a 'test' model to parser/models.py for easier testing of backend setup 
+
+### Notes - Cameron Labelle - 11/05/2025
+New:
+* When writing a new service that interacts with the database, import setup_django and run setup_django() (before django imports)
+* If you ever change how the parser works, increment the VERSION number in syllabus_parser. This indicates outdated syllabi parsings will need to be updated
+* How to test uploading a syllabus: cd into static/pdf_samples, run `curl -F "myFile=@3.pdf" localhost:8000/addsyllabus"` while the server is running
