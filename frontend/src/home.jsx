@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import 'dayjs/locale/fr'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import i18next from "i18next";
+import localizedFormat from "dayjs/plugin/localizedFormat"
 
 function Home(){
     const { t } = useTranslation();
@@ -32,9 +33,11 @@ function Home(){
         { title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd' },
     ];
     dayjs.extend(updateLocale)
+    dayjs.extend(localizedFormat);
     dayjs.updateLocale('fr' ,{
         months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', "Août", 'Septembre', 'Octobre', 'Novembre', 'Décembre']
     })
+    dayjs.locale(i18next.language)
 
 
     const classNamesSet = new Set();
@@ -204,7 +207,7 @@ function Home(){
                 px: 2,
                 bgcolor: 'primary.secondary' }}>
                 {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("MMMM D, YYYY h:mm A")} />
+                    <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("LLL")} />
                 ))}
             </Box>
         </Box>
