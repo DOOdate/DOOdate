@@ -4,6 +4,7 @@ from parser.models import Course, Syllabus, PolicyPeriod, Deadline
 from django.core.files.uploadedfile import UploadedFile
 import core.services.pdf_db as pdf_db
 from core.services.syllabus_parser import PDFInfo, VERSION
+from dateutil import parser as dateparser
 
 def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
     """
@@ -21,7 +22,12 @@ def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
             weight_float = float(date[2].rstrip("%"))
         except ValueError:
             pass
-        d = Deadline(title=date[0], due_date=date[1], weight=weight_float, course=c)
+        try:
+            due = dateparser.parse(date[1], fuzzy=True)
+        except Exception:
+            due = date[1]
+
+        d = Deadline(title=date[0], due_date=due, weight=weight_float, course=c)
         d.save()
     for period in parsed.late_policy:
         penalty_float = 0

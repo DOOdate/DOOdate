@@ -61,7 +61,8 @@ function AddSyllabus() {
       // Accept either response.data.class_info or response.data directly.
       const data = resp?.data;
       const classInfo = data?.class_info || data;
-      if (classInfo && (classInfo.course_code || classInfo.deadlines)) {
+      console.log(classInfo);
+      if (classInfo) {
         try {
           navigate('/addclass', { state: { classInfo } });
         } catch (navErr) {

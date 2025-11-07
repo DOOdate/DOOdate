@@ -15,13 +15,13 @@ class SyllabusSerializer(serializers.ModelSerializer):
 class PolicyPeriodSerializer(serializers.ModelSerializer):
     class Meta:
         model = PolicyPeriod
-        fields = '__all__'
+        fields = ['time', 'penalty']
 
 
 class DeadlineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deadline
-        fields = '__all__'
+        fields = ['title', 'due_date', 'weight']
 
 class CourseSerializer(serializers.ModelSerializer):
     late_policy = PolicyPeriodSerializer(many=True, read_only=True)
@@ -29,4 +29,4 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['course_code', 'prof_email', 'late_policy', 'deadlines']

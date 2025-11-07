@@ -91,6 +91,8 @@ function AddClass(){
             bgcolor: 'background.default',
             color: 'text.primary',
             p: 2,
+            // add bottom padding so fixed bottom navbar doesn't cover the button
+            pb: 8,
         }}
         >
             <Typography variant="h4">Add Class</Typography>
