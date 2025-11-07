@@ -43,7 +43,7 @@ function AddSyllabus() {
       setProgress(0);
       setMsg(t('Uploading') + file.name); 
 
-      const resp = await axios.post("http://localhost:8000/addsyllabus", formData, {
+      const resp = await axios.post("/api/addsyllabus/", formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (progressEvent) => {
           const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
@@ -73,7 +73,7 @@ function AddSyllabus() {
     } catch (err) {
       console.error("Upload failed:", err);
       showFlash(t('Upload failed'), 'error');
-      setMsg(t('Upload failed'));
+      setMsg(err.message);
     } finally {
       setLoading(false);
       setProgress(0);

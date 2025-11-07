@@ -2,13 +2,49 @@ from django.http import JsonResponse
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
-from parser.models import Test
+from rest_framework.views import APIView
+from parser.models import *
 from .serializers import *
 from core.services import pdf_db, syllabus_parser, course_template_builder
 from django.core.files.uploadedfile import UploadedFile
 from django.core.serializers import serialize
 from django.core.exceptions import BadRequest
 from rest_framework.renderers import JSONRenderer
+from rest_framework import status, permissions
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+
+#Doing the views/get/delete like this beacuse it looked cool and effiecent when I was looking at code examples
+MODEL_MAP = {
+    "courses":   (Course,   CourseSerializer),
+    "syllabi":   (Syllabus, SyllabusSerializer),
+    "periods":   (PolicyPeriod, PolicyPeriodSerializer),
+    "deadlines": (Deadline, DeadlineSerializer),
+}
+
+@api_view(["GET", "DELETE"])
+@csrf_exempt #NEED TO CHANGE THIS IF NOT HOSTING ON LOCALHOST VERY BAD AND UNSAFE USED FOR TESTING/DEVELOPMENT ONLY
+def gen_Function(request,model,pk):
+
+    #General GET function
+    m, serializer = MODEL_MAP.get(model,(None,None))
+    if not m:
+        return Response({"detail": "Unknown model"}, status=404)
+    
+    if request.method == "GET" and pk==0:
+        obj = m.objects.all()
+        return Response(serializer(obj, many=True).data)
+        
+    obj = get_object_or_404(m, pk=pk)
+
+    if request.method == "GET" and pk>0:
+        return Response(serializer(obj).data)
+    
+    #GEneral DELETE function
+    data = get_object_or_404(m, pk=pk)
+    data.delete()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])
@@ -21,7 +57,6 @@ def getTestData(request):
     test = Test.objects.all()
     serializer = TestSerializer(test, many=True)
     return Response(serializer.data)
-
 
 @api_view(['POST'])
 def addTest(request):
