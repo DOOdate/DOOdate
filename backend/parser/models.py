@@ -16,7 +16,7 @@ class Course(models.Model):
 class Syllabus(models.Model):
     hash = models.CharField(max_length=32)
     file = models.FileField(upload_to='syllabi/', null=True)
-    class_template = models.OneToOneField(Course, on_delete=models.SET_NULL, related_name='syllabus', null=True)
+    class_template = models.OneToOneField(Course, on_delete=models.SET_NULL, null=True)
     parser_version = models.IntegerField(default=1)
 
     def __str__(self):
