@@ -100,6 +100,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/addsyllabus" element={<AddSyllabus />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path='/addclass' element={<AddClass />} />
           </Routes>
           <NavbarConditional />
         </BrowserRouter>

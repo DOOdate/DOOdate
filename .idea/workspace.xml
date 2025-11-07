@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc5eaadd-3333-49e4-84ef-bc806d4c679d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/backend/SyllabusParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/SyllabusParser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/core/services/course_template_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/core/services/course_template_builder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/addclass.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/addclass.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/addsyllabus.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/addsyllabus.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,25 +30,35 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="33i3nAar7oJuk9ZJn7Dqmp611ji" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.SyllabusParser.executor": "Run",
-    "Python.syllabus.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "parser",
-    "last_opened_file_path": "C:/Users/label/OneDrive - University of Ottawa/Documents/School/Assignments/GNG2101/DOOdate",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.SyllabusParser.executor&quot;: &quot;Run&quot;,
+    &quot;Python.syllabus.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenDjangoStructureViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;cl-pdf__db-service&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/label/OneDrive - University of Ottawa/Documents/School/Assignments/GNG2101/DOOdate&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\label\OneDrive - University of Ottawa\Documents\School\Assignments\GNG2101\DOOdate\backend\core\services" />
+      <recent name="C:\Users\label\OneDrive - University of Ottawa\Documents\School\Assignments\GNG2101\DOOdate\backend\core\services\database_services" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="SyllabusParser" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="DOOdate" />
@@ -91,6 +105,7 @@
       <workItem from="1760624427071" duration="3025000" />
       <workItem from="1760627574383" duration="61000" />
       <workItem from="1760627638317" duration="3253000" />
+      <workItem from="1762210170615" duration="7956000" />
     </task>
     <servers />
   </component>
@@ -99,6 +114,8 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/DOOdate$syllabus.coverage" NAME="syllabus Coverage Results" MODIFIED="1759788533848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
-    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1760630045187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/DOOdate$Run_Server.coverage" NAME="Run Server Coverage Results" MODIFIED="1762439896528" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/DOOdate$syllabus_parser.coverage" NAME="syllabus_parser Coverage Results" MODIFIED="1762312640373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend/core/services" />
+    <SUITE FILE_PATH="coverage/DOOdate$SyllabusParser.coverage" NAME="SyllabusParser Coverage Results" MODIFIED="1762312625701" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>
