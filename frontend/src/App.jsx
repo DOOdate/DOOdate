@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import Login from './login.jsx';
@@ -18,9 +18,9 @@ import '@fontsource/roboto/700.css';
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/opendyslexic/700.css"
 import useMediaQuery from '@mui/material/useMediaQuery';
+import firebaseApp, {requestNotifications} from "./firebase"
 
 function App() {
-
   const [counter, setCounter] = React.useState('0')
 
   const theme = React.useMemo(() => {
@@ -58,7 +58,20 @@ function App() {
 
   React.useEffect(() => {
     window.forceThemeRefresh = () => setCounter((c) => c + 1);
+    requestNotifications()
   })
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((err) => {
+          console.warn('Service Worker registration failed:', err);
+        });
+    }
+  }, []);
 
   const { mode, setMode } = useColorScheme();
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
