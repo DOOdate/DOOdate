@@ -8,9 +8,10 @@ import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { useUI } from './uiContext.jsx';
+import { useUI } from './hooks/uiContext.jsx';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import useStorage from './hooks/useStorage.jsx';
 
 function AddClass(){
     const [name, setName] = useState('');
@@ -18,6 +19,7 @@ function AddClass(){
     const [classInfo, setClassInfo] = useState(null);
     const [jsonText, setJsonText] = useState('');
     const location = useLocation();
+    const [ classes, setClasses ] = useStorage('classes', []); // Gets classes from localStorage, or empty array if it cannot be accessed
     
 
     useEffect(() => {
@@ -158,6 +160,7 @@ function AddClass(){
                 setCode('');
                 setClassInfo(null);
                 setJsonText('');
+                setClasses([...classes, location.state.classInfo]); // Might need to be updated depending on how editing classes is done
             }}>Add class</Button>
         </Box>
     );

@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import LinearProgress from '@mui/material/LinearProgress';
 import Button from '@mui/material/Button';
-import { useUI } from './uiContext.jsx';
+import { useUI } from './hooks/uiContext.jsx';
 import AddClass from './addclass.jsx';
 import { useTranslation } from 'react-i18next';
 

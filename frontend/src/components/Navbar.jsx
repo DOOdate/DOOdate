@@ -11,7 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { useUI } from '../uiContext.jsx';
+import { useUI } from '../hooks/uiContext.jsx';
 import { useLocation } from 'react-router-dom'
 
 function Navbar() {
