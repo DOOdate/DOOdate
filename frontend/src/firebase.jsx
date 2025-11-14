@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
+import axios from "axios";
 
 
 const firebaseConfig = {
@@ -19,7 +20,13 @@ export const requestNotifications = async () => {
     getToken(messaging, { vapidKey: 'BB6a9g3EP6J73FCu0d7EWMscaXsA6eTFeEU9aaOeciWfCLxSneJRIbx1eBDfuchlfrzMBwxJdfRtCOODmy5ch3Q' }).then((currentToken) => {
   if (currentToken) {
     console.log(currentToken)
-    // TODO: send token to server
+    axios.post('/api/savetoken/', { token: currentToken })
+    .then(function (response) {
+        console.log(response);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
   } else {
     Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {

@@ -13,5 +13,6 @@ urlpatterns = [
     path('test/', views.getTestData),
     path('addtest/', views.addTest),
     path('api/addsyllabus/', views.upload_syllabus, name="upload_syllabus"),
+    path('api/savetoken/', views.save_token, name="save_token"),
     path("api/<str:model>/<int:pk>/", gen_Function, name="generic_function"),
 ]
