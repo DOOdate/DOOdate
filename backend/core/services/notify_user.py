@@ -20,9 +20,3 @@ def notify_user(user, title, body): # TESTED WORKING
         token=user.notification_token,
     )
     response = messaging.send(message)
-
-
-
-def schedule_notification(user, time, course_code, assignment_name):
-    pass #TODO: implement notification scheduling (notify 2 days before, 1 day before, and on the day)
-# using django-q
