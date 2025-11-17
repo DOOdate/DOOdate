@@ -11,6 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import { useUI } from './uiContext.jsx';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useUserContext } from './userContext.jsx';
+import { t } from "i18next";
 
 function AddClass(){
     const [name, setName] = useState('');
@@ -18,7 +20,7 @@ function AddClass(){
     const [classInfo, setClassInfo] = useState(null);
     const [jsonText, setJsonText] = useState('');
     const location = useLocation();
-    
+    const { data, setData } = useUserContext();
 
     useEffect(() => {
         if (location?.state?.classInfo) {
@@ -158,6 +160,9 @@ function AddClass(){
                 setCode('');
                 setClassInfo(null);
                 setJsonText('');
+                let t = JSON.parse(data);
+                t.classes.push(location.state.classInfo);
+                setData(JSON.stringify(t));
             }}>Add class</Button>
         </Box>
     );
