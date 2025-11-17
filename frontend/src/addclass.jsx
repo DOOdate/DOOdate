@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
+import TextField from "@mui/material/TextField";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -13,75 +13,34 @@ import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function AddClass(){
-    const [name, setName] = useState('');
-    const [code, setCode] = useState('');
-    const [classInfo, setClassInfo] = useState(null);
-    const [jsonText, setJsonText] = useState('');
+
+    const [classInfo, setClassInfo] = React.useState([]);
     const location = useLocation();
-    
 
     useEffect(() => {
         if (location?.state?.classInfo) {
             setClassInfo(location.state.classInfo);
-            if (location.state.classInfo.course_code) setName(location.state.classInfo.course_code);
         }
     }, [location]);
     const { showFlash } = useUI();
 
-    const formatDate = (isoString) => {
-        const date = new Date(isoString);
-        return date.toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
+    const deadlineUpdate  = (index, field, value) => {
+        setClassInfo(prev => ({...prev, deadlines: prev.deadlines.map((d,i) => i == index ? {...d, [field]: value } : d),
+        }));
     };
 
-    const submit = (e) => {
-        e.preventDefault();
-        if (!code.trim()) return showFlash('Please enter a class code', 'warning');
-
-        // Try to fetch class information from the backend. If there's no known endpoint,
-        // this will fail silently and leave the UI for manual paste or upload flow.
-        (async () => {
-            try {
-                const resp = await axios.get(`/api/classinfo?code=${encodeURIComponent(code)}`);
-                if (resp?.data) {
-                    setClassInfo(resp.data);
-                    if (resp.data.course_code) setName(resp.data.course_code);
-                    return;
-                }
-            } catch (err) {
-                // No server endpoint available or request failed — fall back to waiting for upload
-                console.debug('Fetching class info failed:', err?.message || err);
-                showFlash('Could not fetch class info from server; paste JSON or upload a syllabus.', 'info');
-            }
-        })();
-    }
-
-    const loadFromJson = () => {
-        if (!jsonText.trim()) return showFlash('Paste class JSON into the box first', 'warning');
+    const backendSave = async () => {
+        
         try {
-            const parsed = JSON.parse(jsonText);
-            if (parsed && (parsed.course_code || parsed.deadlines)) {
-                setClassInfo(parsed);
-                if (parsed.course_code) setName(parsed.course_code);
-                showFlash('Loaded class info from JSON', 'success');
-            } else {
-                showFlash('JSON does not look like class info', 'warning');
-            }
+            await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
         } catch (err) {
-            showFlash('Invalid JSON: ' + err.message, 'error');
+            console.error("Failed to save:", err);
         }
     }
 
     return (
         <Box sx={{ 
             minHeight: '100vh', 
-            bgcolor: 'background.default', 
-            color: 'text.primary',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,

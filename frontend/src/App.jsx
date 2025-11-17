@@ -6,6 +6,7 @@ import Home from "./home.jsx";
 import AddSyllabus from "./addsyllabus.jsx";
 import AddClass from "./addclass.jsx";
 import Settings from "./settings.jsx";
+import ManageClass from './manageclass.jsx';
 import { UIProvider } from './uiContext.jsx';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled, useColorScheme  } from "@mui/material/styles";
@@ -101,6 +102,7 @@ function App() {
             <Route path="/addsyllabus" element={<AddSyllabus />} />
             <Route path="/settings" element={<Settings />} />
             <Route path='/addclass' element={<AddClass />} />
+            <Route path='/manageclass' element={<ManageClass />} />
           </Routes>
           <NavbarConditional />
         </BrowserRouter>
