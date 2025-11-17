@@ -24,3 +24,6 @@ New:
 * When writing a new service that interacts with the database, import setup_django and run setup_django() (before django imports)
 * If you ever change how the parser works, increment the VERSION number in syllabus_parser. This indicates outdated syllabi parsings will need to be updated
 * How to test uploading a syllabus: cd into static/pdf_samples, run `curl -F "myFile=@3.pdf" localhost:8000/addsyllabus"` while the server is running
+
+### Notes - Jake Hollmann - 11/17/2025
+* To run the server, you must now open a new terminal and run python manage.py runschedule in order to run the notification logic
