@@ -6,6 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 # WILL NOT WORK UNTIL LOGIN IS DONE
 # CURRENTLY, WHEN ADDING A COURSE, USER IS NULL
+# DOES WORK IF YOU MANUALLY SET A USER FOR A COURSE IN THE DB
 
 while True:
     users = User.objects.all()
