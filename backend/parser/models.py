@@ -7,7 +7,7 @@ class User(models.Model):
 
 class Course(models.Model):
     course_code = models.CharField(max_length=7, default='') # I think they can only be 7?
-    prof_email = models.CharField(max_length=255, default='')
+    prof_email = models.CharField(max_length=255, default='', blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses', null=True)
     # hidden: late_policy (many)
     # hidden: deadlines (many)

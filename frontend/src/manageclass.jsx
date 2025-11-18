@@ -17,7 +17,6 @@ import { useNavigate } from 'react-router-dom';
 function ManageClass(){
 
     const [items, setItems] = React.useState([]);
-    const [classInfo, setSendData] = React.useState([]);
     const navigate = useNavigate();
 
     React.useEffect(() => {
@@ -48,8 +47,9 @@ function ManageClass(){
         if (selectedItemId == null) return;
 
         try {
-            setSendData(await axios.get(`/api/courses/${selectedItemId}/`));
-            navigate("/addclass", {state: {classInfo}});
+            const { data } = await axios.get(`/api/courses/${selectedItemId}/`);
+
+            navigate("/addclass", {state: {classInfo : data}});
 
         } catch (err) {
 
@@ -57,6 +57,7 @@ function ManageClass(){
             
         } finally {
             handleMenuClose();
+            
         }
         
     };
@@ -109,7 +110,7 @@ function ManageClass(){
                     </IconButton>
                     }
                 >
-                    <ListItemText primary={item.label} />
+                    <ListItemText primary={item.course_code} />
                 </ListItem>
                 ))}
             </List>

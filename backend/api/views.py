@@ -22,29 +22,46 @@ MODEL_MAP = {
     "deadlines": (Deadline, DeadlineSerializer),
 }
 
-@api_view(["GET", "DELETE"])
+@api_view(["GET", "DELETE", "PATCH"])
 @csrf_exempt #NEED TO CHANGE THIS IF NOT HOSTING ON LOCALHOST VERY BAD AND UNSAFE USED FOR TESTING/DEVELOPMENT ONLY
 def gen_Function(request,model,pk):
 
-    #General GET function
+    #Variables
     m, serializer = MODEL_MAP.get(model,(None,None))
+
+    #Check if model is in the model map
     if not m:
         return Response({"detail": "Unknown model"}, status=404)
     
+    #General GET function    
     if request.method == "GET" and pk==0:
         obj = m.objects.all()
         return Response(serializer(obj, many=True).data)
-        
+    
     obj = get_object_or_404(m, pk=pk)
-
+        
     if request.method == "GET" and pk>0:
         return Response(serializer(obj).data)
     
-    #GEneral DELETE function
-    data = get_object_or_404(m, pk=pk)
-    data.delete()
+    #General DELETE function
+    if request.method == "DELETE":
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    #General PATCH function
+    if request.method == "PATCH":
+        s = CourseSerializer(obj, data=request.data, partial=True)
 
-    return Response(status=status.HTTP_204_NO_CONTENT)
+        if s.is_valid():
+            s.save()
+            return Response(s.data, status=status.HTTP_200_OK)
+
+        print("PATCH validation errors:", s.errors)
+        return Response(s.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    #Defult if no request somehow
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 
 @api_view(['GET'])
