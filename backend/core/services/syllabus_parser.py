@@ -1,10 +1,13 @@
 ﻿from pypdf import PdfReader
+from re import search, Match
 
 _DATES = ("week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
          "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
 _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission", "report")
 _PUNCTUATION = ".,:;"
 _MAX_TITLE_LENGTH = 24 # Unused
+_COURSE_CODE_PATTERN = r"\b([A-Z]|[a-z]){3} ?[0-9]{4}"
+
 
 # Remember to increment this whenever the parser is changed
 # It indicates that a syllabus needs to be reparsed by the new parser
@@ -19,6 +22,8 @@ class PDFInfo:
 
 def parse(file: str) -> PDFInfo:
     reader = PdfReader(file)
+    course_code = None
+    prof_email = None
     due_dates = []
     for page in reader.pages:
         text = page.extract_text()
@@ -28,6 +33,10 @@ def parse(file: str) -> PDFInfo:
             # [Title, Date, Weight]
             info = ["", "", ""]
             line = line.strip().lower()
+
+            if course_code is None:
+                course_code = _match_course_code(line)
+
             # Find the first instance of a percent symbol
             weight_index = line.find("%")
             if weight_index != -1:
@@ -90,7 +99,12 @@ def parse(file: str) -> PDFInfo:
                 else:
                     due_dates.append(info)
 
-    return PDFInfo("", "", [], due_dates)
+    return PDFInfo(
+        "" if course_code is None else course_code,
+       "",
+       [],
+       due_dates
+    )
 
 
 def _guess_end_of_word(line: str, start_index: int) -> int:
@@ -109,6 +123,12 @@ def _guess_end_of_word(line: str, start_index: int) -> int:
     # The minimum distance to the end of word indicator is the true end of word
     return min(offsets)
 
+
+def _match_course_code(line: str) -> str | None:
+    match = search(_COURSE_CODE_PATTERN, line)
+    if match:
+        return match.group()
+    return None
 
 
 # Testing purposes
