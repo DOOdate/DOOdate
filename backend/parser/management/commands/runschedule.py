@@ -15,6 +15,10 @@ while True:
             deadlines = Deadline.objects.filter(course=course)
             for deadline in deadlines: # loop through all deadlines for that course
                 now = timezone.now()
-                if now + timedelta(days=2) <= deadline.due_date <= now + timedelta(days=2, minutes=1): # if deadline is in 2 days
-                    notify_user(user.notification_token, course.course_code, deadline.title + " is due in 2 days")
+                if now - timedelta(days=2) <= deadline.due_date <= now - timedelta(days=2, minutes=-1): # if deadline is in 2 days (ignores seconds)
+                    notify_user(user, course.course_code, deadline.title + " is due in 2 days")
+                if now - timedelta(days=1) <= deadline.due_date <= now - timedelta(days=1, minutes=-1): # if deadline is in 1 day (ignores seconds)
+                    notify_user(user, course.course_code, deadline.title + " is due in 1 days")
+                if now - timedelta(hours=6) <= deadline.due_date <= now - timedelta(hours=6, minutes=-1): # if deadline is in 6 hours (ignores seconds)
+                    notify_user(user, course.course_code, deadline.title + " is due in 6 hours")
     sleep(60)  # wait 60 seconds (1 min)
