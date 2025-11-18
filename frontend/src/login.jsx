@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import { useTranslation } from 'react-i18next';
+import firebaseApp, {requestNotifications} from "./firebase"
 
 function Login(){
     const { t } = useTranslation();
@@ -60,7 +61,10 @@ function Login(){
                 backgroundColor: "primary.main",
                 color: "primary.base"
             }}
-            onClick={() => navigate('/home')}
+            onClick={() => {
+                navigate('/home')
+                requestNotifications()
+            }}
             >
             {t('LOGIN')}
             </Button>

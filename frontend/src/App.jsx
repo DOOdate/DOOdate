@@ -58,7 +58,6 @@ function App() {
 
   React.useEffect(() => {
     window.forceThemeRefresh = () => setCounter((c) => c + 1);
-    requestNotifications()
   })
 
   React.useEffect(() => {
