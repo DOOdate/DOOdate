@@ -19,6 +19,7 @@ import "@fontsource/opendyslexic/400.css";
 import "@fontsource/opendyslexic/700.css"
 import useMediaQuery from '@mui/material/useMediaQuery';
 import firebaseApp, {requestNotifications} from "./firebase"
+import { UserProvider } from './userContext.jsx';
 
 function App() {
   const [counter, setCounter] = React.useState('0')
@@ -106,16 +107,18 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <UIProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/addsyllabus" element={<AddSyllabus />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path='/addclass' element={<AddClass />} />
-          </Routes>
-          <NavbarConditional />
-        </BrowserRouter>
+        <UserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/home" element={<Home />} />
+              <Route path="/addsyllabus" element={<AddSyllabus />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path='/addclass' element={<AddClass />} />
+            </Routes>
+            <NavbarConditional />
+          </BrowserRouter>
+        </UserProvider>
       </UIProvider>
     </ThemeProvider>
   )

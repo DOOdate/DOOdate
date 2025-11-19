@@ -1,3 +1,5 @@
+import datetime
+
 from core.services.setup_django import setup_django
 setup_django()
 from parser.models import Course, Syllabus, PolicyPeriod, Deadline
@@ -5,6 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 import core.services.pdf_db as pdf_db
 from core.services.syllabus_parser import PDFInfo, VERSION
 from dateutil import parser as dateparser
+from django.utils.timezone import make_aware
 
 def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
     """
@@ -13,6 +16,9 @@ def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
     @param file: the uploaded Syllabus PDF
     @returns Syllabus entry
     """
+    existing = pdf_db.find(file)
+    if existing:
+        existing.delete()
     s = Syllabus(hash=pdf_db.hash(file), file=file, parser_version=VERSION)
     c = Course(course_code=parsed.course_code, prof_email=parsed.prof_email)
     c.save()
@@ -24,8 +30,9 @@ def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
             pass
         try:
             due = dateparser.parse(date[1], fuzzy=True)
+            due = make_aware(due) # Sets the timezone of the datetime object, this is needed to be valid in DB
         except Exception:
-            due = date[1]
+            due = make_aware(datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0))
 
         d = Deadline(title=date[0], due_date=due, weight=weight_float, course=c)
         d.save()
