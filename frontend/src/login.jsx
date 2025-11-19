@@ -20,12 +20,12 @@ function Login(){
     
     const { mode } = useColorScheme();
     const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
-    const invert = mode === "system" ? (prefersDark ? 1 : 0) : (mode === "dark" ? 1 : 0);
+    // const invert = mode === "system" ? (prefersDark ? 1 : 0) : (mode === "dark" ? 1 : 0);
     // We switched to an SVG logo (`/logo.svg`). SVGs often carry their own colors
     // so we shouldn't globally invert them — that turns white logos to black.
     // Only apply the invert filter for raster images (e.g. PNG) if needed.
-    const logoIsSvg = true; // set to true because we're using /logo.svg
-    const imgFilter = logoIsSvg ? 'none' : `invert(${invert})`;
+    // const logoIsSvg = true; // set to true because we're using /logo.svg
+    // const imgFilter = logoIsSvg ? 'none' : `invert(${invert})`;
     return (
         <Box
         sx={{
@@ -47,16 +47,16 @@ function Login(){
                     // make the logo noticeably larger across breakpoints
                     width: { xs: "80vw", sm: "60vw", md: "40vw" },
                     // increase the max width so it doesn't clamp too early
-                    maxWidth: "480px",
+                    maxWidth: "320px",
                     marginTop: "5vh",
                     // significantly reduce space below the logo
                     marginBottom: "-2vh",
-                    filter: imgFilter
+                    filter: `invert(${mode === "system" ? prefersDark ? 0 : 1 : mode === "dark" ? 0 : 1})`
                 }}
             />
 
-            {/* Optional name under the logo — helps recognition on small screens */}
-            <Typography variant="h4" sx={{ marginTop: 0, fontWeight: 700 }}>{'DOOdate'}</Typography>
+            {/* Optional name under the logo — helps recognition on small screens 
+            <Typography variant="h4" sx={{ marginTop: 0, fontWeight: 700 }}>{'DOOdate'</Typography>*/}
 
             <Typography variant="h5" sx = {{marginTop: "1.5vh"}}>{t('Signin')}</Typography>
             <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>{t('Enter email')}</Typography>
