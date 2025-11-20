@@ -166,7 +166,7 @@ function Home(){
             assignmentsPerDay.set(key, []);
             }
         assignmentsPerDay.get(key).push(ai);
-        };
+    };
 
     const AssignmentDay = (props) => {
         const { day, outsideCurrentMonth, selected, ...other } = props;
@@ -174,14 +174,14 @@ function Home(){
 
         let isInSelectedWeek = false;
 
-        if (selectionMode === "week" && selectedDate) {
+        if (selectionMode == "week" && selectedDate) {
             const selected = selectedDate.startOf("day");
             const weekStart = selected.subtract(selected.day(), "day");
             isInSelectedWeek = day.startOf("day").diff(weekStart, "day") >= 0 && day.startOf("day").diff(weekStart, "day") <= 6;
         }
 
-        const isStartOfWeek = selectionMode === "week" && isInSelectedWeek && day.day() === 0;
-        const isEndOfWeek = selectionMode === "week" && isInSelectedWeek && day.day() === 6;
+        const isStartOfWeek = selectionMode == "week" && isInSelectedWeek && day.day() == 0;
+        const isEndOfWeek = selectionMode == "week" && isInSelectedWeek && day.day() == 6;
         const isToday = day.isSame(dayjs(), "day");
 
         let todaysAssignments = assignmentsPerDay.get(key);
@@ -230,7 +230,7 @@ function Home(){
         }
 
         const daySx = {
-        ...(selectionMode == "day" && {
+          ...(selectionMode == "day" && {
           "&.Mui-selected": {
             bgcolor: "rgba(150, 150, 150, 0.45)",
             color: "inherit",
@@ -263,15 +263,15 @@ function Home(){
         }),
         };
         
-        if (todaysAssignments.length === 0) {
+        if (todaysAssignments.length == 0) {
             return (<Box sx={{ position: "relative", }}>
-            <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode === "day" ? selected : false} sx={daySx} disableMargin/></Box>);
+            <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode == "day" ? selected : false} sx={daySx} disableMargin/></Box>);
         }
 
 
         return (
             <Box sx={{ position: "relative" }}>
-              <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode === "day" ? selected : false} sx={daySx} disableMargin/>
+              <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode == "day" ? selected : false} sx={daySx} disableMargin/>
               <Box
                 sx={{
                   position: "absolute",
@@ -291,18 +291,18 @@ function Home(){
     return (
         <Box
         sx={{
-            display: 'flex',
-            width: '100%',
-            minHeight: '100vh',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            bgcolor: 'background.default',
-            color: 'text.primary',
-            overflow: 'hidden'
+          display: 'flex',
+          width: '100%',
+          minHeight: '100vh',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          bgcolor: 'background.default',
+          color: 'text.primary',
+          overflow: 'hidden'
         }}
-        > 
-        {upcomingExtended == false ? (
+        >
+          {upcomingExtended == false ? (
           <Box
             sx={{
               marginTop: 2,
@@ -312,65 +312,71 @@ function Home(){
               gap: 1, 
               flexWrap: "wrap", 
             }}>
-            <Select
-              sx={{width: {xs: "55vw", md: "14vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
-              value={classFilter}
-              onChange={(e) => setClassFilter(e.target.value)}>
 
-              <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
-              {classNames.map((className) => (<MenuItem key={className} value={className}>{className}</MenuItem>))}
-            </Select>
+              <Select
+                sx={{width: {xs: "55vw", md: "14vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                value={classFilter}
+                onChange={(e) => setClassFilter(e.target.value)}>
 
-            <Select
-              sx={{ width: {xs: "25vw", md: "7vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
-              value={selectionMode}
-              onChange={(e) => setSelectionMode(e.target.value)}
-              size="small">
+                <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
+                {classNames.map((className) => (<MenuItem key={className} value={className}>{className}</MenuItem>))}
+              </Select>
 
-              <MenuItem value="day">Day</MenuItem>
-              <MenuItem value="week">Week</MenuItem>
-            </Select>
+              <Select
+                sx={{ width: {xs: "25vw", md: "7vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                value={selectionMode}
+                onChange={(e) => setSelectionMode(e.target.value)}
+                size="small">
 
-           </Box>) : null}
-            <Box sx={(theme) => ({
+                <MenuItem value="day">Day</MenuItem>
+                <MenuItem value="week">Week</MenuItem>
+              </Select>
+
+          </Box>) : null}
+    
+          <Box sx={(theme) => ({
                 p: 2,
                 borderRadius: 1,
                 transition: 'background-color 200ms',
             })}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>  
-                    {upcomingExtended == false ? (
-                    <DateCalendar
-                    value={selectedDate}
-                    onChange={(newValue) =>{
-                    if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
-                        setSelectedDate(null);
-                    }
-                    else{
-                        setSelectedDate(newValue);
-                    }
-                    }} 
-                    showDaysOutsideCurrentMonth 
-                    slots={{ day: AssignmentDay }}
-                    />
-                ) : null}  
-                </LocalizationProvider>
-            </Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: 'space-between',
-                    alignItems: "center",
-                    width: "90%",
-                    marginBottom: "1vh",
-                    marginTop: "-1vh"
-                }}> 
 
-                <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
                 {upcomingExtended == false ? (
-                <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Expand</Button>
-                ) : <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Collapse</Button>}
-                </Box>
-            <Box sx={{ flex: 1,
+                  <DateCalendar
+                  value={selectedDate}
+                  onChange={(newValue) =>{
+                  if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
+                    setSelectedDate(null);
+                  }
+                  else{
+                    setSelectedDate(newValue);
+                  }
+                  }}
+                  showDaysOutsideCurrentMonth 
+                  slots={{ day: AssignmentDay }}
+                  />
+
+                ) : null}  
+              </LocalizationProvider>
+          </Box>
+
+          <Box
+          sx={{
+            display: "flex",
+            justifyContent: 'space-between',
+            alignItems: "center",
+            width: "90%",
+            marginBottom: "1vh",
+            marginTop: "-1vh"
+            }}> 
+
+            <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
+            {upcomingExtended == false ? (
+              <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Expand</Button>
+              ) : <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Collapse</Button>}
+          
+          </Box>
+          <Box sx={{ flex: 1,
                 overflowY: 'auto',
                 width: '100%',
                 pb: '72px',
@@ -381,7 +387,7 @@ function Home(){
                 {upcomingAssignments.map((assignment) => (
                     <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"}/>
                 ))}
-            </Box>
+          </Box>
             </Box>
     )
 }
