@@ -34,8 +34,12 @@ def parse(file: str) -> PDFInfo:
             info = ["", "", ""]
             line = line.strip().lower()
 
+            # Assume that the first string to match course code format is the course code
             if course_code is None:
                 course_code = _match_course_code(line)
+            # Assume that the first email is the professor's
+            if prof_email is None:
+                prof_email = _parse_email(line)
 
             # Find the first instance of a percent symbol
             weight_index = line.find("%")
@@ -101,7 +105,7 @@ def parse(file: str) -> PDFInfo:
 
     return PDFInfo(
         "" if course_code is None else course_code,
-       "",
+       "" if prof_email is None else prof_email,
        [],
        due_dates
     )
@@ -122,6 +126,28 @@ def _guess_end_of_word(line: str, start_index: int) -> int:
         offsets.append(len(line) if t == -1 else t)
     # The minimum distance to the end of word indicator is the true end of word
     return min(offsets)
+
+
+def _parse_email(line: str) -> str | None:
+    # Lazy validation
+    # Assume a string is an email address if there is an @ symbol with no space characters directly adjacent.
+    # The email address will be determined by all characters to the left and right of the @ until a space character
+    at_indx = line.find('@')
+    if at_indx != -1:
+        if at_indx-1 >= 0 and line[at_indx-1] == ' ': return None
+        if at_indx+1 < len(line) and line[at_indx+1] == ' ': return None
+        left = ''
+        right = ''
+        i = at_indx-1
+        while i >= 0 and line[i] != ' ':
+            i -= 1
+        left = line[i+1:at_indx]
+        i = at_indx+1
+        while i < len(line) and line[i] != ' ':
+            i += 1
+        right = line[at_indx:i]
+        return left + right
+    return None
 
 
 def _match_course_code(line: str) -> str | None:
