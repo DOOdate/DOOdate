@@ -30,7 +30,7 @@ function Home(){
         {
             "course_code": "Physics",
             "prof_email": "physics_prof@uottawa.ca",
-            "late_policy": [],
+            "late_policy": "No late summissions accepted.",
             "colour": "#dd7777",
             "deadlines": [
               {
@@ -44,7 +44,7 @@ function Home(){
           {
             "course_code": "History",
             "prof_email": "history_prof@uottawa.ca",
-            "late_policy": [],
+            "late_policy": "10% per day late.",
             "colour": "#77dd77",
             "deadlines": [
               {
@@ -63,7 +63,7 @@ function Home(){
           {
             "course_code": "Chemistry",
             "prof_email": "chemistry_prof@uottawa.ca",
-            "late_policy": [],
+            "late_policy": "20% for one day, 0% afterwards.",
             "colour": "#7777dd",
             "deadlines": [
               {
@@ -82,7 +82,7 @@ function Home(){
           {
             "course_code": "Calculus",
             "prof_email": "calculus_prof@uottawa.ca",
-            "late_policy": [],
+            "late_policy": "10% per day late up to 3 days.",
             "colour": "#e67607",
             "deadlines": [
               {
@@ -385,7 +385,7 @@ function Home(){
                 maxHeight: upcomingExtended ? "92vh" : "40vh",
                 }}>
                 {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"}/>
+                    <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"} late_policy={assignment.late_policy} />
                 ))}
           </Box>
             </Box>
