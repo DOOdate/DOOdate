@@ -47,8 +47,8 @@ function Login(){
                     // make the logo noticeably larger across breakpoints
                     width: { xs: "80vw", sm: "60vw", md: "40vw" },
                     // increase the max width so it doesn't clamp too early
-                    maxWidth: "320px",
-                    marginTop: "5vh",
+                    maxWidth: "180px",
+                    marginTop: "0vh",
                     // significantly reduce space below the logo
                     marginBottom: "-2vh",
                     filter: `invert(${mode === "system" ? prefersDark ? 0 : 1 : mode === "dark" ? 0 : 1})`
