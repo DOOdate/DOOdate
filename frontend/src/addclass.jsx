@@ -91,8 +91,6 @@ function AddClass(){
             maxWidth: 480,
             margin: '0 auto',
             mt: 6,
-            bgcolor: 'background.default',
-            color: 'text.primary',
             p: 2,
             // add bottom padding so fixed bottom navbar doesn't cover the button
             pb: 8,

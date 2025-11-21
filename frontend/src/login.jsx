@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import { useTranslation } from 'react-i18next';
+import firebaseApp, {requestNotifications} from "./firebase"
 // Use a static public asset so you can drop `logo.png` into `frontend/public` and
 // the app will load it without a build-time import.
 // Put your PNG at: frontend/public/logo.png
@@ -91,7 +92,10 @@ function Login(){
                 backgroundColor: "primary.main",
                 color: "primary.base"
             }}
-            onClick={() => navigate('/home')}
+            onClick={() => {
+                navigate('/home')
+                requestNotifications()
+            }}
             >
             {t('LOGIN')}
             </Button>
