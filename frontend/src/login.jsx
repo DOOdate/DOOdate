@@ -32,7 +32,7 @@ function Login(){
             display: 'flex',
             flexDirection: "column",
             width: '100vw',
-            height: '100vh',
+            minHeight: '100vh',
             alignItems: 'center',
             justifyContent: 'center',
             bgcolor: 'background.default',

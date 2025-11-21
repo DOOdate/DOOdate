@@ -27,6 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+REST_FRAMEWORK = {
+    #CHANGE THIS IF EVER HOSTING NOT ON LOCALHOST THIS IS FOR TESTING/DEVELOPMENT ONLY
+    "DEFAULT_AUTHENTICATION_CLASSES": [],  
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.AllowAny",
+    ],
+}
+
 
 # Application definition
 

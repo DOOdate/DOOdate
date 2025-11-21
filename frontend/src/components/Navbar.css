@@ -8,3 +8,13 @@
     position: fixed;
     bottom: 0
 }
+
+
+/* MAKES BIG FONT NOT APPLY TO NAVBAR TO STOP OVERFLOW */
+.navbar .MuiBottomNavigationAction-label {
+  font-size: 0.75rem; 
+}
+
+.navbar .Mui-selected .MuiBottomNavigationAction-label {
+    font-size: 0.9rem;
+}
