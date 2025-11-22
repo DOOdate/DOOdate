@@ -67,11 +67,14 @@ def addTest(request):
 
 @api_view(['POST'])
 def upload_syllabus(request):
+    ALWAYS_OVERWRITE = False # Should be set False unless you are debugging!
+    if ALWAYS_OVERWRITE: print("WARNING: Parser is set to overwrite! Set ALWAYS_OVERWRITE to False in api/views.py unless you are actively debugging!")
     file = request.FILES.get('myFile')
     if file:
         cached = pdf_db.find(file)
         # Cached version does not exist or is outdated
-        if cached is None or cached.parser_version != syllabus_parser.VERSION:
+        if ALWAYS_OVERWRITE or cached is None or cached.parser_version != syllabus_parser.VERSION:
+            if cached is not None: file = cached.file # Prevent duplicate files when overwriting
             parsed = syllabus_parser.parse(file)
             template = course_template_builder.build_course(parsed, file).class_template
         else:
@@ -79,3 +82,15 @@ def upload_syllabus(request):
         res = CourseSerializer(template) # Represents a Course as JSON
         return Response(res.data)
     raise BadRequest('Uploaded file is not valid')
+
+@api_view(['POST'])
+def save_token(request):
+    token = request.data.get('token')
+    if token:
+        print(token)
+        u = User(notification_token=token)
+        u.save() 
+        # incorrect since a user's token changes over time, should update existing user
+        # no way to do this right now since no authentication implemented
+        return Response({'status': 'token saved'})
+    raise BadRequest('No token provided')
