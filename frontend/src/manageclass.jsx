@@ -14,6 +14,14 @@ import { useUI } from './uiContext.jsx';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const createEmptyCourse = () => ({
+    id: null,
+    course_code: "",
+    prof_email: "",
+    late_policy: [],
+    deadlines: [],
+});
+
 function ManageClass(){
 
     const [items, setItems] = React.useState([]);
@@ -113,7 +121,25 @@ function ManageClass(){
                     <ListItemText primary={item.course_code} />
                 </ListItem>
                 ))}
+                <Button
+                    variant="contained"
+                    onClick={() => navigate("/addclass", {state: {classInfo : createEmptyCourse ()}})}
+                    sx={{
+                      display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        borderRadius: 0,
+                        bgcolor: "primary.secondary",
+                        color: "common.white",
+                        py: 1,
+                        textTransform: "none"
+                    }}
+                >
+                    Add Course
+                </Button>
             </List>
+            
             <Menu
                 anchorEl={menuAnchorEl}
                 open={menuOpen}

@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from .views import gen_Function
+from .views import deleteBulk
+from .views import upload_blank
 
 #The view paths, as defined in 'MODEL_MAPS' in views.function, have GET functions and DELETE functions
 #URL path structure is as follows - '/api/ModelName/iDNum/' - add to end of local host for GET path
@@ -13,5 +15,7 @@ urlpatterns = [
     path('test/', views.getTestData),
     path('addtest/', views.addTest),
     path('api/addsyllabus/', views.upload_syllabus, name="upload_syllabus"),
+    path('api/courses/', views.upload_blank, name="upload_blank_course/deadline"),
+    path("api/deadlines/bulk-delete/", deleteBulk, name="delete_many_fuction"),
     path("api/<str:model>/<int:pk>/", gen_Function, name="generic_function"),
 ]

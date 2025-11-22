@@ -62,6 +62,26 @@ def gen_Function(request,model,pk):
     #Defult if no request somehow
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["POST"])
+def upload_blank(request):
+    s = CourseSerializer(data=request.data)
+
+    if s.is_valid():
+        s.save()
+        return Response(s.data, status=status.HTTP_201_CREATED)
+    
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+@csrf_exempt #NEED TO CHANGE THIS IF NOT HOSTING ON LOCALHOST VERY BAD AND UNSAFE USED FOR TESTING/DEVELOPMENT ONLY
+def deleteBulk(request, *args, **kwargs):
+    ids = request.data.get("ids", [])
+
+    if not isinstance(ids, list):
+        return Response({"detail": "ids must be a list"}, status=400)
+    
+    Deadline.objects.filter(id__in=ids).delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])

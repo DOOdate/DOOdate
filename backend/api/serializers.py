@@ -37,37 +37,41 @@ class CourseSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         deadlines_data = validated_data.pop("deadlines", None)
+
+        #Add later
         late_policy_data = validated_data.pop("late_policy", None)
 
-        instance = super().update(instance, validated_data)
+        instance.course_code = validated_data.get("course_code", instance.course_code)
+        instance.prof_email = validated_data.get("prof_email", instance.prof_email)
+        instance.save()
 
-        if deadlines_data is None:
-            return instance
-    
-        existing_deadlines = {d.id: d for d in instance.deadlines.all()}
-        sent_ids =[]
+        if deadlines_data is not None:
+            
+            existing_id_deadlines = {d.id: d for d in instance.deadlines.all()}
 
-        for d_data in deadlines_data:
-            d_id = d_data.get("id", None)
+            for d_data in deadlines_data:
+                d_id = d_data.get("id", None)
 
-            if d_id is not None and d_id in existing_deadlines:
+                if d_id is not None and d_id in existing_id_deadlines:
 
-                deadline = existing_deadlines[d_id]
-                for attr, value in d_data.items():
-                    if attr == "id":
-                        continue
-                    setattr(deadline, attr, value)
-                deadline.save()
-                sent_ids.append(d_id)
+                    deadline = existing_id_deadlines[d_id]
+                    for attr, value in d_data.items():
+                        if attr != "id":
+                            setattr(deadline, attr, value)
+                    deadline.save()
 
-            else:
-                Deadline.objects.create(course=instance, **d_data)
+                else:
+                    Deadline.objects.create(course=instance, **d_data)
 
         return instance
     
     def create(self, validated_data):
         deadlines_data = validated_data.pop("deadlines", [])
+        late_policy_data = validated_data.pop("late_policy", [])
         course = Course.objects.create(**validated_data)
+
+        for p_data in late_policy_data:
+            PolicyPeriod.objects.create(course=course, **p_data)
 
         for d_data in deadlines_data:
             Deadline.objects.create(course=course, **d_data)
