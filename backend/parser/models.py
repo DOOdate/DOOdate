@@ -1,7 +1,12 @@
+from datetime import datetime
+
 from django.db import models
 
 class User(models.Model):
-    pass
+    notification_token = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return self.notification_token
 
 class Course(models.Model):
     course_code = models.CharField(max_length=7, default='') # I think they can only be 7?
@@ -32,7 +37,7 @@ class PolicyPeriod(models.Model):
 
 class Deadline(models.Model):
     title = models.CharField(max_length=200)
-    due_date = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField()
     weight = models.FloatField(default=0.0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='deadlines', null=True)
 
