@@ -33,7 +33,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'course_code', 'prof_email', 'late_policy', 'deadlines']
+        fields = ['id', 'course_code', 'prof_email', 'colour', 'late_policy', 'deadlines']
     
     def update(self, instance, validated_data):
         deadlines_data = validated_data.pop("deadlines", None)

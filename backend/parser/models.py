@@ -1,14 +1,16 @@
 from datetime import datetime
-
+from core.services.randomColour import generate_colour
 from django.db import models
 
 class User(models.Model):
     pass
 
 class Course(models.Model):
-    course_code = models.CharField(max_length=7, default='') # I think they can only be 7?
+    course_code = models.CharField(max_length=15, default='') # I think they can only be 7?
     prof_email = models.CharField(max_length=255, default='', blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses', null=True)
+    colour = models.CharField(max_length=7, default=generate_colour)
+
     # hidden: late_policy (many)
     # hidden: deadlines (many)
 

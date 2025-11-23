@@ -14,6 +14,9 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { memo, useState } from 'react';
+import DateTime from "./components/DateTimeCOMP.jsx";
+import dayjs from 'dayjs';
+import CourseColourField from "./components/CourseColour.jsx";
 
 const createEmptyDeadline = () => ({
     title: "",
@@ -28,6 +31,7 @@ const TextField1 = memo(function TextField1({ label, value, onChange
             label={label}
             value={value}
             onChange={onChange}
+            slotProps={{maxLength: 200}}
             fullWidth
         />
     );
@@ -40,10 +44,12 @@ const TextField2 = memo(function TextField2({ label, value, onChange
             label={label}
             value={value}
             onChange={onChange}
+            slotProps={{maxLength: 4}}
             sx = {{maxWidth: 200}}
         />
     );
 });
+
 
 const DeadlineRow = React.memo(function DeadlineRow({
     deadline,
@@ -51,6 +57,7 @@ const DeadlineRow = React.memo(function DeadlineRow({
     onFieldChange,
     onMenuOpen,
     }) {
+
     const handleTitleChange = React.useCallback(
         (e) => onFieldChange(index, "title", e.target.value),
         [index, onFieldChange]
@@ -62,7 +69,9 @@ const DeadlineRow = React.memo(function DeadlineRow({
     );
 
     const handleDueDateChange = React.useCallback(
-        (e) => onFieldChange(index, "due_date", e.target.value),
+        (newValue) => {
+            onFieldChange(index, "due_date", newValue ? newValue.toDate().toISOString() : null);
+        },
         [index, onFieldChange]
     );
 
@@ -89,10 +98,8 @@ const DeadlineRow = React.memo(function DeadlineRow({
             onChange={handleWeightChange}
         />
 
-        <TextField2
-            label="Due Date"
-            type="number"
-            value={deadline.due_date ?? ""}
+        <DateTime
+            value={deadline.due_date ?? null}
             onChange={handleDueDateChange}
         />
         </ListItem>
@@ -109,12 +116,12 @@ function AddClass(){
     const [deadlineId, setDeadlineId] = React.useState(null);
     const menuOpen = Boolean(menuAnchorEl);
     const [selectedIds, setIds] = React.useState([]);
+    const [msg, setMsg] = React.useState("");
+    
 
     const [classInfo, setClassInfo] = React.useState(
             () => location.state?.classInfo ?? null
     );
-
-    const [name, setName] = React.useState(classInfo.course_code);
 
     const handleMenuOpen = (event, id) => {
         setMenuAnchorEl(event.currentTarget);
@@ -173,6 +180,7 @@ function AddClass(){
 
     const courseCodeUpdate = (value) => { setClassInfo(prev => ({...prev, course_code: value})) }; 
     const profEmailUpdate = (value) => { setClassInfo(prev => ({...prev, prof_email: value})) };
+    const colourUpdate = (value) => { setClassInfo(prev => ({...prev, colour: value}))};
 
 
     const backendSave = async () => {
@@ -183,17 +191,22 @@ function AddClass(){
                 setIds([]);
                 if(classInfo.id == null){
                     await axios.post(`/api/courses/`, classInfo);
+                    setMsg("created, some items deleted");
                 } else{
                     await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
+                    setMsg("edited, some items deleted");
                 }
     
             } else {
                 if(classInfo.id == null){
                     await axios.post(`/api/courses/`, classInfo);
+                    setMsg("created");
                 } else{
                     await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
+                    setMsg("created");
                 }
             }
+            showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
             navigate("/manageclass")
         } catch (err) {
             console.error("Error:", err.response?.data || err);
@@ -216,15 +229,19 @@ function AddClass(){
             pb: 8,
         }}
         >
-            <Typography variant="h4">
-                Edit Class: {name}
+            <Typography variant="h4" sx={{display: "flex", flexDirection: "row"}}>
+                Edit Class: {classInfo.course_code}
             </Typography>
-
+            <CourseColourField 
+                value={classInfo.colour}
+                onChange={colourUpdate}
+            />
             <List>
                 <ListItem sx={{display: "flex", gap:2, flexDirection: "column"}}>
                     <TextField1
                         label="Course Code/Course Name"
                         value={classInfo.course_code}
+                        slotProps={{maxLength: 15}}
                         onChange={e=>
                             courseCodeUpdate(e.target.value)
                         }
@@ -234,6 +251,7 @@ function AddClass(){
                     <TextField1
                         label="Prof Email"
                         value={classInfo.prof_email}
+                        slotProps={{maxLength: 255}}
                         onChange={e=>
                             profEmailUpdate(e.target.value)
                         }
@@ -287,7 +305,7 @@ function AddClass(){
                 if (hasInvalidDeadline) return showFlash("Missing or invalid information", "warning");
                 
                 if (classInfo.course_code == "") return showFlash('Please enter a class name', 'warning');
-                showFlash(`Class "${classInfo.course_code}" added`, 'success');
+                
                 backendSave()
                 
             }}>

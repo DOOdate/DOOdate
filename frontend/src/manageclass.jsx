@@ -107,7 +107,11 @@ function ManageClass(){
 
             <List>
                 {items.map(item => (
+        
                 <ListItem
+                    sx={{
+                        px: 0.5
+                    }}
                     key={item.id}
                     secondaryAction={
                     <IconButton
@@ -118,7 +122,18 @@ function ManageClass(){
                     </IconButton>
                     }
                 >
-                    <ListItemText primary={item.course_code} />
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flexDirection: "row" }}>
+                        <Box
+                            sx={{
+                                width: 14,
+                                height: 14,
+                                borderRadius: 0.5,          
+                                bgcolor: item.colour,      
+                                flexShrink: 0,
+                            }}
+                        />
+                        <ListItemText primary={item.course_code} />
+                    </Box>
                 </ListItem>
                 ))}
                 <Button
