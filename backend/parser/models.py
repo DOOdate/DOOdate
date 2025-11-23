@@ -27,7 +27,7 @@ class Syllabus(models.Model):
         return self.hash
 
 class PolicyPeriod(models.Model):
-    time = models.FloatField(default=0.0)
+    time = models.DateTimeField()
     penalty = models.FloatField(default=0.0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='late_policy', null=True)
 

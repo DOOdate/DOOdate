@@ -24,6 +24,11 @@ const createEmptyDeadline = () => ({
     weight: "",
 });
 
+const createEmptyLatePolicy = () => ({
+    policy_date: "",
+    penalty: "",
+});
+
 const TextField1 = memo(function TextField1({ label, value, onChange
 }) {
     return (
@@ -37,28 +42,85 @@ const TextField1 = memo(function TextField1({ label, value, onChange
     );
 });
 
-const TextField2 = memo(function TextField2({ label, value, onChange
-}) {
-    return (
-        <TextField
-            label={label}
-            value={value}
-            onChange={onChange}
-            type="number"
-            slotProps={{maxLength: 4}}
-            sx = {{
-                maxWidth: 200,
-                htmlInput: {
-                    min: 0.0,
-                    max: 100.0,
-                    step: 0.1,
-                    inputMode: "decimal",
-                },
-            }}
-        />
-    );
+const TextField2 = memo(function TextField2({ label, value, onChange }) {
+  return (
+    <TextField
+        label={label}
+        type="number"
+        value={value}
+        onChange={onChange}
+        slotProps={{
+            htmlInput: {
+            min: 0,
+            max: 100,
+            step: 0.1,
+            inputMode: "decimal",
+            },
+        }}
+        fullWidth
+    />
+  );
 });
 
+const LatePolicyRow = React.memo(function LatePolicyRow({
+    policy,
+    index,
+    onFieldChange,
+    onMenuOpen,
+    }){
+    
+    const handlePenaltyChange = React.useCallback(
+    (e) => {
+        let raw = e.target.value;
+
+        if (raw === "") {
+        onFieldChange(index, "penalty", "", "lp");
+        return;
+        }
+
+        const num = parseFloat(raw);
+        if (!Number.isNaN(num)) {
+        if (num < 0) raw = "0";
+        if (num > 100) raw = "100";
+        }
+
+        onFieldChange(index, "penalty", raw, "lp");
+    },
+    [index, onFieldChange]
+    );
+
+
+    const handlePolicyDateChange = React.useCallback(
+        (newValue) => {
+            onFieldChange(index, "time", newValue ? newValue.toDate().toISOString() : null, "lp");
+        },
+        [index, onFieldChange]
+    );
+
+    return (
+        <ListItem
+        sx={{ display: "flex", gap: 2, flexDirection: "row" }}
+        secondaryAction={
+            <IconButton edge="end" onClick={event => onMenuOpen(event, policy.id)}>
+            <MoreVertIcon />
+            </IconButton>
+        }
+        >
+
+        <TextField2
+            label="Weight"
+            value={policy.penalty ?? ""}
+            onChange={handlePenaltyChange}
+        />
+
+        <DateTime
+            value={policy.time ?? null}
+            onChange={handlePolicyDateChange}
+        />
+        </ListItem>
+    );
+    
+});
 
 const DeadlineRow = React.memo(function DeadlineRow({
     deadline,
@@ -68,18 +130,34 @@ const DeadlineRow = React.memo(function DeadlineRow({
     }) {
 
     const handleTitleChange = React.useCallback(
-        (e) => onFieldChange(index, "title", e.target.value),
+        (e) => onFieldChange(index, "title", e.target.value, "dl"),
         [index, onFieldChange]
     );
 
     const handleWeightChange = React.useCallback(
-        (e) => onFieldChange(index, "weight", e.target.value || 0),
-        [index, onFieldChange, 0]
+        (e) => {
+            let raw = e.target.value;
+
+            if (raw === "") {
+            onFieldChange(index, "weight", "", "dl");
+            return;
+            }
+
+            const num = parseFloat(raw);
+            if (!Number.isNaN(num)) {
+            if (num < 0) raw = "0";
+            if (num > 100) raw = "100";
+            }
+
+            onFieldChange(index, "weight", raw, "dl");
+        },
+        [index, onFieldChange]
     );
+
 
     const handleDueDateChange = React.useCallback(
         (newValue) => {
-            onFieldChange(index, "due_date", newValue ? newValue.toDate().toISOString() : null);
+            onFieldChange(index, "due_date", newValue ? newValue.toDate().toISOString() : null, "dl");
         },
         [index, onFieldChange]
     );
@@ -120,61 +198,95 @@ function AddClass(){
     const location = useLocation();
     const navigate = useNavigate();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
-    const [deadlineId, setDeadlineId] = React.useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
     const menuOpen = Boolean(menuAnchorEl);
-    const [selectedIds, setIds] = React.useState([]);
+    const [selectedDLIds, setDLIds] = React.useState([]);
+    const [selectedLPIds, setLPIds] = React.useState([]);
     const [msg, setMsg] = React.useState("");
     
 
     const [classInfo, setClassInfo] = React.useState(
-            () => location.state?.classInfo ?? null
+        () => location.state?.classInfo ?? null
     );
 
-    const handleMenuOpen = (event, id) => {
+    const handleMenuOpen = (event, index, id, type) => {
+        console.log("here0");
+        console.log(index);
+        console.log(type);
         setMenuAnchorEl(event.currentTarget);
-        setDeadlineId(id);
+        setSelectedIndex(index);
+        setSelectedType(type);
+        setSelectedId(id.id);
+        
     };
 
     const handleMenuClose = () => {
+        console.log("here1");
         setMenuAnchorEl(null);
-        setDeadlineId(null);
+        setSelectedIndex(null);
+        setSelectedType(null);
+        setSelectedId(null);
     };
 
     const handleDelete = async () => {
-    if (deadlineId == null) return showFlash("Cannot delete assignment that does not exist", "warning");
+        
+        setClassInfo(prev => {
+            if (selectedType == "dl") {
+                selectedDLIds.push(selectedId);
+                return {
+                ...prev,
+                deadlines: prev.deadlines.filter((_, i) => i !== selectedIndex),
+            };
+            } else if (selectedType == "lp") {
+                selectedLPIds.push(selectedId);
+                return {
+                ...prev,
+                late_policy: prev.late_policy.filter((_, i) => i !== selectedIndex),
+                };
+            }
+            return prev;
+        });
 
-        try {
+        handleMenuClose();
 
-            selectedIds.push(deadlineId);
-            setClassInfo(prev => ({...prev,deadlines: prev.deadlines.filter(d => d.id !== deadlineId),}));
-
-        } catch (err) {
-
-            console.error(err);
-            
-        } finally {
-            
-            handleMenuClose();
-        }
     };
 
     const { showFlash } = useUI();
 
 
-    const deadLineUpdate = useCallback((index, field, value) => {
+    const generic_Update = useCallback((index, field, value, type) => {
         setClassInfo(prev => {
-            const deadlinesCopy = [...prev.deadlines];
-            const deadline = deadlinesCopy[index];
 
-            deadlinesCopy[index] = {
-            ...deadline,
-            [field]: value,
+            let listKey;
+
+            if(type == "dl"){
+                listKey = "deadlines";
+            }
+
+            else if(type == "lp"){
+                listKey = "late_policy";
+            }
+
+            else{
+                return prev;
+            }
+            
+            const list = prev[listKey];
+
+            const newList = [...list];
+
+            newList[index] = {
+                ...newList[index],
+                [field]: value,
             };
 
-            return {
-            ...prev,
-            deadlines: deadlinesCopy,
-            };
+            return{
+                ...prev,
+                [listKey]: newList
+            }
+
         });
     }, []);
 
@@ -182,6 +294,13 @@ function AddClass(){
         setClassInfo(prev => ({
             ...prev,
             deadlines: [...prev.deadlines, createEmptyDeadline()],
+        }));
+    };
+
+    const addLatePolicy = () => {
+        setClassInfo(prev => ({
+            ...prev,
+            late_policy: [...prev.late_policy, createEmptyLatePolicy()],
         }));
     };
 
@@ -193,31 +312,24 @@ function AddClass(){
     const backendSave = async () => {
 
         try {
-            if(selectedIds.length != 0){
-                await axios.delete(`/api/deadlines/bulk-delete/`, {data: {ids: selectedIds}});
-                setIds([]);
-                if(classInfo.id == null){
-                    await axios.post(`/api/courses/`, classInfo);
-                    setMsg("created, some items deleted");
-                } else{
-                    await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
-                    setMsg("edited, some items deleted");
-                }
-    
-            } else {
-                if(classInfo.id == null){
-                    await axios.post(`/api/courses/`, classInfo);
-                    setMsg("created");
-                } else{
-                    await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
-                    setMsg("created");
-                }
+                
+            if(classInfo.id == null){
+                await axios.post(`/api/courses/`, classInfo);
+                setMsg("created");
+            } else{
+                await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
+                setMsg("created");
             }
-            showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
-            navigate("/manageclass")
+            
+    
         } catch (err) {
             console.error("Error:", err.response?.data || err);
-        } 
+        } finally {
+            showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
+            navigate("/manageclass")
+            setLPIds([]);
+            setDLIds([]);
+        }
     };
 
     return (
@@ -269,8 +381,8 @@ function AddClass(){
                         key={deadline.id ?? index}
                         deadline={deadline}
                         index={index}
-                        onFieldChange={deadLineUpdate}
-                        onMenuOpen={handleMenuOpen}
+                        onFieldChange={generic_Update}
+                        onMenuOpen={(event) => handleMenuOpen(event, index, deadline, "dl")}
                     />
                 ))}
                 <Button
@@ -290,6 +402,32 @@ function AddClass(){
                 >
                     Add Deadline
                 </Button>
+                {classInfo.late_policy.map((policy, index) => (
+                   <LatePolicyRow
+                        key={policy.id ?? index}
+                        policy={policy}
+                        index={index}
+                        onFieldChange={generic_Update}
+                        onMenuOpen={(event) => handleMenuOpen(event, index, policy, "lp")}
+                    />
+                ))}
+                <Button
+                    variant="contained"
+                    onClick={() => addLatePolicy()}
+                    sx={{
+                      display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        borderRadius: 0,
+                        bgcolor: "primary.secondary",
+                        color: "common.white",
+                        py: 1,
+                        textTransform: "none"
+                    }}
+                >
+                    Add Late Policy
+                </Button>
             </List>
             <Menu
                 anchorEl={menuAnchorEl}
@@ -304,7 +442,7 @@ function AddClass(){
                 horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleDelete}>Remove Assignment</MenuItem>
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
             </Menu>
             <Button type="button" variant="contained" onClick={()=>{
                const hasInvalidDeadline = classInfo.deadlines.some(d => !d.title || d.title.trim() === "");

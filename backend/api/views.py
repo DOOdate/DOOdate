@@ -18,7 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 MODEL_MAP = {
     "courses":   (Course,   CourseSerializer),
     "syllabi":   (Syllabus, SyllabusSerializer),
-    "periods":   (PolicyPeriod, PolicyPeriodSerializer),
+    "policys":   (PolicyPeriod, PolicyPeriodSerializer),
     "deadlines": (Deadline, DeadlineSerializer),
 }
 
@@ -71,18 +71,6 @@ def upload_blank(request):
         return Response(s.data, status=status.HTTP_201_CREATED)
     
     return Response(status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['DELETE'])
-@csrf_exempt #NEED TO CHANGE THIS IF NOT HOSTING ON LOCALHOST VERY BAD AND UNSAFE USED FOR TESTING/DEVELOPMENT ONLY
-def deleteBulk(request, *args, **kwargs):
-    ids = request.data.get("ids", [])
-
-    if not isinstance(ids, list):
-        return Response({"detail": "ids must be a list"}, status=400)
-    
-    Deadline.objects.filter(id__in=ids).delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 @api_view(['GET'])
 def getData(request):
