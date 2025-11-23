@@ -44,8 +44,17 @@ const TextField2 = memo(function TextField2({ label, value, onChange
             label={label}
             value={value}
             onChange={onChange}
+            type="number"
             slotProps={{maxLength: 4}}
-            sx = {{maxWidth: 200}}
+            sx = {{
+                maxWidth: 200,
+                htmlInput: {
+                    min: 0.0,
+                    max: 100.0,
+                    step: 0.1,
+                    inputMode: "decimal",
+                },
+            }}
         />
     );
 });
@@ -64,7 +73,7 @@ const DeadlineRow = React.memo(function DeadlineRow({
     );
 
     const handleWeightChange = React.useCallback(
-        (e) => onFieldChange(index, "weight", Number(e.target.value) || 0),
+        (e) => onFieldChange(index, "weight", e.target.value || 0),
         [index, onFieldChange, 0]
     );
 
@@ -93,8 +102,6 @@ const DeadlineRow = React.memo(function DeadlineRow({
         <TextField2
             label="Weight"
             value={deadline.weight ?? ""}
-            type="number"
-            min = "0"
             onChange={handleWeightChange}
         />
 
