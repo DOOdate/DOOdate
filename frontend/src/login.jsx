@@ -8,7 +8,6 @@ import Link from "@mui/material/Link";
 import { useNavigate } from 'react-router-dom';
 import Divider from '@mui/material/Divider';
 import { useTranslation } from 'react-i18next';
-import UpcomingList from './components/UpcomingAssignment';
 
 function Login(){
     const { t } = useTranslation();
@@ -79,9 +78,6 @@ function Login(){
             {t('Continue Microsoft')}
             </Button>
             
-            {/* Upcoming assignments: click to expand for details */}
-            <UpcomingList />
-
             <Typography align="center" variant = "body2"  sx={{marginTop: "2vh", mx: "2vw"}}>{t('Contract')}<Link href="/signup"> {t('TOS')} </Link> {t('and')} <Link href="/signup"> {t('PP')} </Link></Typography>
 
         </Box>
