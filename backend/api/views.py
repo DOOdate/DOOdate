@@ -87,3 +87,15 @@ async def upload_syllabus(request):
 
     res = await sync_to_async(lambda: CourseSerializer(template).data)()  # Represents a Course as JSON
     return JsonResponse(res)
+
+@api_view(['POST'])
+def save_token(request):
+    token = request.data.get('token')
+    if token:
+        print(token)
+        u = User(notification_token=token)
+        u.save()
+        # incorrect since a user's token changes over time, should update existing user
+        # no way to do this right now since no authentication implemented
+        return Response({'status': 'token saved'})
+    raise BadRequest('No token provided')
