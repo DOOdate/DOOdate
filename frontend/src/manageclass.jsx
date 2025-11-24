@@ -18,6 +18,7 @@ const createEmptyCourse = () => ({
     id: null,
     course_code: "",
     prof_email: "",
+    colour: "",
     late_policy: [],
     deadlines: [],
 });
@@ -99,7 +100,6 @@ function ManageClass(){
             margin: '0 auto',
             mt: 6,
             p: 2,
-            // add bottom padding so fixed bottom navbar doesn't cover the button
             pb: 8,
         }}
         >
