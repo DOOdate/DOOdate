@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-function EventCard({ title, className, date, weight, colour }) {
+function EventCard({ title, className, date, weight, colour, onClick }) {
     const { t } = useTranslation();
     const accent = colour || '#000000';
     return (
-        <Box tabIndex={0} sx={{ 
+        <Box 
+            tabIndex={0} 
+            onClick={onClick}
+            sx={{ 
             borderRadius: 2, 
             display: 'flex', 
             flexDirection: 'column', 
@@ -15,7 +18,14 @@ function EventCard({ title, className, date, weight, colour }) {
             m: 1.5, 
             bgcolor: 'background.paper', 
             boxShadow: 2,
-            borderLeft: `5px solid ${accent}` }}>
+            borderLeft: `5px solid ${accent}`,
+            cursor: 'pointer',
+            transition: 'transform 0.1s, box-shadow 0.1s',
+            '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: 4
+            }
+        }}>
             <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Typography variant="subtitle1" sx={{ textAlign: 'left', lineHeight: 1.15, fontSize: '1rem' }}>{title}</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'right', lineHeight: 1.1 }}>{date}</Typography>
@@ -33,7 +43,8 @@ EventCard.propTypes = {
     className: PropTypes.string,
     date: PropTypes.string,
     weight: PropTypes.string,
-    colour: PropTypes.string
+    colour: PropTypes.string,
+    onClick: PropTypes.func
 }
 
 EventCard.defaultProps = {

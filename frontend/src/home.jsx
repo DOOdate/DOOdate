@@ -16,21 +16,31 @@ import 'dayjs/locale/fr'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import i18next from "i18next";
 import localizedFormat from "dayjs/plugin/localizedFormat"
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 function Home(){
     const { t } = useTranslation();
     const [classFilter, setClassFilter] = React.useState('All Classes');
     const [selectedDate, setSelectedDate] = React.useState(null);
+    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [selectedAssignment, setSelectedAssignment] = React.useState(null);
+    const [completedIds, setCompletedIds] = React.useState(new Set());
 
     let assignments = [
-        { title: 'Assignment 1', className: 'Physics', date: '2025-11-19T23:59:00', weight: '4%', colour: '#dd7777' },
-        { title: 'Project Proposal', className: 'History', date: '2025-12-22T17:00:00', weight: '10%', colour: '#77dd77' },
-        { title: 'Lab Report', className: 'Chemistry', date: '2025-11-25T23:59:00', weight: '6%', colour: '#7777dd' },
-        { title: 'Presentation', className: 'Calculus', date: '2025-11-25T23:59:00', weight: '10%', colour: '#e67607' },
-        { title: 'Final Exam', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '20%', colour: '#e67607' },
-        { title: 'Exam Preperation Assignment', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '0%', colour: '#e67607' },
-        { title: 'Review Task', className: 'History', date: '2025-11-28T23:59:00', weight: '10%', colour: '#77dd77' },
-        { title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd' },
+        { id: 1, title: 'Assignment 1', className: 'Physics', date: '2025-11-19T23:59:00', weight: '4%', colour: '#dd7777', profEmail: 'physics.prof@uottawa.ca', latePolicy: [{ time: 24, penalty: 10 }, { time: 48, penalty: 25 }] },
+        { id: 2, title: 'Project Proposal', className: 'History', date: '2025-12-22T17:00:00', weight: '10%', colour: '#77dd77', profEmail: 'history.prof@uottawa.ca', latePolicy: [] },
+        { id: 3, title: 'Lab Report', className: 'Chemistry', date: '2025-11-25T23:59:00', weight: '6%', colour: '#7777dd', profEmail: 'chem.prof@uottawa.ca', latePolicy: [{ time: 24, penalty: 15 }] },
+        { id: 4, title: 'Presentation', className: 'Calculus', date: '2025-11-25T23:59:00', weight: '10%', colour: '#e67607', profEmail: 'calc.prof@uottawa.ca', latePolicy: [] },
+        { id: 5, title: 'Final Exam', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '20%', colour: '#e67607', profEmail: 'calc.prof@uottawa.ca', latePolicy: [] },
+        { id: 6, title: 'Exam Preperation Assignment', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '0%', colour: '#e67607', profEmail: 'calc.prof@uottawa.ca', latePolicy: [] },
+        { id: 7, title: 'Review Task', className: 'History', date: '2025-11-28T23:59:00', weight: '10%', colour: '#77dd77', profEmail: 'history.prof@uottawa.ca', latePolicy: [] },
+        { id: 8, title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd', profEmail: 'chem.prof@uottawa.ca', latePolicy: [{ time: 24, penalty: 15 }] },
     ];
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
@@ -48,7 +58,7 @@ function Home(){
 
     let filteredAssignments = [];
     for (const a of assignments) {
-        if (classFilter == 'All Classes' || a.className == classFilter) {
+        if (!completedIds.has(a.id) && (classFilter == 'All Classes' || a.className == classFilter)) {
             filteredAssignments.push(a);
         }
     }
@@ -63,7 +73,14 @@ function Home(){
                 upcomingAssignments.push(a);
             }
         }
-    } 
+    }
+
+    const handleMarkDone = (assignment) => {
+        setCompletedIds(prev => new Set([...prev, assignment.id]));
+        setDialogOpen(false);
+        // TODO: In future, call API to persist completion: 
+        // await axios.post(`/api/deadlines/${assignment.id}/complete/`);
+    }; 
 
     const assignmentsPerDay = new Map();
 
@@ -207,9 +224,88 @@ function Home(){
                 px: 2,
                 bgcolor: 'primary.secondary' }}>
                 {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("LLL")} />
+                    <EventCard 
+                        key={assignment.id} 
+                        {...assignment} 
+                        date={dayjs(assignment.date).format("LLL")} 
+                        onClick={() => {
+                            setSelectedAssignment(assignment);
+                            setDialogOpen(true);
+                        }}
+                    />
                 ))}
             </Box>
+
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
+                <DialogTitle sx={{ m: 0, p: 2 }}>
+                    {selectedAssignment?.title}
+                    <IconButton
+                        aria-label="close"
+                        onClick={() => setDialogOpen(false)}
+                        sx={{ position: 'absolute', right: 8, top: 8 }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent dividers>
+                    <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+                        {selectedAssignment?.className}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        <strong>{t('Due')}:</strong> {selectedAssignment && dayjs(selectedAssignment.date).format("LLL")}
+                    </Typography>
+                    {selectedAssignment && (() => {
+                        const now = dayjs();
+                        const due = dayjs(selectedAssignment.date);
+                        const diff = due.diff(now);
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const isPast = diff < 0;
+                        
+                        if (isPast) {
+                            return (
+                                <Typography variant="body2" sx={{ mb: 1, color: 'error.main' }}>
+                                    <strong>⚠️ Overdue</strong> by {Math.abs(days)} days {Math.abs(hours)} hours
+                                </Typography>
+                            );
+                        }
+                        return (
+                            <Typography variant="body2" sx={{ mb: 1 }}>
+                                <strong>⏰ Time remaining:</strong> {days} days {hours} hours
+                            </Typography>
+                        );
+                    })()}
+                    <Typography variant="body2" sx={{ mb: 1 }}>
+                        <strong>{t('Weight')}:</strong> {selectedAssignment?.weight}
+                    </Typography>
+                    {selectedAssignment?.profEmail && (
+                        <Typography variant="body2" sx={{ mb: 1 }}>
+                            <strong>📧 Professor:</strong>{' '}
+                            <a href={`mailto:${selectedAssignment.profEmail}`} style={{ color: 'inherit', textDecoration: 'underline' }}>
+                                {selectedAssignment.profEmail}
+                            </a>
+                        </Typography>
+                    )}
+                    {selectedAssignment?.latePolicy && selectedAssignment.latePolicy.length > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            <Typography variant="body2" sx={{ mb: 0.5 }}>
+                                <strong>📋 Late Policy:</strong>
+                            </Typography>
+                            {selectedAssignment.latePolicy.map((policy, idx) => (
+                                <Typography key={idx} variant="body2" color="text.secondary" sx={{ ml: 2 }}>
+                                    • {policy.time}h late: -{policy.penalty}% penalty
+                                </Typography>
+                            ))}
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)}>{t('Close')}</Button>
+                    <Button variant="contained" onClick={() => handleMarkDone(selectedAssignment)}>
+                        {t('Mark done')}
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
