@@ -1,5 +1,7 @@
 ﻿from pypdf import PdfReader
-from re import search, Match
+from re import search
+import _parse_ai
+import date_parsing
 
 _DATES = ("week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
          "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
@@ -20,7 +22,27 @@ class PDFInfo:
         self.late_policy = late_policy
         self.due_dates = due_dates
 
-def parse(file: str) -> PDFInfo:
+
+def parse(file: str, noai: bool = False) -> PDFInfo:
+    if noai:
+        return _parse_noai(file)
+    reader = PdfReader(file)
+    course_code = None
+    prof_email = None
+    for page in reader.pages:
+        for line in page.extract_text().split('\n'):
+            if not course_code:
+                course_code = _match_course_code(line)
+            if not prof_email:
+                prof_email = _parse_email(line)
+        if prof_email is not None and course_code is not None:
+            break
+    result = _parse_ai.parse(file)
+
+    return PDFInfo(course_code, prof_email, )
+
+
+def _parse_noai(file: str) -> PDFInfo:
     reader = PdfReader(file)
     course_code = None
     prof_email = None
@@ -96,6 +118,7 @@ def parse(file: str) -> PDFInfo:
                         break
             else:
                 continue
+            info[1] = date_parsing.str_to_datetime(info[1])
             if contains_date:
                 # Check for duplicate events
                 if len(due_dates) > 0:
