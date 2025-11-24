@@ -1,7 +1,6 @@
 ﻿from pypdf import PdfReader
 from re import search
-import _parse_ai
-import date_parsing
+import core.services.parse_ai
 
 _DATES = ("week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
          "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
@@ -13,7 +12,7 @@ _COURSE_CODE_PATTERN = r"\b([A-Z]|[a-z]){3} ?[0-9]{4}"
 
 # Remember to increment this whenever the parser is changed
 # It indicates that a syllabus needs to be reparsed by the new parser
-VERSION = 1
+VERSION = 2
 
 class PDFInfo:
     def __init__(self, course_code: str, prof_email: str, late_policy: list, due_dates: list):
@@ -22,8 +21,13 @@ class PDFInfo:
         self.late_policy = late_policy
         self.due_dates = due_dates
 
-
-def parse(file: str, noai: bool = False) -> PDFInfo:
+"""
+You will waste a lot of tokens parsing pages that don't contain relevant information. Most syllabi will extensively contain
+university policies unrelated to the assignments/late policy.
+Could possibly filter out pages that do not contain numbers or any of _DATES or _DELIVERABLES or 'late'
+-CL
+"""
+async def parse(file: str, noai: bool = False) -> PDFInfo:
     if noai:
         return _parse_noai(file)
     reader = PdfReader(file)
@@ -35,11 +39,13 @@ def parse(file: str, noai: bool = False) -> PDFInfo:
                 course_code = _match_course_code(line)
             if not prof_email:
                 prof_email = _parse_email(line)
-        if prof_email is not None and course_code is not None:
-            break
-    result = _parse_ai.parse(file)
-
-    return PDFInfo(course_code, prof_email, )
+            if prof_email is not None and course_code is not None:
+                break
+    result = await core.services.parse_ai.parse(file)
+    # Contingency
+    if 'late_policy' not in result or 'assignments' not in result:
+        return _parse_noai(file)
+    return PDFInfo(course_code, prof_email, result['late_policy'] or [], result['assignments'] or [])
 
 
 def _parse_noai(file: str) -> PDFInfo:
@@ -52,8 +58,7 @@ def _parse_noai(file: str) -> PDFInfo:
         lines = text.split("\n")
         for line in lines:
             contains_date = False # Event must contain date to be added to list of due dates
-            # [Title, Date, Weight]
-            info = ["", "", ""]
+            info = {}
             line = line.strip().lower()
 
             # Assume that the first string to match course code format is the course code
@@ -73,7 +78,10 @@ def _parse_noai(file: str) -> PDFInfo:
                 while i-1 >= 0 and line[i-1].isdigit() or line[i-1] in ('.', ','):
                     i -= 1
                 # Add our read number value to the weight index of info
-                info[2] = line[i:weight_index].strip() + "%"
+                try:
+                    info['weight'] = float(line[i:weight_index].strip())
+                except ValueError:
+                    info['weight'] = -1
                 # Remove the weight substring from the line
                 line = line.replace(line[i:weight_index]+"%", "")
             # Searching for dates
@@ -82,7 +90,7 @@ def _parse_noai(file: str) -> PDFInfo:
                 if index != -1:
                     if el == "tbd" or el == "tba":
                         # Set date as TBD and remove from string
-                        info[1] = "TBD"
+                        info['due_date'] = "TBD"
                         line = line.replace(el, "")
                         # Break out of the loop early since this line contains a date
                         contains_date = True
@@ -98,11 +106,11 @@ def _parse_noai(file: str) -> PDFInfo:
                             contains_date = True
                             tmp = line[index:i].strip(_PUNCTUATION)
                             line = line.replace(tmp, "")
-                            info[1] = tmp.strip()
+                            info['due_date'] = tmp.strip()
                             break
             # The entire line with the weight and date removed is now set as the title of the event
             # Strip whitespace and punctuation and convert to title case
-            info[0] = line.strip().strip(_PUNCTUATION).title()
+            info['title'] = line.strip().strip(_PUNCTUATION).title()
             # We only count this event if a deliverable is in the title
             for deliverable in _DELIVERABLES:
                 i = line.find(deliverable)
@@ -118,7 +126,6 @@ def _parse_noai(file: str) -> PDFInfo:
                         break
             else:
                 continue
-            info[1] = date_parsing.str_to_datetime(info[1])
             if contains_date:
                 # Check for duplicate events
                 if len(due_dates) > 0:

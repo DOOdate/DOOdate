@@ -32,7 +32,7 @@ class PolicyPeriod(models.Model):
 
 class Deadline(models.Model):
     title = models.CharField(max_length=200)
-    due_date = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(auto_now_add=False)
     weight = models.FloatField(default=0.0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='deadlines', null=True)
 
