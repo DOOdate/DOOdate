@@ -192,6 +192,8 @@ const DeadlineRow = React.memo(function DeadlineRow({
 });
 
 
+import { useUserContext } from './userContext.jsx';
+import { t } from "i18next";
 
 function AddClass(){
 
@@ -206,6 +208,7 @@ function AddClass(){
     const [selectedLPIds, setLPIds] = React.useState([]);
     const [msg, setMsg] = React.useState("");
     
+    const { data, setData } = useUserContext();
 
     const [classInfo, setClassInfo] = React.useState(
         () => location.state?.classInfo ?? null
@@ -342,8 +345,6 @@ function AddClass(){
             maxWidth: 480,
             margin: '0 auto',
             mt: 6,
-            bgcolor: 'background.default',
-            color: 'text.primary',
             p: 2,
             pb: 8,
         }}
