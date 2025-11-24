@@ -48,7 +48,11 @@ function AddSyllabus() {
         onUploadProgress: (progressEvent) => {
           const pct = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
           setProgress(pct);
-          setMsg(t('Uploading') + file.name + ' '+ pct +'%');
+          if (pct < 100) {
+            setMsg(t('Uploading') + file.name + ' '+ pct +'%');
+          } else {
+            setMsg(t('Processing'))
+          }
         }
       })
 
