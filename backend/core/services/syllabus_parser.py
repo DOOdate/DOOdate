@@ -1,14 +1,18 @@
 ﻿from pypdf import PdfReader
+from re import search
+import core.services.parse_ai
 
 _DATES = ("week", "lecture", "lab", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov",
          "dec", "mon", "tue", "wed", "thu", "fri", "sat", "sun", "tba", "tbd")
 _DELIVERABLES = ("quiz", "assignment", "lab", "midterm", "final", "exam", "deliverable", "submission", "report")
 _PUNCTUATION = ".,:;"
 _MAX_TITLE_LENGTH = 24 # Unused
+_COURSE_CODE_PATTERN = r"\b([A-Z]|[a-z]){3} ?[0-9]{4}"
+
 
 # Remember to increment this whenever the parser is changed
 # It indicates that a syllabus needs to be reparsed by the new parser
-VERSION = 1
+VERSION = 2
 
 class PDFInfo:
     def __init__(self, course_code: str, prof_email: str, late_policy: list, due_dates: list):
@@ -17,17 +21,53 @@ class PDFInfo:
         self.late_policy = late_policy
         self.due_dates = due_dates
 
-def parse(file: str) -> PDFInfo:
+"""
+You will waste a lot of tokens parsing pages that don't contain relevant information. Most syllabi will extensively contain
+university policies unrelated to the assignments/late policy.
+Could possibly filter out pages that do not contain numbers or any of _DATES or _DELIVERABLES or 'late'
+-CL
+"""
+async def parse(file: str, noai: bool = False) -> PDFInfo:
+    if noai:
+        return _parse_noai(file)
     reader = PdfReader(file)
+    course_code = None
+    prof_email = None
+    for page in reader.pages:
+        for line in page.extract_text().split('\n'):
+            if not course_code:
+                course_code = _match_course_code(line)
+            if not prof_email:
+                prof_email = _parse_email(line)
+            if prof_email is not None and course_code is not None:
+                break
+    result = await core.services.parse_ai.parse(file)
+    # Contingency
+    if 'late_policy' not in result or 'assignments' not in result:
+        return _parse_noai(file)
+    return PDFInfo(course_code, prof_email, result['late_policy'] or [], result['assignments'] or [])
+
+
+def _parse_noai(file: str) -> PDFInfo:
+    reader = PdfReader(file)
+    course_code = None
+    prof_email = None
     due_dates = []
     for page in reader.pages:
         text = page.extract_text()
         lines = text.split("\n")
         for line in lines:
             contains_date = False # Event must contain date to be added to list of due dates
-            # [Title, Date, Weight]
-            info = ["", "", ""]
+            info = {}
             line = line.strip().lower()
+
+            # Assume that the first string to match course code format is the course code
+            if course_code is None:
+                course_code = _match_course_code(line)
+            # Assume that the first email is the professor's
+            if prof_email is None:
+                prof_email = _parse_email(line)
+
             # Find the first instance of a percent symbol
             weight_index = line.find("%")
             if weight_index != -1:
@@ -38,7 +78,10 @@ def parse(file: str) -> PDFInfo:
                 while i-1 >= 0 and line[i-1].isdigit() or line[i-1] in ('.', ','):
                     i -= 1
                 # Add our read number value to the weight index of info
-                info[2] = line[i:weight_index].strip() + "%"
+                try:
+                    info['weight'] = float(line[i:weight_index].strip())
+                except ValueError:
+                    info['weight'] = -1
                 # Remove the weight substring from the line
                 line = line.replace(line[i:weight_index]+"%", "")
             # Searching for dates
@@ -47,7 +90,7 @@ def parse(file: str) -> PDFInfo:
                 if index != -1:
                     if el == "tbd" or el == "tba":
                         # Set date as TBD and remove from string
-                        info[1] = "TBD"
+                        info['due_date'] = "TBD"
                         line = line.replace(el, "")
                         # Break out of the loop early since this line contains a date
                         contains_date = True
@@ -63,11 +106,11 @@ def parse(file: str) -> PDFInfo:
                             contains_date = True
                             tmp = line[index:i].strip(_PUNCTUATION)
                             line = line.replace(tmp, "")
-                            info[1] = tmp.strip()
+                            info['due_date'] = tmp.strip()
                             break
             # The entire line with the weight and date removed is now set as the title of the event
             # Strip whitespace and punctuation and convert to title case
-            info[0] = line.strip().strip(_PUNCTUATION).title()
+            info['title'] = line.strip().strip(_PUNCTUATION).title()
             # We only count this event if a deliverable is in the title
             for deliverable in _DELIVERABLES:
                 i = line.find(deliverable)
@@ -90,7 +133,12 @@ def parse(file: str) -> PDFInfo:
                 else:
                     due_dates.append(info)
 
-    return PDFInfo("", "", [], due_dates)
+    return PDFInfo(
+        "" if course_code is None else course_code,
+       "" if prof_email is None else prof_email,
+       [],
+       due_dates
+    )
 
 
 def _guess_end_of_word(line: str, start_index: int) -> int:
@@ -109,6 +157,34 @@ def _guess_end_of_word(line: str, start_index: int) -> int:
     # The minimum distance to the end of word indicator is the true end of word
     return min(offsets)
 
+
+def _parse_email(line: str) -> str | None:
+    # Lazy validation
+    # Assume a string is an email address if there is an @ symbol with no space characters directly adjacent.
+    # The email address will be determined by all characters to the left and right of the @ until a space character
+    at_indx = line.find('@')
+    if at_indx != -1:
+        if at_indx-1 >= 0 and line[at_indx-1] == ' ': return None
+        if at_indx+1 < len(line) and line[at_indx+1] == ' ': return None
+        left = ''
+        right = ''
+        i = at_indx-1
+        while i >= 0 and line[i] != ' ':
+            i -= 1
+        left = line[i+1:at_indx]
+        i = at_indx+1
+        while i < len(line) and line[i] != ' ':
+            i += 1
+        right = line[at_indx:i]
+        return left + right
+    return None
+
+
+def _match_course_code(line: str) -> str | None:
+    match = search(_COURSE_CODE_PATTERN, line)
+    if match:
+        return match.group()
+    return None
 
 
 # Testing purposes

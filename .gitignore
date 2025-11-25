@@ -3,3 +3,7 @@ __pycache__/
 .vite/
 .idea/
 /backend/syllabi/
+node_modules/
+package.json
+package-lock.json
+/backend/secret.env
