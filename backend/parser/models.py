@@ -1,3 +1,5 @@
+from datetime import datetime
+from core.services.randomColour import generate_colour
 from django.db import models
 
 class User(models.Model):
@@ -7,9 +9,11 @@ class User(models.Model):
         return self.notification_token
 
 class Course(models.Model):
-    course_code = models.CharField(max_length=7, default='') # I think they can only be 7?
-    prof_email = models.CharField(max_length=255, default='')
+    course_code = models.CharField(max_length=15, default='') # I think they can only be 7?
+    prof_email = models.CharField(max_length=255, default='', blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses', null=True)
+    colour = models.CharField(max_length=7, default=generate_colour)
+
     # hidden: late_policy (many)
     # hidden: deadlines (many)
 
@@ -26,7 +30,7 @@ class Syllabus(models.Model):
         return self.hash
 
 class PolicyPeriod(models.Model):
-    time = models.FloatField(default=0.0)
+    time = models.DateTimeField()
     penalty = models.FloatField(default=0.0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='late_policy', null=True)
 

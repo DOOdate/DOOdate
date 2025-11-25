@@ -97,9 +97,8 @@ function AddSyllabus() {
         height: "100%",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "background.default",
-        color: "text.primary",
         minHeight: "100vh",
+        flexDirection: "column"
       }}
     >
       <Box
@@ -153,7 +152,25 @@ function AddSyllabus() {
             <LinearProgress variant="determinate" value={progress} />
           </Box>
         )}
-        
+        <Box sx={{mt: "auto"}}>
+          <Button
+            variant="contained"
+            onClick={() => navigate('/manageclass')}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              borderRadius: 0,
+              bgcolor: "primary.secondary",
+              color: "common.white",
+              py: 1,
+              textTransform: "none"
+            }}
+          >
+            Manage Courses
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

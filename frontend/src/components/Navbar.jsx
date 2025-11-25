@@ -25,6 +25,7 @@ function Navbar() {
     return (
         <>
         <BottomNavigation
+          sx={(theme) =>({zIndex: 1200})}
           showLabels
           className="navbar"
           value={value}
