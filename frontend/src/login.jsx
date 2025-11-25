@@ -59,9 +59,34 @@ function Login(){
                 }}
             />
 
+            <Button
+            variant="contained"
+            sx = {{
+                width: { xs: "85vw", md: "30vw",},
+                marginTop: "4vh",
+                backgroundColor: "primary.main",
+                color: "primary.base"
+            }}
+            onClick={() => {
+                requestNotifications();
+                axios.get('/api/courses/0').then((response) => {
+                    if (response.status !== 200) {
+                        console.error('Error fetching user data', response);
+                    } else {
+                        let t = JSON.parse(data);
+                        t.courses = response.data; 
+                        setData(JSON.stringify(t));
+                        navigate('/home');
+                    }
+                })
+            }}
+            >
+            {t('Demo')}
+            </Button>
+                
             {/* Optional name under the logo — helps recognition on small screens 
             <Typography variant="h4" sx={{ marginTop: 0, fontWeight: 700 }}>{'DOOdate'</Typography>*/}
-
+            {/*}
             <Typography variant="h5" sx = {{marginTop: "1.5vh"}}>{t('Signin')}</Typography>
             <Typography align="center" variant="body1" sx = {{marginTop: "1vh", mx: "2vw"}}>{t('Enter email')}</Typography>
 
@@ -126,7 +151,7 @@ function Login(){
             </Button>
 
             <Typography align="center" variant = "body2"  sx={{marginTop: "2vh", mx: "2vw"}}>{t('Contract')}<Link href="/signup"> {t('TOS')} </Link> {t('and')} <Link href="/signup"> {t('PP')} </Link></Typography>
-
+        */}
         </Box>
     )
 }

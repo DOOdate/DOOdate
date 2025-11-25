@@ -91,6 +91,10 @@ def addTest(request):
         serializer.save()
     return Response(serializer.data)
 
+@api_view(['GET'])
+def newUser(request):
+    pass
+
 @csrf_exempt
 async def upload_syllabus(request):
     if request.method != 'POST':

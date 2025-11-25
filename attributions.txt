@@ -1,0 +1,2 @@
+Optional credits (which we could add to the app):
+Vectors and icons by <a href="https://www.svgrepo.com" target="_blank">SVG Repo</a>

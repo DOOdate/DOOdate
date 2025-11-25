@@ -53,7 +53,7 @@ const TextField2 = memo(function TextField2({ label, value, onChange }) {
             htmlInput: {
             min: 0,
             max: 100,
-            step: 0.1,
+            step: 1,
             inputMode: "decimal",
             },
         }}
@@ -92,6 +92,17 @@ const LatePolicyRow = React.memo(function LatePolicyRow({
 
     const handlePolicyDateChange = React.useCallback(
         (newValue) => {
+            let raw = e.target.value;
+
+        if (raw === "") {
+        onFieldChange(index, "penalty", "", "lp");
+        return;
+        }
+
+        const num = parseFloat(raw);
+        if (!Number.isNaN(num)) {
+        if (num < 0) raw = "0";
+        }
             onFieldChange(index, "time", newValue ? newValue.toDate().toISOString() : null, "lp");
         },
         [index, onFieldChange]
@@ -108,12 +119,13 @@ const LatePolicyRow = React.memo(function LatePolicyRow({
         >
 
         <TextField2
-            label="Weight"
+            label="Penalty %"
             value={policy.penalty ?? ""}
             onChange={handlePenaltyChange}
         />
 
-        <DateTime
+        <TextField2
+            label="Hrs Late"
             value={policy.time ?? null}
             onChange={handlePolicyDateChange}
         />
