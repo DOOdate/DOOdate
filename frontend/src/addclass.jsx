@@ -1,89 +1,343 @@
-import React, { useState, useEffect } from "react";
+import React, {useCallback } from "react";
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import { useUI } from './uiContext.jsx';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { memo, useState } from 'react';
+import DateTime from "./components/DateTimeCOMP.jsx";
+import dayjs from 'dayjs';
+import CourseColourField from "./components/CourseColour.jsx";
+
+const createEmptyDeadline = () => ({
+    title: "",
+    due_date: "",
+    weight: "",
+});
+
+const createEmptyLatePolicy = () => ({
+    policy_date: "",
+    penalty: "",
+});
+
+const TextField1 = memo(function TextField1({ label, value, onChange
+}) {
+    return (
+        <TextField
+            label={label}
+            value={value}
+            onChange={onChange}
+            slotProps={{maxLength: 200}}
+            fullWidth
+        />
+    );
+});
+
+const TextField2 = memo(function TextField2({ label, value, onChange }) {
+  return (
+    <TextField
+        label={label}
+        type="number"
+        value={value}
+        onChange={onChange}
+        slotProps={{
+            htmlInput: {
+            min: 0,
+            max: 100,
+            step: 0.1,
+            inputMode: "decimal",
+            },
+        }}
+        fullWidth
+    />
+  );
+});
+
+const LatePolicyRow = React.memo(function LatePolicyRow({
+    policy,
+    index,
+    onFieldChange,
+    onMenuOpen,
+    }){
+    
+    const handlePenaltyChange = React.useCallback(
+    (e) => {
+        let raw = e.target.value;
+
+        if (raw === "") {
+        onFieldChange(index, "penalty", "", "lp");
+        return;
+        }
+
+        const num = parseFloat(raw);
+        if (!Number.isNaN(num)) {
+        if (num < 0) raw = "0";
+        if (num > 100) raw = "100";
+        }
+
+        onFieldChange(index, "penalty", raw, "lp");
+    },
+    [index, onFieldChange]
+    );
+
+
+    const handlePolicyDateChange = React.useCallback(
+        (newValue) => {
+            onFieldChange(index, "time", newValue ? newValue.toDate().toISOString() : null, "lp");
+        },
+        [index, onFieldChange]
+    );
+
+    return (
+        <ListItem
+        sx={{ display: "flex", gap: 2, flexDirection: "row" }}
+        secondaryAction={
+            <IconButton edge="end" onClick={event => onMenuOpen(event, policy.id)}>
+            <MoreVertIcon />
+            </IconButton>
+        }
+        >
+
+        <TextField2
+            label="Weight"
+            value={policy.penalty ?? ""}
+            onChange={handlePenaltyChange}
+        />
+
+        <DateTime
+            value={policy.time ?? null}
+            onChange={handlePolicyDateChange}
+        />
+        </ListItem>
+    );
+    
+});
+
+const DeadlineRow = React.memo(function DeadlineRow({
+    deadline,
+    index,
+    onFieldChange,
+    onMenuOpen,
+    }) {
+
+    const handleTitleChange = React.useCallback(
+        (e) => onFieldChange(index, "title", e.target.value, "dl"),
+        [index, onFieldChange]
+    );
+
+    const handleWeightChange = React.useCallback(
+        (e) => {
+            let raw = e.target.value;
+
+            if (raw === "") {
+            onFieldChange(index, "weight", "", "dl");
+            return;
+            }
+
+            const num = parseFloat(raw);
+            if (!Number.isNaN(num)) {
+            if (num < 0) raw = "0";
+            if (num > 100) raw = "100";
+            }
+
+            onFieldChange(index, "weight", raw, "dl");
+        },
+        [index, onFieldChange]
+    );
+
+
+    const handleDueDateChange = React.useCallback(
+        (newValue) => {
+            onFieldChange(index, "due_date", newValue ? newValue.toDate().toISOString() : null, "dl");
+        },
+        [index, onFieldChange]
+    );
+
+    return (
+        <ListItem
+        sx={{ display: "flex", gap: 2, flexDirection: "row" }}
+        secondaryAction={
+            <IconButton edge="end" onClick={event => onMenuOpen(event, deadline.id)}>
+            <MoreVertIcon />
+            </IconButton>
+        }
+        >
+        <TextField1
+            label="Name"
+            value={deadline.title ?? ""}
+            onChange={handleTitleChange}
+        />
+
+        <TextField2
+            label="Weight"
+            value={deadline.weight ?? ""}
+            onChange={handleWeightChange}
+        />
+
+        <DateTime
+            value={deadline.due_date ?? null}
+            onChange={handleDueDateChange}
+        />
+        </ListItem>
+    );
+});
+
+
 import { useUserContext } from './userContext.jsx';
 import { t } from "i18next";
 
 function AddClass(){
-    const [name, setName] = useState('');
-    const [code, setCode] = useState('');
-    const [classInfo, setClassInfo] = useState(null);
-    const [jsonText, setJsonText] = useState('');
+
     const location = useLocation();
+    const navigate = useNavigate();
+    const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedId, setSelectedId] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
+    const menuOpen = Boolean(menuAnchorEl);
+    const [selectedDLIds, setDLIds] = React.useState([]);
+    const [selectedLPIds, setLPIds] = React.useState([]);
+    const [msg, setMsg] = React.useState("");
+    
     const { data, setData } = useUserContext();
 
-    useEffect(() => {
-        if (location?.state?.classInfo) {
-            setClassInfo(location.state.classInfo);
-            if (location.state.classInfo.course_code) setName(location.state.classInfo.course_code);
-        }
-    }, [location]);
-    const { showFlash } = useUI();
+    const [classInfo, setClassInfo] = React.useState(
+        () => location.state?.classInfo ?? null
+    );
 
-    const formatDate = (isoString) => {
-        const date = new Date(isoString);
-        return date.toLocaleString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
+    const handleMenuOpen = (event, index, id, type) => {
+        console.log("here0");
+        console.log(index);
+        console.log(type);
+        setMenuAnchorEl(event.currentTarget);
+        setSelectedIndex(index);
+        setSelectedType(type);
+        setSelectedId(id.id);
+        
     };
 
-    const submit = (e) => {
-        e.preventDefault();
-        if (!code.trim()) return showFlash('Please enter a class code', 'warning');
+    const handleMenuClose = () => {
+        console.log("here1");
+        setMenuAnchorEl(null);
+        setSelectedIndex(null);
+        setSelectedType(null);
+        setSelectedId(null);
+    };
 
-        // Try to fetch class information from the backend. If there's no known endpoint,
-        // this will fail silently and leave the UI for manual paste or upload flow.
-        (async () => {
-            try {
-                const resp = await axios.get(`/api/classinfo?code=${encodeURIComponent(code)}`);
-                if (resp?.data) {
-                    setClassInfo(resp.data);
-                    if (resp.data.course_code) setName(resp.data.course_code);
-                    return;
-                }
-            } catch (err) {
-                // No server endpoint available or request failed — fall back to waiting for upload
-                console.debug('Fetching class info failed:', err?.message || err);
-                showFlash('Could not fetch class info from server; paste JSON or upload a syllabus.', 'info');
+    const handleDelete = async () => {
+        
+        setClassInfo(prev => {
+            if (selectedType == "dl") {
+                selectedDLIds.push(selectedId);
+                return {
+                ...prev,
+                deadlines: prev.deadlines.filter((_, i) => i !== selectedIndex),
+            };
+            } else if (selectedType == "lp") {
+                selectedLPIds.push(selectedId);
+                return {
+                ...prev,
+                late_policy: prev.late_policy.filter((_, i) => i !== selectedIndex),
+                };
             }
-        })();
-    }
+            return prev;
+        });
 
-    const loadFromJson = () => {
-        if (!jsonText.trim()) return showFlash('Paste class JSON into the box first', 'warning');
+        handleMenuClose();
+
+    };
+
+    const { showFlash } = useUI();
+
+
+    const generic_Update = useCallback((index, field, value, type) => {
+        setClassInfo(prev => {
+
+            let listKey;
+
+            if(type == "dl"){
+                listKey = "deadlines";
+            }
+
+            else if(type == "lp"){
+                listKey = "late_policy";
+            }
+
+            else{
+                return prev;
+            }
+            
+            const list = prev[listKey];
+
+            const newList = [...list];
+
+            newList[index] = {
+                ...newList[index],
+                [field]: value,
+            };
+
+            return{
+                ...prev,
+                [listKey]: newList
+            }
+
+        });
+    }, []);
+
+    const addDeadline = () => {
+        setClassInfo(prev => ({
+            ...prev,
+            deadlines: [...prev.deadlines, createEmptyDeadline()],
+        }));
+    };
+
+    const addLatePolicy = () => {
+        setClassInfo(prev => ({
+            ...prev,
+            late_policy: [...prev.late_policy, createEmptyLatePolicy()],
+        }));
+    };
+
+    const courseCodeUpdate = (value) => { setClassInfo(prev => ({...prev, course_code: value})) }; 
+    const profEmailUpdate = (value) => { setClassInfo(prev => ({...prev, prof_email: value})) };
+    const colourUpdate = (value) => { setClassInfo(prev => ({...prev, colour: value}))};
+
+
+    const backendSave = async () => {
+
         try {
-            const parsed = JSON.parse(jsonText);
-            if (parsed && (parsed.course_code || parsed.deadlines)) {
-                setClassInfo(parsed);
-                if (parsed.course_code) setName(parsed.course_code);
-                showFlash('Loaded class info from JSON', 'success');
-            } else {
-                showFlash('JSON does not look like class info', 'warning');
+                
+            if(classInfo.id == null){
+                await axios.post(`/api/courses/`, classInfo);
+                setMsg("created");
+            } else{
+                await axios.patch(`/api/courses/${classInfo.id}/`, classInfo);
+                setMsg("created");
             }
+            
+    
         } catch (err) {
-            showFlash('Invalid JSON: ' + err.message, 'error');
+            console.error("Error:", err.response?.data || err);
+        } finally {
+            showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
+            navigate("/manageclass")
+            setLPIds([]);
+            setDLIds([]);
         }
-    }
+    };
 
     return (
         <Box sx={{ 
             minHeight: '100vh', 
-            bgcolor: 'background.default', 
-            color: 'text.primary',
             display: 'flex',
             flexDirection: 'column',
             gap: 2,
@@ -92,76 +346,117 @@ function AddClass(){
             margin: '0 auto',
             mt: 6,
             p: 2,
-            // add bottom padding so fixed bottom navbar doesn't cover the button
             pb: 8,
         }}
         >
-            <Typography variant="h4">Add Class</Typography>
-            {/* <TextField 
-                label="Class code" 
-                value={code} 
-                onChange={(e)=>setCode(e.target.value)} 
-                fullWidth 
-            /> */}
-
-            {/* <TextField
-                label="Or paste class JSON here (for testing)"
-                multiline
-                minRows={4}
-                value={jsonText}
-                onChange={(e)=>setJsonText(e.target.value)}
-                placeholder='Paste the class JSON returned by the server'
-                fullWidth
-            /> */}
-            {/* <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button type="button" variant="outlined" onClick={loadFromJson}>Load JSON</Button>
-                <Button type="submit" variant="contained">Load from server</Button>
-            </Box> */}
-            {classInfo && (
-                <>
-                    <TextField 
-                        label="Class name" 
-                        value={name} 
-                        onChange={(e)=>setName(e.target.value)} 
-                        fullWidth 
+            <Typography variant="h4" sx={{display: "flex", flexDirection: "row"}}>
+                Edit Class: {classInfo.course_code}
+            </Typography>
+            <CourseColourField 
+                value={classInfo.colour}
+                onChange={colourUpdate}
+            />
+            <List>
+                <ListItem sx={{display: "flex", gap:2, flexDirection: "column"}}>
+                    <TextField1
+                        label="Course Code/Course Name"
+                        value={classInfo.course_code}
+                        slotProps={{maxLength: 15}}
+                        onChange={e=>
+                            courseCodeUpdate(e.target.value)
+                        }
                     />
-                    <Typography variant="h6" sx={{ mt: 2 }}>Deadlines and due dates</Typography>
-                    <Paper elevation={0} sx={{ bgcolor: 'background.paper', p: 2 }}>
-                        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                            {classInfo.deadlines.map((deadline, index) => (
-                                <ListItem key={index} sx={{ px: 0, py: 1 }}>
-                                    <ListItemText
-                                        primary={deadline.title}
-                                        secondary={
-                                            <Box component="span" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
-                                                <Typography component="span" variant="body2">
-                                                    Due: {formatDate(deadline.due_date)}
-                                                </Typography>
-                                                {typeof deadline.weight === 'number' && (
-                                                    <Typography component="span" variant="body2">
-                                                        Weight: {deadline.weight >= 0 ? `${deadline.weight}%` : 'unknown'}
-                                                    </Typography>
-                                                )}
-                                            </Box>
-                                        }
-                                    />
-                                </ListItem>
-                            ))}
-                        </List>
-                    </Paper>
-                </>
-            )}
+                </ListItem>
+                <ListItem sx={{display: "flex", gap:2, flexDirection: "column"}}>
+                    <TextField1
+                        label="Prof Email"
+                        value={classInfo.prof_email}
+                        slotProps={{maxLength: 255}}
+                        onChange={e=>
+                            profEmailUpdate(e.target.value)
+                        }
+                    />
+                </ListItem>
+                {classInfo.deadlines.map((deadline, index) => (
+                   <DeadlineRow
+                        key={deadline.id ?? index}
+                        deadline={deadline}
+                        index={index}
+                        onFieldChange={generic_Update}
+                        onMenuOpen={(event) => handleMenuOpen(event, index, deadline, "dl")}
+                    />
+                ))}
+                <Button
+                    variant="contained"
+                    onClick={() => addDeadline()}
+                    sx={{
+                      display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        borderRadius: 0,
+                        bgcolor: "primary.secondary",
+                        color: "common.white",
+                        py: 1,
+                        textTransform: "none"
+                    }}
+                >
+                    Add Deadline
+                </Button>
+                {classInfo.late_policy.map((policy, index) => (
+                   <LatePolicyRow
+                        key={policy.id ?? index}
+                        policy={policy}
+                        index={index}
+                        onFieldChange={generic_Update}
+                        onMenuOpen={(event) => handleMenuOpen(event, index, policy, "lp")}
+                    />
+                ))}
+                <Button
+                    variant="contained"
+                    onClick={() => addLatePolicy()}
+                    sx={{
+                      display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        borderRadius: 0,
+                        bgcolor: "primary.secondary",
+                        color: "common.white",
+                        py: 1,
+                        textTransform: "none"
+                    }}
+                >
+                    Add Late Policy
+                </Button>
+            </List>
+            <Menu
+                anchorEl={menuAnchorEl}
+                open={menuOpen}
+                onClose={handleMenuClose}
+                anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+                }}
+                transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+                }}
+            >
+                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            </Menu>
             <Button type="button" variant="contained" onClick={()=>{
-                if (!name.trim()) return showFlash('Please enter a class name', 'warning');
-                showFlash(`Class "${name}" added`, 'success');
-                setName('');
-                setCode('');
-                setClassInfo(null);
-                setJsonText('');
-                let t = JSON.parse(data);
-                t.classes.push(location.state.classInfo);
-                setData(JSON.stringify(t));
-            }}>Add class</Button>
+               const hasInvalidDeadline = classInfo.deadlines.some(d => !d.title || d.title.trim() === "");
+
+                if (hasInvalidDeadline) return showFlash("Missing or invalid information", "warning");
+                
+                if (classInfo.course_code == "") return showFlash('Please enter a class name', 'warning');
+                
+                backendSave()
+                
+            }}>
+                Save Changes
+            </Button>
         </Box>
     );
 }
