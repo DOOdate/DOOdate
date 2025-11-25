@@ -13,6 +13,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from asgiref.sync import sync_to_async
 
 #Doing the views/get/delete like this beacuse it looked cool and effiecent when I was looking at code examples
 MODEL_MAP = {
@@ -90,23 +91,27 @@ def addTest(request):
         serializer.save()
     return Response(serializer.data)
 
-@api_view(['POST'])
-def upload_syllabus(request):
-    ALWAYS_OVERWRITE = False # Should be set False unless you are debugging!
-    if ALWAYS_OVERWRITE: print("WARNING: Parser is set to overwrite! Set ALWAYS_OVERWRITE to False in api/views.py unless you are actively debugging!")
+@csrf_exempt
+async def upload_syllabus(request):
+    if request.method != 'POST':
+        return JsonResponse({'detail': 'Method not allowed'}, status=405)
+
     file = request.FILES.get('myFile')
-    if file:
-        cached = pdf_db.find(file)
-        # Cached version does not exist or is outdated
-        if ALWAYS_OVERWRITE or cached is None or cached.parser_version != syllabus_parser.VERSION:
-            if cached is not None: file = cached.file # Prevent duplicate files when overwriting
-            parsed = syllabus_parser.parse(file)
-            template = course_template_builder.build_course(parsed, file).class_template
-        else:
-            template = cached.class_template
-        res = CourseSerializer(template) # Represents a Course as JSON
-        return Response(res.data)
-    raise BadRequest('Uploaded file is not valid')
+    if not file:
+        return JsonResponse({'detail': 'Uploaded file is not valid'}, status=400)
+
+    # Django doers not support DB methods in async function, so you have to use this
+    cached = await sync_to_async(pdf_db.find)(file)
+    # Cached version does not exist or is outdated
+    if cached is None or cached.parser_version != syllabus_parser.VERSION:
+        parsed = await syllabus_parser.parse(file)
+        built = await sync_to_async(course_template_builder.build_course)(parsed, file)
+        template = built.class_template
+    else:
+        template = await sync_to_async(lambda: cached.class_template)() # stupid django stuff
+
+    res = await sync_to_async(lambda: CourseSerializer(template).data)()  # Represents a Course as JSON
+    return JsonResponse(res)
 
 @api_view(['POST'])
 def save_token(request):
@@ -114,7 +119,7 @@ def save_token(request):
     if token:
         print(token)
         u = User(notification_token=token)
-        u.save() 
+        u.save()
         # incorrect since a user's token changes over time, should update existing user
         # no way to do this right now since no authentication implemented
         return Response({'status': 'token saved'})

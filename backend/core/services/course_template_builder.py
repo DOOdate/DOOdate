@@ -1,13 +1,10 @@
-import datetime
-
 from core.services.setup_django import setup_django
 setup_django()
 from parser.models import Course, Syllabus, PolicyPeriod, Deadline
 from django.core.files.uploadedfile import UploadedFile
 import core.services.pdf_db as pdf_db
 from core.services.syllabus_parser import PDFInfo, VERSION
-from dateutil import parser as dateparser
-from django.utils.timezone import make_aware
+from core.services import date_parsing
 
 def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
     """
@@ -23,26 +20,15 @@ def build_course(parsed: PDFInfo, file: UploadedFile) -> Syllabus:
     c = Course(course_code=parsed.course_code, prof_email=parsed.prof_email)
     c.save()
     for date in parsed.due_dates:
-        weight_float = -1
-        try:
-            weight_float = float(date[2].rstrip("%"))
-        except ValueError:
-            pass
-        try:
-            due = dateparser.parse(date[1], fuzzy=True)
-            due = make_aware(due) # Sets the timezone of the datetime object, this is needed to be valid in DB
-        except Exception:
-            due = make_aware(datetime.datetime(datetime.MINYEAR, 1, 1, 0, 0, 0))
-
-        d = Deadline(title=date[0], due_date=due, weight=weight_float, course=c)
+        t = date['title'] if 'title' in date else 'Unknown Assignment'
+        u = date_parsing.str_to_datetime(date['due_date']) if 'due_date' in date else date_parsing.INVALID
+        w = date['weight'] if 'weight' in date else -1
+        d = Deadline(title=t, due_date=u, weight=w, course=c)
         d.save()
     for period in parsed.late_policy:
-        penalty_float = 0
-        try:
-            penalty_float = float(period[1].rstrip("%"))
-        except ValueError:
-            pass
-        p = PolicyPeriod(time=period[0], penalty=penalty_float, course=c)
+        t = period['time'] if 'time' in period else -1
+        n = period['penalty'] if 'penalty' in period else -1
+        p = PolicyPeriod(time=t, penalty=n, course=c)
         p.save()
     s.class_template = c
     s.save()
