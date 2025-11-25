@@ -154,7 +154,8 @@ function Home(){
             }
 
         }
-    } 
+    }
+    upcomingAssignments.sort((a, b) => dayjs(a.due_date).diff(dayjs(b.due_date))); 
 
     const assignmentsPerDay = new Map();
 

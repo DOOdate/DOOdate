@@ -14,6 +14,7 @@ from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from asgiref.sync import sync_to_async
+from core.services import demo_user_factory
 
 #Doing the views/get/delete like this beacuse it looked cool and effiecent when I was looking at code examples
 MODEL_MAP = {
@@ -93,7 +94,10 @@ def addTest(request):
 
 @api_view(['GET'])
 def newUser(request):
-    pass
+    user = demo_user_factory.new_user()
+    print(user.courses.all())
+    resp = {'id': user.id, 'courses': [CourseSerializer(course).data for course in user.courses.all()]}
+    return JsonResponse(resp)
 
 @csrf_exempt
 async def upload_syllabus(request):
