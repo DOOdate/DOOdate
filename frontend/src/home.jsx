@@ -18,6 +18,7 @@ import i18next from "i18next";
 import localizedFormat from "dayjs/plugin/localizedFormat"
 import Button from '@mui/material/Button';
 import PlusIcon from "../src/assets/plus-icon-calendar.svg";
+import { useUserContext } from './userContext.jsx';
 
 function Home(){
     const { t } = useTranslation();
@@ -25,85 +26,87 @@ function Home(){
     const [selectedDate, setSelectedDate] = React.useState(null);
     const [selectionMode, setSelectionMode] = React.useState('day');
     const [upcomingExtended, setUpcomingExtended] = React.useState(false);
+    const { data, setData } = useUserContext();
 
-    let assignments = [
-        {
-            "course_code": "Physics",
-            "prof_email": "physics_prof@uottawa.ca",
-            "late_policy": "No late summissions accepted.",
-            "colour": "#dd7777",
-            "deadlines": [
-              {
-                "title": "Assignment 1",
-                "due_date": "2025-11-19T23:59:00",
-                "weight": 4,
-              }
-            ]
-          },
+    // let assignments = [
+    //     {
+    //         "course_code": "Physics",
+    //         "prof_email": "physics_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#dd7777",
+    //         "deadlines": [
+    //           {
+    //             "title": "Assignment 1",
+    //             "due_date": "2025-11-19T23:59:00",
+    //             "weight": 4,
+    //           }
+    //         ]
+    //       },
           
-          {
-            "course_code": "History",
-            "prof_email": "history_prof@uottawa.ca",
-            "late_policy": "10% per day late.",
-            "colour": "#77dd77",
-            "deadlines": [
-              {
-                "title": "Project Proposal",
-                "due_date": "2025-12-22T17:00:00",
-                "weight": 10,
-              },
-              {
-                "title": "Review Task",
-                "due_date": "2025-11-28T23:59:00",
-                "weight": 10,
-              }
-            ]
-          },
+    //       {
+    //         "course_code": "History",
+    //         "prof_email": "history_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#77dd77",
+    //         "deadlines": [
+    //           {
+    //             "title": "Project Proposal",
+    //             "due_date": "2025-12-22T17:00:00",
+    //             "weight": 10,
+    //           },
+    //           {
+    //             "title": "Review Task",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 10,
+    //           }
+    //         ]
+    //       },
           
-          {
-            "course_code": "Chemistry",
-            "prof_email": "chemistry_prof@uottawa.ca",
-            "late_policy": "20% for one day, 0% afterwards.",
-            "colour": "#7777dd",
-            "deadlines": [
-              {
-                "title": "Lab Report",
-                "due_date": "2025-11-25T23:59:00",
-                "weight": 6,
-              },
-              {
-                "title": "Problem Set 1",
-                "due_date": "2025-11-28T23:59:00",
-                "weight": 5,
-              }
-            ]
-          },
+    //       {
+    //         "course_code": "Chemistry",
+    //         "prof_email": "chemistry_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#7777dd",
+    //         "deadlines": [
+    //           {
+    //             "title": "Lab Report",
+    //             "due_date": "2025-11-25T23:59:00",
+    //             "weight": 6,
+    //           },
+    //           {
+    //             "title": "Problem Set 1",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 5,
+    //           }
+    //         ]
+    //       },
 
-          {
-            "course_code": "Calculus",
-            "prof_email": "calculus_prof@uottawa.ca",
-            "late_policy": "10% per day late up to 3 days.",
-            "colour": "#e67607",
-            "deadlines": [
-              {
-                "title": "Presentation",
-                "due_date": "2025-11-25T23:59:00",
-                "weight": 10,
-              },
-              {
-                "title": "Final Exam",
-                "due_date": "2025-11-28T23:59:00",
-                "weight": 20,
-              },
-              {
-                "title": "Exam Preperation Assignment",
-                "due_date": "2025-11-28T23:59:00",
-                "weight": 0,
-              }
-            ]
-          }
+    //       {
+    //         "course_code": "Calculus",
+    //         "prof_email": "calculus_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#e67607",
+    //         "deadlines": [
+    //           {
+    //             "title": "Presentation",
+    //             "due_date": "2025-11-25T23:59:00",
+    //             "weight": 10,
+    //           },
+    //           {
+    //             "title": "Final Exam",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 20,
+    //           },
+    //           {
+    //             "title": "Exam Preperation Assignment",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 0,
+    //           }
+    //         ]
+    //       }
           
-    ];
+    // ];
+    let assignments = JSON.parse(data).courses;
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
     dayjs.updateLocale('fr' ,{

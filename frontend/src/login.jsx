@@ -14,10 +14,13 @@ import firebaseApp, {requestNotifications} from "./firebase"
 // Put your PNG at: frontend/public/logo.png
 import { useColorScheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import axios from 'axios';
+import { useUserContext } from './userContext.jsx';
 
 function Login(){
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { data, setData } = useUserContext();
     
     const { mode } = useColorScheme();
     const prefersDark = useMediaQuery('(prefers-color-scheme: dark)');
@@ -93,8 +96,17 @@ function Login(){
                 color: "primary.base"
             }}
             onClick={() => {
-                navigate('/home')
-                requestNotifications()
+                requestNotifications();
+                axios.get('/api/courses/0').then((response) => {
+                    if (response.status !== 200) {
+                        console.error('Error fetching user data', response);
+                    } else {
+                        let t = JSON.parse(data);
+                        t.courses = response.data; 
+                        setData(JSON.stringify(t));
+                        navigate('/home');
+                    }
+                })
             }}
             >
             {t('LOGIN')}
