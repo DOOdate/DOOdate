@@ -13,7 +13,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 const UserContext = createContext();
 
 export function UserProvider({ children }) {
-    const [data, setData] = useState("{\"classes\":[]}");
+    const [data, setData] = useState("{}");
 
     useEffect(() => {
         if (typeof data === 'object') {

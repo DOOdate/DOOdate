@@ -69,18 +69,7 @@ function Login(){
             }}
             onClick={() => {
                 //requestNotifications();
-                axios.get('/api/newuser').then((response) => {
-                    if (response.status !== 200) {
-                        console.error('Error fetching user data', response);
-                    } else {
-                        let t = JSON.parse(data);
-                        t = response.data; 
-                        // What it would look like for login v
-                        // t.courses = response.data;
-                        setData(JSON.stringify(t));
-                        navigate('/home');
-                    }
-                })
+                navigate('/home');
             }}
             >
             {t('Demo')}
