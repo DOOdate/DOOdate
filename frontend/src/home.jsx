@@ -16,22 +16,97 @@ import 'dayjs/locale/fr'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import i18next from "i18next";
 import localizedFormat from "dayjs/plugin/localizedFormat"
+import Button from '@mui/material/Button';
+import PlusIcon from "../src/assets/plus-icon-calendar.svg";
+import { useUserContext } from './userContext.jsx';
 
 function Home(){
     const { t } = useTranslation();
     const [classFilter, setClassFilter] = React.useState('All Classes');
     const [selectedDate, setSelectedDate] = React.useState(null);
+    const [selectionMode, setSelectionMode] = React.useState('day');
+    const [upcomingExtended, setUpcomingExtended] = React.useState(false);
+    const { data, setData } = useUserContext();
 
-    let assignments = [
-        { title: 'Assignment 1', className: 'Physics', date: '2025-11-19T23:59:00', weight: '4%', colour: '#dd7777' },
-        { title: 'Project Proposal', className: 'History', date: '2025-12-22T17:00:00', weight: '10%', colour: '#77dd77' },
-        { title: 'Lab Report', className: 'Chemistry', date: '2025-11-25T23:59:00', weight: '6%', colour: '#7777dd' },
-        { title: 'Presentation', className: 'Calculus', date: '2025-11-25T23:59:00', weight: '10%', colour: '#e67607' },
-        { title: 'Final Exam', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '20%', colour: '#e67607' },
-        { title: 'Exam Preperation Assignment', className: 'Calculus', date: '2025-11-28T23:59:00', weight: '0%', colour: '#e67607' },
-        { title: 'Review Task', className: 'History', date: '2025-11-28T23:59:00', weight: '10%', colour: '#77dd77' },
-        { title: 'Problem Set 1', className: 'Chemistry', date: '2025-11-28T23:59:00', weight: '5%', colour: '#7777dd' },
-    ];
+    // let assignments = [
+    //     {
+    //         "course_code": "Physics",
+    //         "prof_email": "physics_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#dd7777",
+    //         "deadlines": [
+    //           {
+    //             "title": "Assignment 1",
+    //             "due_date": "2025-11-19T23:59:00",
+    //             "weight": 4,
+    //           }
+    //         ]
+    //       },
+          
+    //       {
+    //         "course_code": "History",
+    //         "prof_email": "history_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#77dd77",
+    //         "deadlines": [
+    //           {
+    //             "title": "Project Proposal",
+    //             "due_date": "2025-12-22T17:00:00",
+    //             "weight": 10,
+    //           },
+    //           {
+    //             "title": "Review Task",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 10,
+    //           }
+    //         ]
+    //       },
+          
+    //       {
+    //         "course_code": "Chemistry",
+    //         "prof_email": "chemistry_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#7777dd",
+    //         "deadlines": [
+    //           {
+    //             "title": "Lab Report",
+    //             "due_date": "2025-11-25T23:59:00",
+    //             "weight": 6,
+    //           },
+    //           {
+    //             "title": "Problem Set 1",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 5,
+    //           }
+    //         ]
+    //       },
+
+    //       {
+    //         "course_code": "Calculus",
+    //         "prof_email": "calculus_prof@uottawa.ca",
+    //         "late_policy": [],
+    //         "colour": "#e67607",
+    //         "deadlines": [
+    //           {
+    //             "title": "Presentation",
+    //             "due_date": "2025-11-25T23:59:00",
+    //             "weight": 10,
+    //           },
+    //           {
+    //             "title": "Final Exam",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 20,
+    //           },
+    //           {
+    //             "title": "Exam Preperation Assignment",
+    //             "due_date": "2025-11-28T23:59:00",
+    //             "weight": 0,
+    //           }
+    //         ]
+    //       }
+          
+    // ];
+    let assignments = JSON.parse(data).courses;
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
     dayjs.updateLocale('fr' ,{
@@ -39,17 +114,18 @@ function Home(){
     })
     dayjs.locale(i18next.language)
 
-
     const classNamesSet = new Set();
     for (const a1 of assignments) {
-        classNamesSet.add(a1.className);
+        classNamesSet.add(a1.course_code);
     }
     const classNames = [...classNamesSet]
 
     let filteredAssignments = [];
     for (const a of assignments) {
-        if (classFilter == 'All Classes' || a.className == classFilter) {
-            filteredAssignments.push(a);
+        for(const b of a.deadlines){
+            if (classFilter == 'All Classes' || a.course_code == classFilter) {
+                filteredAssignments.push({title: b.title, due_date: b.due_date, weight: b.weight, colour: a.colour, course_code: a.course_code, late_policy: a.late_policy});
+            }
         }
     }
 
@@ -59,16 +135,31 @@ function Home(){
             upcomingAssignments.push(a);
         }
         else{
-            if(dayjs(a.date).isSame(selectedDate, "day")){
-                upcomingAssignments.push(a);
+            const assignmentDate = dayjs(a.due_date).startOf("day");
+            const selected = selectedDate.startOf("day");
+
+            if(selectionMode == "day"){
+                if(dayjs(a.due_date).isSame(selectedDate, "day")){
+                    upcomingAssignments.push(a);
+                }
             }
+            else{
+                const dayOfWeek = selected.day();
+                const weekStart = selected.subtract(dayOfWeek, "day");
+                const diffDays = assignmentDate.diff(weekStart, "day");
+          
+                if (diffDays >= 0 && diffDays <= 6) {
+                  upcomingAssignments.push(a);
+                }
+            }
+
         }
     } 
 
     const assignmentsPerDay = new Map();
 
     for (const ai of filteredAssignments) {
-        const date = dayjs(ai.date);
+        const date = dayjs(ai.due_date);
         if (!date.isValid()){
             continue;
         }
@@ -78,16 +169,28 @@ function Home(){
             assignmentsPerDay.set(key, []);
             }
         assignmentsPerDay.get(key).push(ai);
-        };
+    };
 
     const AssignmentDay = (props) => {
         const { day, outsideCurrentMonth, selected, ...other } = props;
         const key = day.format("YYYY-MM-DD");
 
+        let isInSelectedWeek = false;
+
+        if (selectionMode == "week" && selectedDate) {
+            const selected = selectedDate.startOf("day");
+            const weekStart = selected.subtract(selected.day(), "day");
+            isInSelectedWeek = day.startOf("day").diff(weekStart, "day") >= 0 && day.startOf("day").diff(weekStart, "day") <= 6;
+        }
+
+        const isStartOfWeek = selectionMode == "week" && isInSelectedWeek && day.day() == 0;
+        const isEndOfWeek = selectionMode == "week" && isInSelectedWeek && day.day() == 6;
+        const isToday = day.isSame(dayjs(), "day");
+
         let todaysAssignments = assignmentsPerDay.get(key);
         if (!todaysAssignments) {
             todaysAssignments = [];
-        }
+        } 
 
         const dots = [];
         const limitedAssignments = todaysAssignments.slice(0, 2);
@@ -117,25 +220,61 @@ function Home(){
                         width: "0.43rem",
                         height: "0.43rem",
                         borderRadius: "50%",
-                        bgcolor: 'primary.secondary',
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                     }}>
-                    +
+                      <img 
+                        src={PlusIcon} 
+                        style={{ width: "120%", height: "120%" }} 
+                    />
                     </Box>
             )
         }
 
-        if (todaysAssignments.length === 0) {
+        const daySx = {
+          ...(selectionMode == "day" && {
+          "&.Mui-selected": {
+            bgcolor: "rgba(150, 150, 150, 0.45)",
+            color: "inherit",
+            },
+
+          "&.Mui-selected:hover, &.Mui-selected:focus": {
+            bgcolor: "rgba(150, 150, 150, 0.45)",
+          },
+        }),
+
+        ...(selectionMode == "week" && isInSelectedWeek && {
+          bgcolor: "rgba(150, 150, 150, 0.45)",
+          color: "inherit",
+
+          "&:hover, &:focus": {
+            bgcolor: "rgba(150, 150, 150, 0.45)",
+          },    
+              
+          borderRadius: 0,
+
+          ...(isStartOfWeek && {
+            borderTopLeftRadius: "100%",
+            borderBottomLeftRadius: "100%",
+          }),
+    
+          ...(isEndOfWeek && {
+            borderTopRightRadius: "100%",
+            borderBottomRightRadius: "100%",
+          }),
+        }),
+        };
+        
+        if (todaysAssignments.length == 0) {
             return (<Box sx={{ position: "relative", }}>
-            <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth}/></Box>);
+            <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode == "day" ? selected : false} sx={daySx} disableMargin/></Box>);
         }
 
 
         return (
             <Box sx={{ position: "relative" }}>
-              <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth}/>
+              <PickersDay {...other} day={day} outsideCurrentMonth={outsideCurrentMonth} selected={selectionMode == "day" ? selected : false} sx={daySx} disableMargin/>
               <Box
                 sx={{
                   position: "absolute",
@@ -155,62 +294,104 @@ function Home(){
     return (
         <Box
         sx={{
-            display: 'flex',
-            width: '100%',
-            minHeight: '100vh',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            bgcolor: 'background.default',
-            color: 'text.primary',
-            overflow: 'hidden'
+          display: 'flex',
+          width: '100%',
+          minHeight: '100vh',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          bgcolor: 'background.default',
+          color: 'text.primary',
+          overflow: 'hidden'
         }}
         >
-            <Box sx={{ marginTop: 2, justifyContent: 'center',}}>
-                <Select
-                sx={{width: {xs: "70vw", md: "17vw"}, height: {xs: "5.5vh", md: "5vh"}}}
-                    value={classFilter}
-                    onChange={(e) => setClassFilter(e.target.value)}
-                >
-                    <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
-                    {classNames.map((className) => (
-                        <MenuItem key={className} value={className}>{className}</MenuItem>
-                    ))}
-                </Select>
-            </Box>
-            <Box sx={(theme) => ({
+          {upcomingExtended == false ? (
+          <Box
+            sx={{
+              marginTop: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 1, 
+              flexWrap: "wrap", 
+            }}>
+
+              <Select
+                sx={{width: {xs: "55vw", md: "14vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                value={classFilter}
+                onChange={(e) => setClassFilter(e.target.value)}>
+
+                <MenuItem value='All Classes'>{t('All Classes')}</MenuItem>
+                {classNames.map((className) => (<MenuItem key={className} value={className}>{className}</MenuItem>))}
+              </Select>
+
+              <Select
+                sx={{ width: {xs: "25vw", md: "7vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                value={selectionMode}
+                onChange={(e) => setSelectionMode(e.target.value)}
+                size="small">
+
+                <MenuItem value="day">Day</MenuItem>
+                <MenuItem value="week">Week</MenuItem>
+              </Select>
+
+          </Box>) : null}
+    
+          <Box sx={(theme) => ({
                 p: 2,
                 borderRadius: 1,
                 transition: 'background-color 200ms',
             })}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
-                    <DateCalendar
-                    onChange={(newValue) =>{
-                    if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
-                        setSelectedDate(null);
-                    }
-                    else{
-                        setSelectedDate(newValue);
-                    }
-                    }} 
-                    showDaysOutsideCurrentMonth 
-                    slots={{ day: AssignmentDay }}
-                    />
-                </LocalizationProvider>
-            </Box>
+
+              <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
+                {upcomingExtended == false ? (
+                  <DateCalendar
+                  value={selectedDate}
+                  onChange={(newValue) =>{
+                  if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
+                    setSelectedDate(null);
+                  }
+                  else{
+                    setSelectedDate(newValue);
+                  }
+                  }}
+                  showDaysOutsideCurrentMonth 
+                  slots={{ day: AssignmentDay }}
+                  />
+
+                ) : null}  
+              </LocalizationProvider>
+          </Box>
+
+          <Box
+          sx={{
+            display: "flex",
+            justifyContent: 'space-between',
+            alignItems: "center",
+            width: "90%",
+            marginBottom: "1vh",
+            marginTop: "-1vh"
+            }}> 
+
             <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
-            <Box sx={{ flex: 1,
+            {upcomingExtended == false ? (
+              <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Expand</Button>
+              ) : <Button variant="outlined" onClick={() => setUpcomingExtended(prev => !prev)}>Collapse</Button>}
+          
+          </Box>
+          <Box sx={{ flex: 1,
                 overflowY: 'auto',
                 width: '100%',
-                maxHeight: '40vh',
                 pb: '72px',
                 px: 2,
-                bgcolor: 'primary.secondary' }}>
+                bgcolor: 'primary.secondary',
+                maxHeight: upcomingExtended ? "92vh" : "40vh",
+                }}>
                 {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} {...assignment} date={dayjs(assignment.date).format("LLL")} />
+                    <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"}/>
                 ))}
+          </Box>
             </Box>
-        </Box>
     )
 }
 export default Home
