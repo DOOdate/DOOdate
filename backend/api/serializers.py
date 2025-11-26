@@ -42,6 +42,7 @@ class CourseSerializer(serializers.ModelSerializer):
         instance.course_code = validated_data.get("course_code", instance.course_code)
         instance.prof_email = validated_data.get("prof_email", instance.prof_email)
         instance.colour = validated_data.get("colour", instance.colour)
+        instance.user = validated_data.get("user", instance.user)
         instance.save()
 
             

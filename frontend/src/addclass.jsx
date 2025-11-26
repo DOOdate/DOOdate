@@ -18,6 +18,8 @@ import DateTime from "./components/DateTimeCOMP.jsx";
 import dayjs from 'dayjs';
 import CourseColourField from "./components/CourseColour.jsx";
 
+
+
 const createEmptyDeadline = () => ({
     title: "",
     due_date: "",
@@ -230,6 +232,9 @@ function AddClass(){
         () => location.state?.classInfo ?? null
     );
 
+    if (classInfo.user === null) 
+        setClassInfo(prev => ({...prev, user: localId}));
+
     const handleMenuOpen = (event, index, id, type) => {
         setMenuAnchorEl(event.currentTarget);
         setSelectedIndex(index);
@@ -322,15 +327,15 @@ function AddClass(){
     const courseCodeUpdate = (value) => { setClassInfo(prev => ({...prev, course_code: value})) }; 
     const profEmailUpdate = (value) => { setClassInfo(prev => ({...prev, prof_email: value})) };
     const colourUpdate = (value) => { setClassInfo(prev => ({...prev, colour: value}))};
-    const idUpdate = (value) => { setClassInfo(prev => ({...prev, user: value}))};
+    
 
 
     const backendSave = async () => {
 
         try {
-                
+            console.log(classInfo);   
             if(classInfo.id == null){
-                idUpdate(localId);
+                
                 await axios.post(`/api/courses/`, classInfo);
                 setMsg("created");
             } else{

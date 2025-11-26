@@ -119,7 +119,7 @@ async def upload_syllabus(request):
     else:
         template = await sync_to_async(lambda: cached.class_template)() # stupid django stuff
 
-    res = await sync_to_async(lambda: CourseSerializer(template).data)()  # Represents a Course as JSON
+    res = await sync_to_async(lambda: CourseSerializer(demo_user_factory.clone_course(template, None)).data)()  # Represents a Course as JSON
     return JsonResponse(res)
 
 @api_view(['POST'])

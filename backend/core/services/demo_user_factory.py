@@ -24,5 +24,5 @@ def clone_course(c: Course, u: User) -> Course:
         p = PolicyPeriod(time=late.time, penalty=late.penalty, course=nc)
         p.save()
     nc.save()
-    u.save()
+    if u: u.save()
     return nc

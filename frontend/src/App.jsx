@@ -19,7 +19,7 @@ import '@fontsource/roboto/700.css';
 import "@fontsource/opendyslexic/400.css";
 import "@fontsource/opendyslexic/700.css"
 import useMediaQuery from '@mui/material/useMediaQuery';
-import firebaseApp, {requestNotifications} from "./firebase"
+//import firebaseApp, {requestNotifications} from "./firebase"
 import { UserProvider } from './userContext.jsx';
 
 function App() {
@@ -62,17 +62,17 @@ function App() {
     window.forceThemeRefresh = () => setCounter((c) => c + 1);
   })
 
-  React.useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/firebase-messaging-sw.js')
-        .then((registration) => {
-          console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch((err) => {
-          console.warn('Service Worker registration failed:', err);
-        });
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  //     navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  //       .then((registration) => {
+  //         console.log('Service Worker registered with scope:', registration.scope);
+  //       })
+  //       .catch((err) => {
+  //         console.warn('Service Worker registration failed:', err);
+  //       });
+  //   }
+  // }, []);
 
   const { mode, setMode } = useColorScheme();
   let prefersDark = useMediaQuery('(prefers-color-scheme: dark)')
