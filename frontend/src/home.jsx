@@ -19,6 +19,8 @@ import localizedFormat from "dayjs/plugin/localizedFormat"
 import Button from '@mui/material/Button';
 import PlusIcon from "../src/assets/plus-icon-calendar.svg";
 import { useUserContext } from './userContext.jsx';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function Home(){
     const { t } = useTranslation();
@@ -28,84 +30,84 @@ function Home(){
     const [upcomingExtended, setUpcomingExtended] = React.useState(false);
     const { data, setData } = useUserContext();
 
-    // let assignments = [
-    //     {
-    //         "course_code": "Physics",
-    //         "prof_email": "physics_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#dd7777",
-    //         "deadlines": [
-    //           {
-    //             "title": "Assignment 1",
-    //             "due_date": "2025-11-19T23:59:00",
-    //             "weight": 4,
+    //  let assignments = [
+    //      {
+    //          "course_code": "Physics",
+    //          "prof_email": "physics_prof@uottawa.ca",
+    //          "late_policy": [],
+    //          "colour": "#dd7777",
+    //          "deadlines": [
+    //            {
+    //              "title": "Assignment 1",
+    //              "due_date": "2025-11-19T23:59:00",
+    //              "weight": 4,
     //           }
-    //         ]
-    //       },
+    //          ]
+    //        },
           
-    //       {
-    //         "course_code": "History",
-    //         "prof_email": "history_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#77dd77",
-    //         "deadlines": [
-    //           {
-    //             "title": "Project Proposal",
-    //             "due_date": "2025-12-22T17:00:00",
-    //             "weight": 10,
-    //           },
-    //           {
-    //             "title": "Review Task",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 10,
-    //           }
-    //         ]
-    //       },
+    //        {
+    //          "course_code": "History",
+    //          "prof_email": "history_prof@uottawa.ca",
+    //          "late_policy": [],
+    //          "colour": "#77dd77",
+    //          "deadlines": [
+    //            {
+    //              "title": "Project Proposal",
+    //              "due_date": "2025-12-22T17:00:00",
+    //              "weight": 10,
+    //            },
+    //            {
+    //              "title": "Review Task",
+    //              "due_date": "2025-11-28T23:59:00",
+    //              "weight": 10,
+    //            }
+    //          ]
+    //        },
           
-    //       {
+    //        {
     //         "course_code": "Chemistry",
-    //         "prof_email": "chemistry_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#7777dd",
-    //         "deadlines": [
-    //           {
-    //             "title": "Lab Report",
-    //             "due_date": "2025-11-25T23:59:00",
-    //             "weight": 6,
-    //           },
-    //           {
-    //             "title": "Problem Set 1",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 5,
-    //           }
-    //         ]
-    //       },
+    //          "prof_email": "chemistry_prof@uottawa.ca",
+    //          "late_policy": [],
+    //          "colour": "#7777dd",
+    //          "deadlines": [
+    //            {
+    //              "title": "Lab Report",
+    //              "due_date": "2025-11-25T23:59:00",
+    //              "weight": 6,
+    //            },
+    //            {
+    //              "title": "Problem Set 1",
+    //              "due_date": "2025-11-28T23:59:00",
+    //              "weight": 5,
+    //            }
+    //          ]
+    //        },
 
-    //       {
-    //         "course_code": "Calculus",
-    //         "prof_email": "calculus_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#e67607",
-    //         "deadlines": [
-    //           {
-    //             "title": "Presentation",
-    //             "due_date": "2025-11-25T23:59:00",
-    //             "weight": 10,
-    //           },
-    //           {
-    //             "title": "Final Exam",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 20,
-    //           },
-    //           {
-    //             "title": "Exam Preperation Assignment",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 0,
-    //           }
-    //         ]
-    //       }
+    //        {
+    //          "course_code": "Calculus",
+    //          "prof_email": "calculus_prof@uottawa.ca",
+    //          "late_policy": [],
+    //          "colour": "#e67607",
+    //          "deadlines": [
+    //            {
+    //              "title": "Presentation",
+    //              "due_date": "2025-11-25T23:59:00",
+    //              "weight": 10,
+    //            },
+    //            {
+    //              "title": "Final Exam",
+    //              "due_date": "2025-11-28T23:59:00",
+    //              "weight": 20,
+    //            },
+    //            {
+    //              "title": "Exam Preperation Assignment",
+    //              "due_date": "2025-11-28T23:59:00",
+    //              "weight": 0,
+    //            }
+    //          ]
+    //        }
           
-    // ];
+    //  ];
     let assignments = JSON.parse(data).courses;
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
@@ -113,6 +115,10 @@ function Home(){
         months : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', "Août", 'Septembre', 'Octobre', 'Novembre', 'Décembre']
     })
     dayjs.locale(i18next.language)
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm')) || useMediaQuery(theme.breakpoints.down('md')); 
+
 
     const classNamesSet = new Set();
     for (const a1 of assignments) {
@@ -132,7 +138,9 @@ function Home(){
     let upcomingAssignments = [];
     for (const a of filteredAssignments) {
         if (selectedDate == null) {
-            upcomingAssignments.push(a);
+            if(dayjs(a.due_date).isBefore(dayjs().startOf("day").add(20,"day")) && dayjs(a.due_date).isAfter(dayjs().startOf("day"))){
+              upcomingAssignments.push(a);
+          }
         }
         else{
             const assignmentDate = dayjs(a.due_date).startOf("day");
@@ -154,7 +162,8 @@ function Home(){
             }
 
         }
-    } 
+    }
+    upcomingAssignments.sort((a, b) => dayjs(a.due_date).diff(dayjs(b.due_date)));
 
     const assignmentsPerDay = new Map();
 
@@ -298,11 +307,11 @@ function Home(){
           width: '100%',
           minHeight: '100vh',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: isMobile ? 'center' : "flex-start",
           flexDirection: 'column',
           bgcolor: 'background.default',
           color: 'text.primary',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
         >
           {upcomingExtended == false ? (
@@ -310,14 +319,15 @@ function Home(){
             sx={{
               marginTop: 2,
               display: "flex",
+              marginBottom: isMobile ? 0 : 2,
               justifyContent: "center",
               alignItems: "center",
               gap: 1, 
-              flexWrap: "wrap", 
+              flexWrap: "wrap",
             }}>
 
               <Select
-                sx={{width: {xs: "55vw", md: "14vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                sx={{width: {xs: "55vw", md: "14vw"}, height: {xs: "5.5vh", md: "5.5vh"}, marginBottom: isMobile ? 0 : 10, marginTop: isMobile ? 0 : 5,}}
                 value={classFilter}
                 onChange={(e) => setClassFilter(e.target.value)}>
 
@@ -326,17 +336,38 @@ function Home(){
               </Select>
 
               <Select
-                sx={{ width: {xs: "25vw", md: "7vw"}, height: {xs: "5.5vh", md: "5.5vh"}}}
+                sx={{ width: {xs: "25vw", md: "7vw"}, height: {xs: "5.5vh", md: "5.5vh"}, marginBottom: isMobile ? 0 : 10, marginTop: isMobile ? 0 : 5,}}
                 value={selectionMode}
-                onChange={(e) => setSelectionMode(e.target.value)}
+                onChange={(e) => {
+                  setSelectionMode(e.target.value) 
+                  if (e.target.value === "week") {
+                    setSelectedDate(dayjs());
+                  }
+                }}
+                
                 size="small">
-
                 <MenuItem value="day">Day</MenuItem>
                 <MenuItem value="week">Week</MenuItem>
               </Select>
 
           </Box>) : null}
-    
+          
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              justifyContent: "center",
+              alignItems: isMobile ? "stretch" : upcomingExtended ? "center" : "flex-start",
+              gap: isMobile ? 0 : 20,
+              width: "100%",
+              pl: !upcomingExtended ? {xs: 0, md: "5vw"} : {xs: 0, md: "0vw"},
+              maxWidth: isMobile ? "100%" : "75rem",
+              ...(!isMobile && {
+                transform: "scale(1.1)",
+                transformOrigin: "top center",
+              }),
+            }}>
+          {(!upcomingExtended || isMobile) && (
           <Box sx={(theme) => ({
                 p: 2,
                 borderRadius: 1,
@@ -345,7 +376,15 @@ function Home(){
 
               <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={i18next.language}>
                 {upcomingExtended == false ? (
+                  <Box sx={{
+                    transform: {
+                      xs: "scale(1)",
+                      md: "scale(1.9)",
+                    },
+                    mt: !isMobile ? 10 : 0,
+                  }}>
                   <DateCalendar
+                  
                   value={selectedDate}
                   onChange={(newValue) =>{
                   if (selectedDate && newValue && selectedDate.isSame(newValue, "day")) {
@@ -358,19 +397,30 @@ function Home(){
                   showDaysOutsideCurrentMonth 
                   slots={{ day: AssignmentDay }}
                   />
+                  </Box>
 
                 ) : null}  
               </LocalizationProvider>
-          </Box>
+          </Box> 
+          )}
 
+          <Box
+              sx={{
+                display: "grid",
+                width: "100%",
+                mx: {
+                  xs: 0,
+                  md: upcomingExtended ? "auto" : 0,
+                }
+              }}>
           <Box
           sx={{
             display: "flex",
             justifyContent: 'space-between',
             alignItems: "center",
-            width: "90%",
+            width: isMobile ? "95%" : "100%",
             marginBottom: "1vh",
-            marginTop: "-1vh"
+            marginTop: !isMobile && upcomingExtended ? "2vh" : "-1vh"
             }}> 
 
             <Typography variant="h5" sx={{ alignSelf: 'flex-start', pl: 2, textAlign: 'left' }}>{t('Upcoming')}</Typography>
@@ -381,17 +431,20 @@ function Home(){
           </Box>
           <Box sx={{ flex: 1,
                 overflowY: 'auto',
-                width: '100%',
+                width: "100%",
                 pb: '72px',
                 px: 2,
                 bgcolor: 'primary.secondary',
-                maxHeight: upcomingExtended ? "92vh" : "40vh",
+                maxHeight: upcomingExtended ? "92vh" : "53vh",
+                minHeight: upcomingExtended ? "92vh" : "53vh",
                 }}>
                 {upcomingAssignments.map((assignment) => (
                     <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"}/>
                 ))}
           </Box>
-            </Box>
+          </Box>
+          </Box>
+          </Box>
     )
 }
 export default Home
