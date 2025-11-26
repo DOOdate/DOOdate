@@ -306,8 +306,8 @@ function Home(){
                 onChange={(e) => setSelectionMode(e.target.value)}
                 size="small">
 
-                <MenuItem value="day">Day</MenuItem>
-                <MenuItem value="week">Week</MenuItem>
+                <MenuItem value="day">{t('Day')}</MenuItem>
+                <MenuItem value="week">{t('Week')}</MenuItem>
               </Select>
 
           </Box>) : null}

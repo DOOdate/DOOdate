@@ -34,5 +34,22 @@
   "UploadMsg": "Upload syllabus",
   "View Settings": "View Settings",
   "Weight": "Weight:",
-  "Late Policy": "Late Policy: "
+  "Late Policy": "Late Policy: ",
+  "Day": "Day",
+  "Week": "Week",
+  "Edit Class": "Edit Class",
+  "Course color": "Course color",
+  "Course Code/Course Name": "Course Code/Course Name",
+  "Prof Email": "Prof Email",
+  "Name": "Name",
+  "Due Date": "Due Date",
+  "Delete": "Delete",
+  "Add Deadline": "Add Deadline",
+  "Add Late Policy": "Add Late Policy",
+  "Save Changes": "Save Changes",
+  "Penalty %": "Penalty %",
+  "Hrs Late": "Hrs Late",
+  "Manage Courses": "Manage Courses",
+  "Your Classes": "Your Classes",
+  "Edit": "Edit"
 }

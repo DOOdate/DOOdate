@@ -34,5 +34,22 @@
   "UploadMsg": "Ajouter votre syllabus",
   "View Settings": "Paramètres de vue",
   "Weight": "Poids: ",
-  "Late Policy": "Politique de retard: "
+  "Late Policy": "Politique de retard: ",
+  "Day": "Jour",
+  "Week": "Semaine",
+  "Edit Class": "Modifier la Classe",
+  "Course color": "Couleur du cours",
+  "Course Code/Course Name": "Code du cours/Nom du cours",
+  "Prof Email": "Courriel du professeur",
+  "Name": "Nom",
+  "Due Date": "Date limite",
+  "Delete": "Supprimer",
+  "Add Deadline": "Ajouter une date limite",
+  "Add Late Policy": "Ajouter une politique de retard",
+  "Save Changes": "Enregistrer les modifications",
+  "Penalty %": "% de pénalité",
+  "Hrs Late": "h de retard",
+  "Manage Courses": "Gérer les cours",
+  "Your Classes": "Vos Classes",
+  "Edit": "Modifier"
 }
