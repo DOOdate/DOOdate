@@ -22,6 +22,7 @@ MODEL_MAP = {
     "syllabi":   (Syllabus, SyllabusSerializer),
     "policys":   (PolicyPeriod, PolicyPeriodSerializer),
     "deadlines": (Deadline, DeadlineSerializer),
+    "users": (User, UserSerializer),
 }
 
 @api_view(["GET", "DELETE", "PATCH"])

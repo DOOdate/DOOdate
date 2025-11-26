@@ -13,11 +13,13 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useUI } from './uiContext.jsx';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useUserContext } from './userContext.jsx';
 
 const createEmptyCourse = () => ({
     id: null,
     course_code: "",
     prof_email: "",
+    user: "",
     colour: "",
     late_policy: [],
     deadlines: [],
@@ -27,15 +29,42 @@ function ManageClass(){
 
     const [items, setItems] = React.useState([]);
     const navigate = useNavigate();
+    const localId = localStorage.getItem("id");
+    const {data, setData} = useUserContext();
+
+    if(localId == null){
+        navigate("/home");
+    }
 
     React.useEffect(() => {
-
         const loadItems = async () => {
-            const res = await axios.get("/api/courses/0")
-            setItems(res.data);
+            if(data === "{}" || data.courses === undefined){
+                const res = await axios.get(`/api/users/${localId}`);
+                const userData = res.data;
+                setItems(userData.courses);
+                setData(JSON.stringify(userData));
+            }
+            else{
+                setItems(data.courses);
+            }
         };
         loadItems();
-    }, []);
+    }, [data, setData]);
+
+    React.useEffect(() => {
+        if (!data || data === "{}") return;
+    
+        try {
+        const parsed = JSON.parse(data);
+    
+        const courses = Array.isArray(parsed.courses) ? parsed.courses : [];
+    
+        setItems(courses);
+        } catch (e) {
+        console.error("Invalid JSON in user context data:", data, e);
+        setItems([]); 
+        }
+    }, [data]);
 
     const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
     const [selectedItemId, setSelectedItemId] = React.useState(null);

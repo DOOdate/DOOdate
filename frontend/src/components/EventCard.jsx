@@ -47,4 +47,4 @@ EventCard.defaultProps = {
     colour: '#000000'
 }
 
-export default EventCard;
+export default React.memo(EventCard);

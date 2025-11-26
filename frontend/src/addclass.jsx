@@ -219,17 +219,18 @@ function AddClass(){
     const [selectedDLIds, setDLIds] = React.useState([]);
     const [selectedLPIds, setLPIds] = React.useState([]);
     const [msg, setMsg] = React.useState("");
-    
+    const localId = localStorage.getItem("id");
     const { data, setData } = useUserContext();
+
+    if(localId == null){
+        navigate("/home");
+    }
 
     const [classInfo, setClassInfo] = React.useState(
         () => location.state?.classInfo ?? null
     );
 
     const handleMenuOpen = (event, index, id, type) => {
-        console.log("here0");
-        console.log(index);
-        console.log(type);
         setMenuAnchorEl(event.currentTarget);
         setSelectedIndex(index);
         setSelectedType(type);
@@ -238,7 +239,6 @@ function AddClass(){
     };
 
     const handleMenuClose = () => {
-        console.log("here1");
         setMenuAnchorEl(null);
         setSelectedIndex(null);
         setSelectedType(null);
@@ -322,6 +322,7 @@ function AddClass(){
     const courseCodeUpdate = (value) => { setClassInfo(prev => ({...prev, course_code: value})) }; 
     const profEmailUpdate = (value) => { setClassInfo(prev => ({...prev, prof_email: value})) };
     const colourUpdate = (value) => { setClassInfo(prev => ({...prev, colour: value}))};
+    const idUpdate = (value) => { setClassInfo(prev => ({...prev, user: value}))};
 
 
     const backendSave = async () => {
@@ -329,6 +330,7 @@ function AddClass(){
         try {
                 
             if(classInfo.id == null){
+                idUpdate(localId);
                 await axios.post(`/api/courses/`, classInfo);
                 setMsg("created");
             } else{
@@ -341,6 +343,7 @@ function AddClass(){
             console.error("Error:", err.response?.data || err);
         } finally {
             showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
+            setData(JSON.stringify(classInfo));
             navigate("/manageclass")
             setLPIds([]);
             setDLIds([]);

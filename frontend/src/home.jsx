@@ -19,6 +19,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat"
 import Button from '@mui/material/Button';
 import PlusIcon from "../src/assets/plus-icon-calendar.svg";
 import { useUserContext } from './userContext.jsx';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home(){
     const { t } = useTranslation();
@@ -27,21 +30,57 @@ function Home(){
     const [selectionMode, setSelectionMode] = React.useState('day');
     const [upcomingExtended, setUpcomingExtended] = React.useState(false);
     const { data, setData } = useUserContext();
+    const [assignments, setAssignments] = React.useState([]);
 
-    if (data === "{}") {
-      let uid = localStorage.getItem('id');
-      axios.get(uid ? `/api/users/${uid}` : '/api/newuser').then((response) => {
-          if (response.status !== 200) {
-              console.error('Error fetching user data', response);
-          } else {
-              let t = JSON.parse(data);
-              t = response.data;
-              setData(JSON.stringify(t));
-              navigate('/home');
-          }
-      });
-    }
-    let assignments = JSON.parse(data).courses;
+    
+    
+    React.useEffect(() => {
+        
+        const loadData = async () => {
+            if (data == "{}") {
+              let uid = localStorage.getItem('id');
+
+              try{
+                const res = await axios.get(uid ? `/api/users/${uid}` : '/api/newuser/');
+
+                if (res.status !== 200) {
+                  console.error('Error fetching user data', response);
+                  return;
+                } 
+
+                const userData = res.data;
+
+                setData(JSON.stringify(userData));
+
+                if(userData.id !== undefined){
+                  localStorage.setItem('id', userData.id);
+                  console.log(userData.id);
+                }
+              } catch (err){
+                  console.error("Error fetching user data", err);
+              }                       
+            }
+        };
+        loadData(); 
+    }, [data, setData]);
+
+    React.useEffect(() => {
+      if (!data || data === "{}") return;
+
+      try {
+        const parsed = JSON.parse(data);
+
+        const courses = Array.isArray(parsed.courses) ? parsed.courses : [];
+
+        setAssignments(courses);
+      } catch (e) {
+        console.error("Invalid JSON in user context data:", data, e);
+        setAssignments([]); 
+      }
+    }, [data]);
+
+    
+    
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
     dayjs.updateLocale('fr' ,{
@@ -323,8 +362,8 @@ function Home(){
                 bgcolor: 'primary.secondary',
                 maxHeight: upcomingExtended ? "92vh" : "40vh",
                 }}>
-                {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"} late_policy={assignment.late_policy} />
+                {upcomingAssignments.map((assignment, index) => (
+                    <EventCard key={assignment.id ?? `${assignment.title}-${index}`} title={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"} late_policy={assignment.late_policy} />
                 ))}
           </Box>
             </Box>
