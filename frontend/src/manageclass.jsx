@@ -14,6 +14,7 @@ import { useUI } from './uiContext.jsx';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from './userContext.jsx';
+import { useTranslation } from 'react-i18next';
 
 const createEmptyCourse = () => ({
     id: null,
@@ -26,6 +27,7 @@ const createEmptyCourse = () => ({
 });
 
 function ManageClass(){
+    const { t } = useTranslation();
 
     const [items, setItems] = React.useState([]);
     const navigate = useNavigate();
@@ -132,7 +134,7 @@ function ManageClass(){
             pb: 8,
         }}
         >
-            <Typography variant="h4">Your Classes</Typography>
+            <Typography variant="h4">{t("Your Classes")}</Typography>
 
             <List>
                 {items.map(item => (
@@ -180,7 +182,7 @@ function ManageClass(){
                         textTransform: "none"
                     }}
                 >
-                    Add Course
+                    {t("Add Class")}
                 </Button>
             </List>
             
@@ -197,8 +199,8 @@ function ManageClass(){
                 horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                <MenuItem onClick={handleEdit}>{t("Edit")}</MenuItem>
+                <MenuItem onClick={handleDelete}>{t("Delete")}</MenuItem>
             </Menu>
 
         </Box>

@@ -4,8 +4,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import * as React from 'react';
 import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
+import { useTranslation } from 'react-i18next';
 
 function DateTime({value, onChange}){
+    const { t } = useTranslation();
 
     const pickValue = React.useMemo(
         () => (value ? dayjs(value) : null),
@@ -15,7 +17,7 @@ function DateTime({value, onChange}){
     return(
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <MobileDateTimePicker
-                label = "Due Date"
+                label = {t("Due Date")}
                 value={pickValue}
                 onChange={onChange}
                 slotProps={{

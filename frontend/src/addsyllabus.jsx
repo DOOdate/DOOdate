@@ -168,7 +168,7 @@ function AddSyllabus() {
               textTransform: "none"
             }}
           >
-            Manage Courses
+            {t("Manage Courses")}
           </Button>
         </Box>
       </Box>
