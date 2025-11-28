@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { MuiColorInput } from "mui-color-input";
+import { useTranslation } from 'react-i18next';
 
 function CourseColourField({ value, onChange }) {
+  const { t } = useTranslation();
   return (
     <MuiColorInput
-      label="Course color"
+      label={t("Course color")}
       format="hex"
       value={value}
       onChange={onChange}

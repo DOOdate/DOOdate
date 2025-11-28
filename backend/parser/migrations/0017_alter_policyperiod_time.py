@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='policyperiod',
             name='time',
-            field=models.DateTimeField(),
+            field=models.FloatField(),
         ),
     ]

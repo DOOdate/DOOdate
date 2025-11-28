@@ -33,7 +33,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ['id', 'course_code', 'prof_email', 'colour', 'late_policy', 'deadlines']
+        fields = ['id', 'course_code', 'prof_email', 'user', 'colour', 'late_policy', 'deadlines']
     
     def update(self, instance, validated_data):
         deadlines_data = validated_data.pop("deadlines", None)
@@ -42,6 +42,7 @@ class CourseSerializer(serializers.ModelSerializer):
         instance.course_code = validated_data.get("course_code", instance.course_code)
         instance.prof_email = validated_data.get("prof_email", instance.prof_email)
         instance.colour = validated_data.get("colour", instance.colour)
+        instance.user = validated_data.get("user", instance.user)
         instance.save()
 
             
@@ -105,4 +106,11 @@ class CourseSerializer(serializers.ModelSerializer):
             Deadline.objects.create(course=course, **d_data)
 
         return course
+
+class UserSerializer(serializers.ModelSerializer):
+    courses = CourseSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'notification_token', 'courses']
                 

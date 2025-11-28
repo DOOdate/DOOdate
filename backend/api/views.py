@@ -14,6 +14,7 @@ from rest_framework import status, permissions
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from asgiref.sync import sync_to_async
+from core.services import demo_user_factory
 
 #Doing the views/get/delete like this beacuse it looked cool and effiecent when I was looking at code examples
 MODEL_MAP = {
@@ -21,6 +22,7 @@ MODEL_MAP = {
     "syllabi":   (Syllabus, SyllabusSerializer),
     "policys":   (PolicyPeriod, PolicyPeriodSerializer),
     "deadlines": (Deadline, DeadlineSerializer),
+    "users": (User, UserSerializer),
 }
 
 @api_view(["GET", "DELETE", "PATCH"])
@@ -91,6 +93,13 @@ def addTest(request):
         serializer.save()
     return Response(serializer.data)
 
+@api_view(['GET'])
+def newUser(request):
+    user = demo_user_factory.new_user()
+    print(user.courses.all())
+    resp = {'id': user.id, 'courses': [CourseSerializer(course).data for course in user.courses.all()]}
+    return JsonResponse(resp)
+
 @csrf_exempt
 async def upload_syllabus(request):
     if request.method != 'POST':
@@ -110,7 +119,7 @@ async def upload_syllabus(request):
     else:
         template = await sync_to_async(lambda: cached.class_template)() # stupid django stuff
 
-    res = await sync_to_async(lambda: CourseSerializer(template).data)()  # Represents a Course as JSON
+    res = await sync_to_async(lambda: CourseSerializer(demo_user_factory.clone_course(template, None)).data)()  # Represents a Course as JSON
     return JsonResponse(res)
 
 @api_view(['POST'])

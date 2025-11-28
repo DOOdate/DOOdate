@@ -17,6 +17,9 @@ import { memo, useState } from 'react';
 import DateTime from "./components/DateTimeCOMP.jsx";
 import dayjs from 'dayjs';
 import CourseColourField from "./components/CourseColour.jsx";
+import { useTranslation } from 'react-i18next';
+
+
 
 const createEmptyDeadline = () => ({
     title: "",
@@ -53,7 +56,7 @@ const TextField2 = memo(function TextField2({ label, value, onChange }) {
             htmlInput: {
             min: 0,
             max: 100,
-            step: 0.1,
+            step: 1,
             inputMode: "decimal",
             },
         }}
@@ -68,6 +71,8 @@ const LatePolicyRow = React.memo(function LatePolicyRow({
     onFieldChange,
     onMenuOpen,
     }){
+
+    const { t } = useTranslation();
     
     const handlePenaltyChange = React.useCallback(
     (e) => {
@@ -92,6 +97,17 @@ const LatePolicyRow = React.memo(function LatePolicyRow({
 
     const handlePolicyDateChange = React.useCallback(
         (newValue) => {
+            let raw = e.target.value;
+
+        if (raw === "") {
+        onFieldChange(index, "penalty", "", "lp");
+        return;
+        }
+
+        const num = parseFloat(raw);
+        if (!Number.isNaN(num)) {
+        if (num < 0) raw = "0";
+        }
             onFieldChange(index, "time", newValue ? newValue.toDate().toISOString() : null, "lp");
         },
         [index, onFieldChange]
@@ -108,12 +124,13 @@ const LatePolicyRow = React.memo(function LatePolicyRow({
         >
 
         <TextField2
-            label="Weight"
+            label={t("Penalty %")}
             value={policy.penalty ?? ""}
             onChange={handlePenaltyChange}
         />
 
-        <DateTime
+        <TextField2
+            label={t("Hrs Late")}
             value={policy.time ?? null}
             onChange={handlePolicyDateChange}
         />
@@ -128,6 +145,8 @@ const DeadlineRow = React.memo(function DeadlineRow({
     onFieldChange,
     onMenuOpen,
     }) {
+
+    const { t } = useTranslation();
 
     const handleTitleChange = React.useCallback(
         (e) => onFieldChange(index, "title", e.target.value, "dl"),
@@ -172,13 +191,13 @@ const DeadlineRow = React.memo(function DeadlineRow({
         }
         >
         <TextField1
-            label="Name"
+            label={t("Name")}
             value={deadline.title ?? ""}
             onChange={handleTitleChange}
         />
 
         <TextField2
-            label="Weight"
+            label={t("Weight")}
             value={deadline.weight ?? ""}
             onChange={handleWeightChange}
         />
@@ -193,10 +212,10 @@ const DeadlineRow = React.memo(function DeadlineRow({
 
 
 import { useUserContext } from './userContext.jsx';
-import { t } from "i18next";
+
 
 function AddClass(){
-
+    const { t } = useTranslation();
     const location = useLocation();
     const navigate = useNavigate();
     const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
@@ -207,17 +226,21 @@ function AddClass(){
     const [selectedDLIds, setDLIds] = React.useState([]);
     const [selectedLPIds, setLPIds] = React.useState([]);
     const [msg, setMsg] = React.useState("");
-    
+    const localId = localStorage.getItem("id");
     const { data, setData } = useUserContext();
+
+    if(localId == null){
+        navigate("/home");
+    }
 
     const [classInfo, setClassInfo] = React.useState(
         () => location.state?.classInfo ?? null
     );
 
+    if (classInfo.user === null) 
+        setClassInfo(prev => ({...prev, user: localId}));
+
     const handleMenuOpen = (event, index, id, type) => {
-        console.log("here0");
-        console.log(index);
-        console.log(type);
         setMenuAnchorEl(event.currentTarget);
         setSelectedIndex(index);
         setSelectedType(type);
@@ -226,7 +249,6 @@ function AddClass(){
     };
 
     const handleMenuClose = () => {
-        console.log("here1");
         setMenuAnchorEl(null);
         setSelectedIndex(null);
         setSelectedType(null);
@@ -310,13 +332,15 @@ function AddClass(){
     const courseCodeUpdate = (value) => { setClassInfo(prev => ({...prev, course_code: value})) }; 
     const profEmailUpdate = (value) => { setClassInfo(prev => ({...prev, prof_email: value})) };
     const colourUpdate = (value) => { setClassInfo(prev => ({...prev, colour: value}))};
+    
 
 
     const backendSave = async () => {
 
         try {
-                
+            console.log(classInfo);   
             if(classInfo.id == null){
+                
                 await axios.post(`/api/courses/`, classInfo);
                 setMsg("created");
             } else{
@@ -329,6 +353,7 @@ function AddClass(){
             console.error("Error:", err.response?.data || err);
         } finally {
             showFlash(`Class "${classInfo.course_code}" ${msg}`, 'success');
+            setData(JSON.stringify(classInfo));
             navigate("/manageclass")
             setLPIds([]);
             setDLIds([]);
@@ -350,7 +375,7 @@ function AddClass(){
         }}
         >
             <Typography variant="h4" sx={{display: "flex", flexDirection: "row"}}>
-                Edit Class: {classInfo.course_code}
+                {t('Edit Class')}: {classInfo.course_code}
             </Typography>
             <CourseColourField 
                 value={classInfo.colour}
@@ -359,7 +384,7 @@ function AddClass(){
             <List>
                 <ListItem sx={{display: "flex", gap:2, flexDirection: "column"}}>
                     <TextField1
-                        label="Course Code/Course Name"
+                        label={t("Course Code/Course Name")}
                         value={classInfo.course_code}
                         slotProps={{maxLength: 15}}
                         onChange={e=>
@@ -369,7 +394,7 @@ function AddClass(){
                 </ListItem>
                 <ListItem sx={{display: "flex", gap:2, flexDirection: "column"}}>
                     <TextField1
-                        label="Prof Email"
+                        label={t("Prof Email")}
                         value={classInfo.prof_email}
                         slotProps={{maxLength: 255}}
                         onChange={e=>
@@ -401,7 +426,7 @@ function AddClass(){
                         textTransform: "none"
                     }}
                 >
-                    Add Deadline
+                    {t("Add Deadline")}
                 </Button>
                 {classInfo.late_policy.map((policy, index) => (
                    <LatePolicyRow
@@ -427,7 +452,7 @@ function AddClass(){
                         textTransform: "none"
                     }}
                 >
-                    Add Late Policy
+                    {t("Add Late Policy")}
                 </Button>
             </List>
             <Menu
@@ -443,7 +468,7 @@ function AddClass(){
                 horizontal: "right",
                 }}
             >
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                <MenuItem onClick={handleDelete}>{t("Delete")}</MenuItem>
             </Menu>
             <Button type="button" variant="contained" onClick={()=>{
                const hasInvalidDeadline = classInfo.deadlines.some(d => !d.title || d.title.trim() === "");
@@ -455,7 +480,7 @@ function AddClass(){
                 backendSave()
                 
             }}>
-                Save Changes
+                {t("Save Changes")}
             </Button>
         </Box>
     );

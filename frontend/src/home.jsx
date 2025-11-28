@@ -19,6 +19,9 @@ import localizedFormat from "dayjs/plugin/localizedFormat"
 import Button from '@mui/material/Button';
 import PlusIcon from "../src/assets/plus-icon-calendar.svg";
 import { useUserContext } from './userContext.jsx';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 
 function Home(){
     const { t } = useTranslation();
@@ -27,86 +30,57 @@ function Home(){
     const [selectionMode, setSelectionMode] = React.useState('day');
     const [upcomingExtended, setUpcomingExtended] = React.useState(false);
     const { data, setData } = useUserContext();
+    const [assignments, setAssignments] = React.useState([]);
 
-    // let assignments = [
-    //     {
-    //         "course_code": "Physics",
-    //         "prof_email": "physics_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#dd7777",
-    //         "deadlines": [
-    //           {
-    //             "title": "Assignment 1",
-    //             "due_date": "2025-11-19T23:59:00",
-    //             "weight": 4,
-    //           }
-    //         ]
-    //       },
-          
-    //       {
-    //         "course_code": "History",
-    //         "prof_email": "history_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#77dd77",
-    //         "deadlines": [
-    //           {
-    //             "title": "Project Proposal",
-    //             "due_date": "2025-12-22T17:00:00",
-    //             "weight": 10,
-    //           },
-    //           {
-    //             "title": "Review Task",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 10,
-    //           }
-    //         ]
-    //       },
-          
-    //       {
-    //         "course_code": "Chemistry",
-    //         "prof_email": "chemistry_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#7777dd",
-    //         "deadlines": [
-    //           {
-    //             "title": "Lab Report",
-    //             "due_date": "2025-11-25T23:59:00",
-    //             "weight": 6,
-    //           },
-    //           {
-    //             "title": "Problem Set 1",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 5,
-    //           }
-    //         ]
-    //       },
+    
+    
+    React.useEffect(() => {
+        
+        const loadData = async () => {
+            if (data == "{}") {
+              let uid = localStorage.getItem('id');
 
-    //       {
-    //         "course_code": "Calculus",
-    //         "prof_email": "calculus_prof@uottawa.ca",
-    //         "late_policy": [],
-    //         "colour": "#e67607",
-    //         "deadlines": [
-    //           {
-    //             "title": "Presentation",
-    //             "due_date": "2025-11-25T23:59:00",
-    //             "weight": 10,
-    //           },
-    //           {
-    //             "title": "Final Exam",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 20,
-    //           },
-    //           {
-    //             "title": "Exam Preperation Assignment",
-    //             "due_date": "2025-11-28T23:59:00",
-    //             "weight": 0,
-    //           }
-    //         ]
-    //       }
-          
-    // ];
-    let assignments = JSON.parse(data).courses;
+              try{
+                const res = await axios.get(uid ? `/api/users/${uid}` : '/api/newuser/');
+
+                if (res.status !== 200) {
+                  console.error('Error fetching user data', response);
+                  return;
+                } 
+
+                const userData = res.data;
+
+                setData(JSON.stringify(userData));
+
+                if(userData.id !== undefined){
+                  localStorage.setItem('id', userData.id);
+                  console.log(userData.id);
+                }
+              } catch (err){
+                  console.error("Error fetching user data", err);
+              }                       
+            }
+        };
+        loadData(); 
+    }, [data, setData]);
+
+    React.useEffect(() => {
+      if (!data || data === "{}") return;
+
+      try {
+        const parsed = JSON.parse(data);
+
+        const courses = Array.isArray(parsed.courses) ? parsed.courses : [];
+
+        setAssignments(courses);
+      } catch (e) {
+        console.error("Invalid JSON in user context data:", data, e);
+        setAssignments([]); 
+      }
+    }, [data]);
+
+    
+    
     dayjs.extend(updateLocale)
     dayjs.extend(localizedFormat);
     dayjs.updateLocale('fr' ,{
@@ -154,7 +128,8 @@ function Home(){
             }
 
         }
-    } 
+    }
+    upcomingAssignments.sort((a, b) => dayjs(a.due_date).diff(dayjs(b.due_date))); 
 
     const assignmentsPerDay = new Map();
 
@@ -331,8 +306,8 @@ function Home(){
                 onChange={(e) => setSelectionMode(e.target.value)}
                 size="small">
 
-                <MenuItem value="day">Day</MenuItem>
-                <MenuItem value="week">Week</MenuItem>
+                <MenuItem value="day">{t('Day')}</MenuItem>
+                <MenuItem value="week">{t('Week')}</MenuItem>
               </Select>
 
           </Box>) : null}
@@ -387,8 +362,8 @@ function Home(){
                 bgcolor: 'primary.secondary',
                 maxHeight: upcomingExtended ? "92vh" : "40vh",
                 }}>
-                {upcomingAssignments.map((assignment) => (
-                    <EventCard key={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"}/>
+                {upcomingAssignments.map((assignment, index) => (
+                    <EventCard key={assignment.id ?? `${assignment.title}-${index}`} title={assignment.title} colour={assignment.colour} className={assignment.course_code} {...assignment} date={dayjs(assignment.due_date).format("LLL")} weight={assignment.weight+"%"} late_policy={assignment.late_policy} />
                 ))}
           </Box>
             </Box>

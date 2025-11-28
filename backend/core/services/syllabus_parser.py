@@ -30,17 +30,23 @@ Could possibly filter out pages that do not contain numbers or any of _DATES or 
 async def parse(file: str, noai: bool = False) -> PDFInfo:
     if noai:
         return _parse_noai(file)
-    reader = PdfReader(file)
     course_code = None
     prof_email = None
-    for page in reader.pages:
-        for line in page.extract_text().split('\n'):
-            if not course_code:
-                course_code = _match_course_code(line)
-            if not prof_email:
-                prof_email = _parse_email(line)
-            if prof_email is not None and course_code is not None:
-                break
+    try:
+        reader = PdfReader(file)
+        for page in reader.pages:
+            for line in page.extract_text().split('\n'):
+                if not course_code:
+                    course_code = _match_course_code(line)
+                if not prof_email:
+                    prof_email = _parse_email(line)
+                if prof_email is not None and course_code is not None:
+                    break
+        # Hopefully avoid malicious users
+        if len(reader.pages) > 50:
+            return _parse_noai(file)
+    except Exception:
+        pass
     result = await core.services.parse_ai.parse(file)
     # Contingency
     if 'late_policy' not in result or 'assignments' not in result:
